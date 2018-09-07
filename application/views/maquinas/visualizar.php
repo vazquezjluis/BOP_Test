@@ -95,7 +95,7 @@ if (isset($result)){
                         }
                         if($this->permission->checkPermission($this->session->userdata('permiso'),'cTicket')){
                             echo '<a href="#modal-ticket" class="btn btn-default tip-top " style="margin-top:5%;" role="button" data-toggle="modal" maquina="'.$result[0]->idMaquina.'" ticketPrevio="'.$result[0]->tickets.'" estado_maquina="'.$result[0]->estado.'" >
-                                            <i class="icon-tag"></i></a>';
+                                            <i class="icon-tag"></i> Generar un Ticket</a>';
                         }  
                        echo'     </div>';
                       ?>  
