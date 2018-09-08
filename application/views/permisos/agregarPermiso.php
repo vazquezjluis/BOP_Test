@@ -293,7 +293,7 @@
                                     </td>
                                     <td colspan="1">
                                         <label>
-                                            <input name="vLicencias" class="marcar" type="checkbox"  value="1" />
+                                            <input name="vLicencia" class="marcar" type="checkbox"  value="1" />
                                             <span class="lbl"> Visualizar Licencias</span>
                                         </label>
                                     </td>
