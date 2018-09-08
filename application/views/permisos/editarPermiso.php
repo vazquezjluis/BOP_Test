@@ -337,7 +337,7 @@
                                     
                                     <td>
                                         <label>
-                                            <input <?php if(isset($permisos['vLicencias'])){ if($permisos['vLicencias'] == '1'){echo 'checked';}}?> name="vLicencias" class="marcar" type="checkbox" value="1" />
+                                            <input <?php if(isset($permisos['vLicencia'])){ if($permisos['vLicencia'] == '1'){echo 'checked';}}?> name="vLicencia" class="marcar" type="checkbox" value="1" />
                                             <span class="lbl"> Visualizar Licencias</span>
                                         </label>
                                     </td>
