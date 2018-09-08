@@ -120,7 +120,7 @@ class Permisos extends CI_Controller {
                   'vImporPersona' => $this->input->post('vImporPersona'),
                 
                   'vPersonas' => $this->input->post('vPersonas'),  
-                  'vLicencias' => $this->input->post('vLicencias'),  
+                  'vLicencia' => $this->input->post('vLicencia'),  
                   'vCapacitacion' => $this->input->post('vCapacitacion'),  
                   'vPremios' => $this->input->post('vPremios'),  
                 
@@ -219,7 +219,7 @@ class Permisos extends CI_Controller {
                   'vImporPersona' => $this->input->post('vImporPersona'),
                 
                   'vPersonas' => $this->input->post('vPersonas'),
-                  'vLicencias' => $this->input->post('vLicencias'),
+                  'vLicencia' => $this->input->post('vLicencia'),
                   'vCapacitacion' => $this->input->post('vCapacitacion'),
                   'vPremios' => $this->input->post('vPremios'),
                 
