@@ -65,7 +65,7 @@
               <?php if($this->permission->checkPermission($this->session->userdata('permiso'),'vPersonas')){ ?>
                 <li><a href="<?php echo base_url()?>index.php/persona">Personas</a></li>
               <?php } ?>
-              <?php if($this->permission->checkPermission($this->session->userdata('permiso'),'vLicencias')){ ?>
+              <?php if($this->permission->checkPermission($this->session->userdata('permiso'),'vLicencia')){ ?>
                 <li><a href="<?php echo base_url()?>index.php/licencia">Licencias</a></li>
               <?php } ?>
               <?php if($this->permission->checkPermission($this->session->userdata('permiso'),'vCapacitacion')){ ?>
