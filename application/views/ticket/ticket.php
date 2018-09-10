@@ -7,21 +7,25 @@
 
         <div class="span12" >
             <div class="span12" >
-                <div class="span4">
+                <div class="span2">
                     <label>Descripcion</label>
                     <input type="text" name="descripcion"  id="descripcion"  placeholder="Descripcion"  value="<?php echo $this->input->get('descripcion'); ?>" >
                 </div>
-                <div class="span4">
+                <div class="span2">
+                    <label>Referencia</label>
+                    <input type="text" name="referencia"  id="referencia"  placeholder="Referencia"  value="<?php echo $this->input->get('referencia'); ?>" >
+                </div>
+                <div class="span3">
                     <label>Estado</label>
                     <select name="estado" id="estado" >
                         <option value="">Selecione estado</option>
                         <option value="1" <?php if($this->input->get('estado')==1){ echo "selected";} ?>>Abierto</option>
                         <option value="2" <?php if($this->input->get('estado')==2){ echo "selected";} ?>>Resuelto</option>
-                        <option value="3" <?php if($this->input->get('estado')==3){ echo "selected";} ?>>Cerrado</option>
-                        <option value="4" <?php if($this->input->get('estado')==4){ echo "selected";} ?>>Cancelado</option>
+<!--                        <option value="3" <?php // if($this->input->get('estado')==3){ echo "selected";} ?>>Cerrado</option>
+                        <option value="4" <?php // if($this->input->get('estado')==4){ echo "selected";} ?>>Cancelado</option>-->
                     </select>
                 </div>            
-                <div class="span4">
+                <div class="span2">
                     <label>emisor</label>
                     <select name="emisor" id="emisor" >
                         <option value="">Seleccione emisor</option>
