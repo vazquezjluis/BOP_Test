@@ -305,8 +305,9 @@ $prioridad = array(
           });
           
            $("#asignado").change(function(){
-               var texto_anterior = $("#descripcion").text();
-               $("#descripcion").text(texto_anterior+" Asignado a "+$('#asignado option:selected').text());
+               //var texto_anterior = $("#descripcion").text();
+               //$("#descripcion").text(texto_anterior+" Asignado a "+$('#asignado option:selected').text());
+               $("#descripcion").text(" Asignado a "+$('#asignado option:selected').text());
            });
            
            $("#estado").change(function(){
