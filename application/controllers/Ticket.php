@@ -67,6 +67,9 @@ class Ticket extends CI_Controller {
         if ($this->input->get('descripcion')!=''){//descripcion
              $where.= ' AND ticket.descripcion LIKE "%'.$this->input->get('descripcion').'%" ';
         }
+        if ($this->input->get('referencia')!=''){//descripcion
+             $where.= ' AND referencia_str(ticket.sector,ticket.referencia) LIKE "%'.$this->input->get('referencia').'%" ';
+        }
         if ($this->input->get('estado')!=''){//estado
              $where.= ' AND ticket.estado = '.$this->input->get('estado');
         }else{
