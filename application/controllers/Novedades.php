@@ -91,16 +91,8 @@ class Novedades extends CI_Controller {
         //consola   
         if ($this->novedades_model->add('novedades',$data) == TRUE)
         {   
-//            $acciones = array(
-//                'usuario' => $this->session->userdata('id'),
-//                'accion_id' => 1,
-//                'accion' => 'Agrega la novedades: ',
-//                'modulo' => 1,
-//                'fecha_registro' => date('Y-m-d')
-//            );
-//            if ($this->consola_model->add('consola',$acciones) == TRUE){
-//                $this->session->set_flashdata('success','Novedades registrado con éxito!');
-//            }
+            
+            
         }
         else
         {
