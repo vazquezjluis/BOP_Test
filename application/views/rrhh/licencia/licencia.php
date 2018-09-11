@@ -1,4 +1,5 @@
 <a href="<?php echo base_url()?>index.php/licencia/agregar" class="btn btn-success"><i class="icon-plus icon-white"></i> Agregar nueva Licencia</a>
+<a href="<?php echo base_url()?>index.php/licencia/vincular" class="btn btn-default"><i class="icon-resize-small icon-white"></i> Vincular Licencia a un empleado</a>
 <?php
 if(!$results){?>
 <div class="widget-box">
@@ -65,7 +66,7 @@ if(!$results){?>
             echo '<td>'.$r->descripcion.'</td>';
             echo '<td>'.$r->dias.'</td>';
             echo '<td>
-                        <a href="'.base_url().'index.php/capacitacion/editar/'.$r->idLicencia.'" class="btn btn-info tip-top" title="Editar Licencia"><i class="icon-pencil icon-white"></i></a>
+                        <a href="'.base_url().'index.php/licencia/editar/'.$r->idLicencia.'" class="btn btn-info tip-top" title="Editar Licencia"><i class="icon-pencil icon-white"></i></a>
                         <a href="#modal-excluir" role="button" data-toggle="modal" licencia_del="'.$r->idLicencia.'" class="btn btn-danger tip-top" title="Eliminar Licencia"><i class="icon-remove icon-white"></i></a>
                   </td>';
             echo '</tr>';
