@@ -34,9 +34,9 @@ class Licencia_model extends CI_Model {
     }
 
     function getById($id){
-        $this->db->where('idCapacitacion',$id);
+        $this->db->where('idLicencia',$id);
         $this->db->limit(1);
-        return $this->db->get('capacitacion')->row();
+        return $this->db->get('licencia')->row();
     }
     
     function add($table,$data){
