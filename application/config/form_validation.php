@@ -242,6 +242,28 @@ $config =
                                 	'label'=>'descripcion',
                                 	'rules'=>'required|trim'
                                 ))
+                ,
+				'licencia' => array(array(
+                                	'field'=>'titulo',
+                                	'label'=>'titulo',
+                                	'rules'=>'required|trim'
+                                ),
+								array(
+                                	'field'=>'dias',
+                                	'label'=>'dias',
+                                	'rules'=>'required|trim'
+                                ))
+                ,
+				'vincular_licencia' => array(array(
+                                	'field'=>'idLicencia',
+                                	'label'=>'idLicencia',
+                                	'rules'=>'required|trim'
+                                ),
+								array(
+                                	'field'=>'idPersona',
+                                	'label'=>'idPersona',
+                                	'rules'=>'required|trim'
+                                ))
 
                 ,
                 'receita' => array(array(
