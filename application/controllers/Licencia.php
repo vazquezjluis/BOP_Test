@@ -73,62 +73,42 @@ class Licencia extends CI_Controller {
         $this->load->library('form_validation');    
 		$this->data['custom_error'] = '';
 		
-        if ($this->form_validation->run('capacitacion') == false)
+        if ($this->form_validation->run('licencia') == false)
         {
              $this->data['custom_error'] = (validation_errors() ? '<div class="alert alert-danger">'.validation_errors().'</div>' : false);
         } else
         {     
-            $persona_sector = '';
-            /* verifico las variables , el usuario pudo haber asociado sectores o personas a la capacitacion*/
-            if (count($this->input->post('persona'))){
-                $persona_sector.='persona:';
-                foreach ($this->input->post('persona') as $persona){
-                    $persona_sector.='|'.$persona;
-                }
-            }
-            if (count($this->input->post('sector'))){
-                $persona_sector.='-_-sector:';
-                foreach ($this->input->post('sector') as $sector){
-                    $persona_sector.='|'.$sector;
-                }
-            }
+            
             
             $data = array(
                     'titulo' => $this->input->post('titulo'),
                     'descripcion' => $this->input->post('descripcion'),
-                    'f_inicio' => $this->input->post('f_inicio'),
-                    'f_fin' => $this->input->post('f_fin'),
-                    'estado' => $this->input->post('estado'),
-                    'f_registro' => date('Y-m-d'),
-                    'persona_sector' =>$persona_sector
+                    'dias' => $this->input->post('dias'),
+                    'estado' => 1
             );
             
-            if ($this->capacitacion_model->add('capacitacion',$data) == TRUE)
+            if ($this->licencia_model->add('licencia',$data) == TRUE)
                 {   
                     $acciones = array(
                         'usuario' => $this->session->userdata('id'),
                         'accion_id' => 1,
-                        'accion' => 'Agrega la capacitacion: '.set_value('titulo'),
+                        'accion' => 'Agrega la licencia: '.set_value('titulo'),
                         'modulo' => 2,
                         'fecha_registro' => date('Y-m-d')
                     );
                     if ($this->consola_model->add('consola',$acciones) == TRUE){
                                 
-                        $this->session->set_flashdata('success','Usuario registrado con éxito!');
-                            redirect(base_url().'index.php/usuarios/agregar/');
+                        $this->session->set_flashdata('success','Licencia registrado con éxito!');
+                            redirect(base_url().'index.php/licencia/agregar/');
                         }
                     }
                     else
                     {
-                        $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error al guardar la consola de la capacitacion.</p></div>';
+                        $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error al guardar la consola de la licencia.</p></div>';
                     }
             }
         
-
-        $this->load->model('persona_model');
-        $this->data['personas'] = $this->persona_model->getActive('persona','id,apellido,nombre');   
-        $this->data['sector'] = $this->persona_model->getSector('persona','PUESTO_TRABAJO');   
-        $this->data['view'] = 'rrhh/capacitacion/agregarCapacitacion';
+        $this->data['view'] = 'rrhh/licencia/agregarLicencia';
         $this->load->view('tema/header',$this->data);
    
        
@@ -151,33 +131,26 @@ class Licencia extends CI_Controller {
             $this->data['custom_error'] = (validation_errors() ? '<div class="form_error">'.validation_errors().'</div>' : false);
         } else
         { 
-            if ($this->input->post('idUsuarios') == 1 && $this->input->post('estado') == 0)
-            {
-                $this->session->set_flashdata('error','El usuario administrador no puede ser desactivado!');
-                redirect(base_url().'index.php/usuarios/editar/'.$this->input->post('idUsuarios'));
-            }
 
             $data = array(
                 'titulo' => $this->input->post('titulo'),
                 'descripcion' => $this->input->post('descripcion'),
-                'f_inicio' => $this->input->post('f_inicio'),
-                'f_fin' => $this->input->post('f_fin'),
-                'estado' => $this->input->post('estado'),
-                'persona_sector' => $this->input->post('persona_sector')
+                'dias' => $this->input->post('dias'),
+                'estado' => 1
             );
             
-            if ($this->capacitacion_model->edit('capacitacion',$data,'idCapacitacion',$this->input->post('idCapacitacion')) == TRUE)
+            if ($this->licencia_model->edit('licencia',$data,'idLicencia',$this->input->post('idLicencia')) == TRUE)
                 {
                     $acciones = array(
                         'usuario' => $this->session->userdata('id'),
                         'accion_id' => 2,
-                        'accion' => 'Edita la capacitacipon: '.$this->input->post('idCapacitacion').' - '.$this->input->post('titulo')." # ".$this->input->post('descripcioon'),
+                        'accion' => 'Edita la licencia: '.$this->input->post('idLicencia').' - '.$this->input->post('titulo')." # ".$this->input->post('descripcioon'),
                         'modulo' => 2,
                         'fecha_registro' => date('Y-m-d h:i:s')
                     );
                     if ($this->consola_model->add('consola',$acciones) == TRUE){
-                        $this->session->set_flashdata('success','Usuario editado con éxito!');
-                        redirect(base_url().'index.php/usuarios/editar/'.$this->input->post('idUsuarios'));
+                        $this->session->set_flashdata('success','Licencia editada con éxito!');
+                        redirect(base_url().'index.php/licencia/editar/'.$this->input->post('idLicencia'));
                     }
                 }
                 else
@@ -186,32 +159,79 @@ class Licencia extends CI_Controller {
                 }
         }
 
-        $this->data['result'] = $this->capacitacion_model->getById($this->uri->segment(3));
+        $this->data['result'] = $this->licencia_model->getById($this->uri->segment(3));
         
-        $this->data['view'] = 'rrhh/capacitacion/editarCapacitacion';
+        $this->data['view'] = 'rrhh/licencia/editarLicencia';
         $this->load->view('tema/header',$this->data);
 			
       
     }
 	
-    public function excluir(){
+    public function eliminar(){
         $id =  $this->input->post('id');
         if ($id == null){
-            $this->session->set_flashdata('error','Ocurrio un error al intentar eliminar la capacitacion.');            
-            redirect(base_url().'index.php/capacitacion/gestionar/');
+            $this->session->set_flashdata('error','Ocurrio un error al intentar eliminar la Licencia.');            
+            redirect(base_url().'index.php/licencia/gestionar/');
         }
         $data = array(
-          'estado' => false
+          'estado' => 0
         );
         
-         if($this->capacitacion_model->edit('capacitacion',$data,'idCapacitacion',$id)){
-          $this->session->set_flashdata('success','Capacitacion eliminada!');  
+        if($this->licencia_model->edit('licencia',$data,'idLicencia',$id)){
+          $this->session->set_flashdata('success','Licencia eliminada!');  
         }
         else{
-          $this->session->set_flashdata('error','Error al eliminar la capacitacion!');  
+          $this->session->set_flashdata('error','Error al eliminar la licencia!');  
         }  
-//            $this->capacitacion_model->delete('capacitacion','idCapacitacion',$id);             
-            redirect(base_url().'index.php/capacitacion/gestionar/');
+        redirect(base_url().'index.php/licencia/gestionar/');
     }
+    
+    function vincular(){  
+          
+        $this->load->library('form_validation');    
+		$this->data['custom_error'] = '';	
+        if ($this->form_validation->run('vincular_licencia') == false)
+        {
+             $this->data['custom_error'] = (validation_errors() ? '<div class="alert alert-danger">'.validation_errors().'</div>' : false);
+        } else
+        {     
+            
+            
+            $data = array(
+                    'idLicencia' => $this->input->post('idLicencia'),
+                    'idPersona' => $this->input->post('idPersona'),
+                    'fecha_registro' => date('Y-m-d'),
+                    'usuario' => $this->session->userdata('id')
+            );
+            
+            if ($this->licencia_model->add('licencia_persona',$data) == TRUE)
+                {   
+                    $acciones = array(
+                        'usuario' => $this->session->userdata('id'),
+                        'accion_id' => 1,
+                        'accion' => 'Vincula la licencia: '.$this->input->post('idLicencia').' con el usuario '.$this->input->post('idUsuario'),
+                        'modulo' => 2,
+                        'fecha_registro' => date('Y-m-d')
+                    );
+                    if ($this->consola_model->add('consola',$acciones) == TRUE){
+                                
+                        $this->session->set_flashdata('success','Licencia vinculada con éxito!');
+                            redirect(base_url().'index.php/licencia/vincular');
+                        }
+                    }
+                    else
+                    {
+                        $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error al guardar la consola del vinculo de la licencia.</p></div>';
+                    }
+            }
+        
+        $this->data['view'] = 'rrhh/licencia/vincularLicencia';
+        $this->load->view('tema/header',$this->data);
+   
+       
+    }	
+    
+    
+    
 }
 
