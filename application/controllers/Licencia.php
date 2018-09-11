@@ -200,8 +200,12 @@ class Licencia extends CI_Controller {
             $data = array(
                     'idLicencia' => $this->input->post('idLicencia'),
                     'idPersona' => $this->input->post('idPersona'),
+                    'dias' => $this->input->post('dias'),
+                    'descripcion' => $this->input->post('descripcion'),
                     'fecha_registro' => date('Y-m-d'),
-                    'usuario' => $this->session->userdata('id')
+                    'usuario' => $this->session->userdata('id'),
+                    'estado' => $this->input->post('estado'),
+                    'documento' => $this->input->post('documento')
             );
             
             if ($this->licencia_model->add('licencia_persona',$data) == TRUE)
