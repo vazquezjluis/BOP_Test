@@ -135,7 +135,7 @@ class Persona_model extends CI_Model {
         
         if($query->num_rows() > 0){
             foreach ($query->result_array() as $row){
-                $row_set[] = array('label'=>"[".$row['id']." - ".$row['apellido'].$row['nombre']."]",'id'=>$row['id']);
+                $row_set[] = array('label'=>"[".$row['id']." - ".$row['apellido']." ".$row['nombre']."]",'id'=>$row['id']);
             }
             
             echo json_encode($row_set);
