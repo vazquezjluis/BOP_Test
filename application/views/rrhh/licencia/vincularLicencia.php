@@ -55,17 +55,27 @@
                         </div>
                     </div>
                     
-                    <div class="control-group">
-                        <label for="dias" class="control-label">Dias<span class="required">*</span></label>
-                        <div class="controls">
-                            <input id="descripcion" type="number" name="dias"  required="required" />
+                    <div class="control-group ">
+                        <div class="input-append span6">
+                            <label for="inicio" class="control-label">Inicio<span class="required">*</span></label>
+                            <div class="controls">
+                                <input id="inicio" type="date" name="inicio" onblur="calcula_dia()" onchange="calcula_dia()" required="required" />
+                            </div>
+                            <label for="fin" class="control-label">Fin<span class="required">*</span></label>
+                            <div class="controls">
+                                <input id="fin" type="date" name="fin" onblur="calcula_dia()"  required="required" />
+                            </div>    
+                            <label for="dias" class="control-label">Dias<span class="required">*</span></label>
+                            <div class="controls">
+                                <input id="dias" type="number" name="dias"  required="required" readonly="readonly"/>
+                            </div>
                         </div>
                     </div>
                     
                     <div class="control-group">
                         <label for="documento" class="control-label">Adjuntar comprobante <span class="required"></span></label>
                         <div class="controls">
-                            <input id="file-input" accept="image/*" type="file" required="true" name="userfile[]" multiple=""  />
+                            <input type="file" class="form-control" name="userFiles[]" multiple/>
                         </div>
                     </div>
 
@@ -109,7 +119,33 @@
               $(this).hide();
           });
           
+          
+          
+          
       });
+      
+      function calcula_dia(){
+        if ($("#fin").val()!='' && $("#inicio").val()!=''){
+            if ($("#fin").val()>$("#inicio").val()){
+                m1 = new Date($("#inicio").val());
+                m2 = new Date($("#fin").val());
+                r1 = m1.getTime();
+                r2 = m2.getTime();
+                r = r2-r1;
+                //document.write("Faltan: " + ((((fechaResta / 1000) / 60) / 60) / 24)/365 + " a&ntilde;os. &oacute;<br/>");      
+                var dias = (((r / 1000) / 60) / 60) / 24 ;
+                console.log(dias);
+//                document.write("Faltan: " + (((fechaResta / 1000) / 60) / 60)  + " Horas.  &oacute;<br/>");
+//                document.write("Faltan: " + ((fechaResta / 1000) / 60)  + " Minutos.  &oacute;<br/>");
+//                document.write("Faltan: " + (fechaResta / 1000)  + " Segundos.");
+                $("#dias").val(dias);
+            }
+            
+        }
+      }
+        
+ 
+
 </script>
 
 
