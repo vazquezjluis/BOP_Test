@@ -255,13 +255,13 @@ $config =
                                 ))
                 ,
 				'vincular_licencia' => array(array(
-                                	'field'=>'idLicencia',
-                                	'label'=>'idLicencia',
+                                	'field'=>'persona_id',
+                                	'label'=>'persona',
                                 	'rules'=>'required|trim'
                                 ),
 								array(
-                                	'field'=>'idPersona',
-                                	'label'=>'idPersona',
+                                	'field'=>'licencia',
+                                	'label'=>'licencia',
                                 	'rules'=>'required|trim'
                                 ))
 
