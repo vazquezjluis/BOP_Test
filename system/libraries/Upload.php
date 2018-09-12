@@ -380,6 +380,7 @@ class CI_Upload {
 			$_file = $_FILES[$field];
 		}
                 
+                
 		// Does the field name contain array notation?
 		elseif (($c = preg_match_all('/(?:^[^\[]+)|\[[^]]*\]/', $field, $matches)) > 1)
 		{
@@ -396,6 +397,8 @@ class CI_Upload {
 				$_file = $_file[$field];
 			}
 		}
+                
+                
                 
 		if ( ! isset($_file))
 		{
