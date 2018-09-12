@@ -125,17 +125,19 @@ class Persona_model extends CI_Model {
         }
     }
     
-    public function autoCompleteFallasFisica($q){
+    public function autoCompletePersona($q){
 
         $this->db->select('*');
-        $this->db->limit(5);
-        $this->db->like('descripcion', $q);
-        $this->db->where(' estado = 1 AND tipo="fisica" ');
-        $query = $this->db->get('fallas');
+        $this->db->limit(10);
+        $this->db->like('apellido', $q);
+//        $this->db->where(' estado = 1 AND tipo="fisica" ');
+        $query = $this->db->get('persona');
+        
         if($query->num_rows() > 0){
             foreach ($query->result_array() as $row){
-                $row_set[] = array('label'=>$row['descripcion'],'id'=>$row['idFallas']);
+                $row_set[] = array('label'=>"[".$row['id']." - ".$row['apellido'].$row['nombre']."]",'id'=>$row['id']);
             }
+            
             echo json_encode($row_set);
         }
     }
