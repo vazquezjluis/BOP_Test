@@ -23,7 +23,7 @@
                     <div class="control-group">
                         <label for="descripcion" class="control-label">Descripcion<span class="required">*</span></label>
                         <div class="controls">
-                            <input id="descripcion" type="text" name="descripcion" value="<?php echo set_value('descripcion'); ?>"  />
+                            <textarea id="descripcion" type="text" name="descripcion" value="<?php echo set_value('descripcion'); ?>"  ></textarea>
                         </div>
                     </div>
                     
