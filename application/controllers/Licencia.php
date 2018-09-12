@@ -24,6 +24,7 @@ class Licencia extends CI_Controller {
         $this->load->model('licencia_model', '', TRUE);
         $this->load->model('consola_model', '', TRUE);
         $this->load->model('persona_model', '', TRUE);
+        $this->load->model('archivos_model', '', TRUE);
         
     }
 
@@ -202,20 +203,22 @@ class Licencia extends CI_Controller {
             $this->data['custom_error'] = '<div class="alert alert-danger">'.$valida.'</div>';
         } 
         else
-        {     
-            
-            
-            $data = array(
-                    'idLicencia' => $this->input->post('licencia'),
-                    'idPersona' => $this->input->post('persona_id'),
-                    'dias' => $this->input->post('dias'),
-                    'descripcion' => $this->input->post('descripcion'),
-                    'fecha_registro' => date('Y-m-d'),
-                    'usuario' => $this->session->userdata('id')
+        {    
+            //datos
+            $data_licencia_persona = array(
+                'idLicencia' => $this->input->post('licencia'),
+                'idPersona' => $this->input->post('persona_id'),
+                'dias' => $this->input->post('dias'),
+                'descripcion' => $this->input->post('descripcion'),
+                'fecha_registro' => date('Y-m-d'),
+                'f_inicio' => $this->input->post('inicio'),
+                'f_fin' => $this->input->post('fin'),
+                'usuario' => $this->session->userdata('id')
             );
             
-            if ($this->licencia_model->add('licencia_persona',$data) == TRUE)
+            if ($this->licencia_model->add('licencia_persona',$data_licencia_persona) == TRUE)
                 {   
+                    $id_licencia_persona = $this->db->insert_id();
                     $acciones = array(
                         'usuario' => $this->session->userdata('id'),
                         'accion_id' => 1,
@@ -226,14 +229,25 @@ class Licencia extends CI_Controller {
                     if ($this->consola_model->add('consola',$acciones) == TRUE){
                                 
                         $this->session->set_flashdata('success','Licencia vinculada con éxito!');
-                            redirect(base_url().'index.php/licencia/vincular');
+                            //redirect(base_url().'index.php/licencia/vincular');
                         }
                     }
-                    else
-                    {
-                        $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error al guardar la consola del vinculo de la licencia.</p></div>';
-                    }
+            else
+            {
+                $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error al guardar la consola del vinculo de la licencia.</p></div>';
             }
+            
+            
+            //si existen archivos
+            if (isset($_FILES)){
+              if ($this->adjuntar_archivo($id_licencia_persona,"licencia_persona") ==TRUE){
+                  //archivos cargados con exito
+              }else{
+                  $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error al guardar los documentos.</p></div>';
+              }
+//            $this->adjuntar_archivo(123456,"licencia_persona");
+            }
+        }
         
         $this->data['licencia'] = $this->licencia_model->get();
         $this->data['view'] = 'rrhh/licencia/vincularLicencia';
@@ -263,6 +277,68 @@ class Licencia extends CI_Controller {
     }
     
     
+    
+    function adjuntar_archivo($referencia,$funcionalidad){
+        $date = date('d-m-Y');
+        $config['upload_path'] = './assets/archivos/'.$date;
+        $config['allowed_types'] = 'txt|jpg|jpeg|gif|png|pdf|PDF|JPG|JPEG|GIF|PNG';
+        $config['max_size']     = 0;
+        $config['max_width']  = '10000';
+        $config['max_height']  = '10000';
+        $config['encrypt_name'] = true;
+        
+        if (!is_dir('./assets/archivos/'.$date)) {//si el directorio no exise lo crea
+            mkdir('./assets/archivos/' . $date, 0777, TRUE);
+        }
+        
+        $data = array();
+        if( !empty($_FILES['userFiles']['name'])){
+            $filesCount = count($_FILES['userFiles']['name']);
+            for($i = 0; $i < $filesCount; $i++){
+                $_FILES['userFile']['name'] = $_FILES['userFiles']['name'][$i];
+                $_FILES['userFile']['type'] = $_FILES['userFiles']['type'][$i];
+                $_FILES['userFile']['tmp_name'] = $_FILES['userFiles']['tmp_name'][$i];
+                $_FILES['userFile']['error'] = $_FILES['userFiles']['error'][$i];
+                $_FILES['userFile']['size'] = $_FILES['userFiles']['size'][$i];
+
+                $this->load->library('upload', $config);
+                $this->upload->initialize($config);
+                if($this->upload->do_upload('userFile')){
+                    $fileData = $this->upload->data();
+                    
+                    $data = array(
+                        'documento' => 'Vinculo licencia_persona',
+                        'descripcion' => "El usuario: ".$this->session->userdata('id')." adjunta un comprobante de licencia",
+                        'file' => $fileData['file_name'],
+                        'path' => $fileData['full_path'],
+                        'url' => base_url().'assets/archivos/'.date('d-m-Y').'/'.$fileData['file_name'],
+                        'fecha' => date('Y-m-d'),
+                        'size' => $fileData['file_size'],
+                        'tipo' => $fileData['file_ext'],
+                        'sector' => 2,
+                        'referencia' => $referencia,
+                        'funcionalidad'=>$funcionalidad
+                    );
+                     if(count($fileData)){//significa que el archivo fue cargado a la ruta
+                        if ($this->archivos_model->add('documentos', $data) == TRUE) {
+                            $this->session->set_flashdata('success','Archivo agregado con exito!');
+
+                        } else {
+                            $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error al guardar los datos del archivo en la BD.</p></div>';
+                            return false;
+                        }
+                    }else{
+            //            $error = $archivo["error"];//retorna un string con el error del archivo
+                        $this->data['custom_error'] = '<div class="form_error"><p></p></div>';//retorna un string con el error del archivo
+                        return false;
+                    } 
+                }
+                
+            }//fin foreach
+            
+        }// end if
+        return true;
+    }//end function
     
 }
 
