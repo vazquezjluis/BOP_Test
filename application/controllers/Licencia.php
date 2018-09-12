@@ -23,6 +23,7 @@ class Licencia extends CI_Controller {
         
         $this->load->model('licencia_model', '', TRUE);
         $this->load->model('consola_model', '', TRUE);
+        $this->load->model('persona_model', '', TRUE);
         
     }
 
@@ -186,26 +187,31 @@ class Licencia extends CI_Controller {
         redirect(base_url().'index.php/licencia/gestionar/');
     }
     
-    function vincular(){  
-          
+    function vincular(){
+        $valida = 0;
+        if (isset($_POST)){
+            $valida = $this->validar_vinculo($_POST);
+        }
         $this->load->library('form_validation');    
 		$this->data['custom_error'] = '';	
         if ($this->form_validation->run('vincular_licencia') == false)
         {
              $this->data['custom_error'] = (validation_errors() ? '<div class="alert alert-danger">'.validation_errors().'</div>' : false);
-        } else
+        }elseif($valida!=0)
+        {
+            $this->data['custom_error'] = '<div class="alert alert-danger">'.$valida.'</div>';
+        } 
+        else
         {     
             
             
             $data = array(
-                    'idLicencia' => $this->input->post('idLicencia'),
-                    'idPersona' => $this->input->post('idPersona'),
+                    'idLicencia' => $this->input->post('licencia'),
+                    'idPersona' => $this->input->post('persona_id'),
                     'dias' => $this->input->post('dias'),
                     'descripcion' => $this->input->post('descripcion'),
                     'fecha_registro' => date('Y-m-d'),
-                    'usuario' => $this->session->userdata('id'),
-                    'estado' => $this->input->post('estado'),
-                    'documento' => $this->input->post('documento')
+                    'usuario' => $this->session->userdata('id')
             );
             
             if ($this->licencia_model->add('licencia_persona',$data) == TRUE)
@@ -229,11 +235,32 @@ class Licencia extends CI_Controller {
                     }
             }
         
+        $this->data['licencia'] = $this->licencia_model->get();
         $this->data['view'] = 'rrhh/licencia/vincularLicencia';
         $this->load->view('tema/header',$this->data);
    
        
     }	
+    
+    public function autoCompletePersona(){
+        
+        if (isset($_GET['term'])){
+            $q = strtolower($_GET['term']);
+            
+            $this->persona_model->autoCompletePersona($q);
+        }
+
+    }
+    
+    function validar_vinculo($post){
+        if (!isset($post["persona_id"])){ return "campo persona invalida.";}
+        if (!isset($post["licencia"])){ return "campo licencia invalida.";}
+        if (!isset($post["dias"])){ return "campo dias invalido.";}
+        $licencia = $this->licencia_model->getById($post["licencia"]);
+        if ($post["dias"] > $licencia->dias ){ return "La cantidad de dias tomados excede el total de la licencia seleccionada.";}
+        
+        return 0;
+    }
     
     
     
