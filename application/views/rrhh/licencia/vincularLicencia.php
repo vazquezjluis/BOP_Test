@@ -22,7 +22,7 @@
                         <label  class="control-label">Persona <span class="required">*</span></label>
                         <div class="controls" id="persona_select">
                             <div class="input-append span6">
-                                <input name="persona" placeholder="Escribe aquí el apellido o nombre del empleado" class="input-block-level" id="persona" value="<?php echo set_value('persona'); ?>" type="text" required="required">
+                                <input name="persona" placeholder="Escribe aquí el apellido o nombre del empleado" class="input-block-level" id="persona" value="" type="text" required="required">
                                 <button id="cancel" type="button" class="btn btn-success" >Limpiar</button>
                             </div>
                         </div>
@@ -50,9 +50,9 @@
                     </div>
                     
                     <div class="control-group">
-                        <label for="descripcion" class="control-label">Descripcion <span class="required">*</span></label>
+                        <label for="descripcion" class="control-label">Descripcion </label>
                         <div class="controls">
-                            <textarea id="descripcion" type="text" name="descripcion"  required="required" ></textarea>
+                            <textarea id="descripcion" type="text" name="descripcion"   ></textarea>
                         </div>
                     </div>
                     
@@ -85,7 +85,7 @@
                         <div class="span12">
                             <div class="span6 offset3">
                                 <button type="submit" class="btn btn-success"><i class="icon-plus icon-white"></i> Agregar</button>
-                                <a href="<?php echo base_url() ?>index.php/licencia" id="" class="btn"><i class="icon-arrow-left"></i> Volver</a>
+                                <a href="<?php echo base_url() ?>index.php/licencia/listadoVinculo" id="" class="btn"><i class="icon-arrow-left"></i> Volver</a>
                             </div>
                         </div>
                     </div>
