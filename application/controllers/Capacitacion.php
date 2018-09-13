@@ -182,6 +182,60 @@ class Capacitacion extends CI_Controller {
 			
       
     }
+    
+    function vincular(){
+        $valida = 0;
+        
+        $this->load->library('form_validation');    
+		$this->data['custom_error'] = '';	
+        if ($this->form_validation->run('vincular_capacitacion') == false)
+        {
+             $this->data['custom_error'] = (validation_errors() ? '<div class="alert alert-danger">'.validation_errors().'</div>' : false);
+        }elseif($valida!=0)
+        {
+            $this->data['custom_error'] = '<div class="alert alert-danger">'.$valida.'</div>';
+        } 
+        else
+        {    
+            //datos
+            $data_capacitacion_persona = array(
+                'idCapacitacion' => $this->input->post('capacitacion'),
+                'idPersona' => $this->input->post('persona_id'),
+                'fecha_registro' => date('Y-m-d'),
+                'estado' => 1,
+                'usuario' => $this->session->userdata('id')
+            );
+            
+            if ($this->capacitacion_model->add('capacitacion_persona',$data_capacitacion_persona) == TRUE)
+                {   
+                    $id_capacitacion_persona = $this->db->insert_id();
+                    $acciones = array(
+                        'usuario' => $this->session->userdata('id'),
+                        'accion_id' => 1,
+                        'accion' => 'Vincula la capacitacion: '.$this->input->post('idCapacitacion').' con el empleado '.$this->input->post('persona_id'),
+                        'modulo' => 2,
+                        'fecha_registro' => date('Y-m-d')
+                    );
+                    if ($this->consola_model->add('consola',$acciones) == TRUE){
+                                
+                        $this->session->set_flashdata('success','Capacitacion vinculada con éxito!');
+                            //redirect(base_url().'index.php/licencia/vincular');
+                        }
+                    }
+            else
+            {
+                $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error al guardar la consola del vinculo de la capacitacion.</p></div>';
+            }
+            
+            
+        }
+        
+        $this->data['capacitacion'] = $this->capacitacion_model->get();
+        $this->data['view'] = 'rrhh/capacitacion/vincularCapacitacion';
+        $this->load->view('tema/header',$this->data);
+   
+       
+    }	
 	
     public function excluir(){
         $id =  $this->input->post('id');
