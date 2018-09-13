@@ -78,29 +78,21 @@ class Capacitacion extends CI_Controller {
              $this->data['custom_error'] = (validation_errors() ? '<div class="alert alert-danger">'.validation_errors().'</div>' : false);
         } else
         {     
-            $persona_sector = '';
-            /* verifico las variables , el usuario pudo haber asociado sectores o personas a la capacitacion*/
-            if (count($this->input->post('persona'))){
-                $persona_sector.='persona:';
-                foreach ($this->input->post('persona') as $persona){
-                    $persona_sector.='|'.$persona;
-                }
-            }
-            if (count($this->input->post('sector'))){
-                $persona_sector.='-_-sector:';
-                foreach ($this->input->post('sector') as $sector){
-                    $persona_sector.='|'.$sector;
-                }
-            }
             
             $data = array(
-                    'titulo' => $this->input->post('titulo'),
+                    'tema' => $this->input->post('tema'),
                     'descripcion' => $this->input->post('descripcion'),
                     'f_inicio' => $this->input->post('f_inicio'),
                     'f_fin' => $this->input->post('f_fin'),
-                    'estado' => $this->input->post('estado'),
+                    'estado' => 1,
                     'f_registro' => date('Y-m-d'),
-                    'persona_sector' =>$persona_sector
+                    'usuario' => $this->session->userdata('id'),
+                    'institucion' => $this->input->post('institucion'),
+                    'modalidad' => $this->input->post('modalidad'),
+                    'cupo' => $this->input->post('cupo'),
+                    'capacitador' => $this->input->post('capacitador'),
+                    'tipo' => $this->input->post('tipo'),
+                    'evaluacion' => $this->input->post('evaluacion')
             );
             
             if ($this->capacitacion_model->add('capacitacion',$data) == TRUE)
@@ -115,19 +107,15 @@ class Capacitacion extends CI_Controller {
                     if ($this->consola_model->add('consola',$acciones) == TRUE){
                                 
                         $this->session->set_flashdata('success','Usuario registrado con éxito!');
-                            redirect(base_url().'index.php/usuarios/agregar/');
+//                            redirect(base_url().'index.php/usuarios/agregar/');
                         }
                     }
-                    else
-                    {
-                        $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error al guardar la consola de la capacitacion.</p></div>';
-                    }
+            else
+            {
+                $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error al guardar la consola de la capacitacion.</p></div>';
             }
-        
-
-        $this->load->model('persona_model');
-        $this->data['personas'] = $this->persona_model->getActive('persona','id,apellido,nombre');   
-        $this->data['sector'] = $this->persona_model->getSector('persona','PUESTO_TRABAJO');   
+        }
+        $this->load->model('persona_model');  
         $this->data['view'] = 'rrhh/capacitacion/agregarCapacitacion';
         $this->load->view('tema/header',$this->data);
    
