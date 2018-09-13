@@ -27,6 +27,22 @@ class Licencia_model extends CI_Model {
         $result =  !$one  ? $query->result() : $query->row();
         return $result;
     }
+    function get_licencia_persona($perpage=0,$start=0,$one=false){
+        
+        $this->db->from('licencia_persona');
+        $this->db->select('licencia_persona.*, '
+                . ' licencia_str(licencia_persona.idLicencia) AS licencia, '
+                . ' persona_str(licencia_persona.idPersona) AS persona');
+        $this->db->where('estado',1);
+        $this->db->order_by('idLicenciaPersona','ASC');
+        $this->db->limit($perpage,$start);
+        //$this->db->join('capacitacion', 'usuarios.permisos_id = permisos.idPermiso', 'left');
+  
+        $query = $this->db->get();
+        
+        $result =  !$one  ? $query->result() : $query->row();
+        return $result;
+    }
 
      function getAllTipos(){
         $this->db->where('estado',1);
