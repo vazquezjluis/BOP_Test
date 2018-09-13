@@ -38,7 +38,8 @@
                         <div class="span12">
                             <div class="span6 offset3">
                                 <button type="submit" class="btn btn-primary"><i class="icon-ok icon-white"></i> Modificar</button>
-                                <a href="<?php echo base_url() ?>index.php/licencia" id="" class="btn"><i class="icon-arrow-left"></i> Volver</a>
+                                <!--<button onclick="history.back()" class="btn"/><i class="icon-arrow-left"></i>Volver</button>-->
+                                <a href="<?php echo base_url() ?>index.php/licencia/listadoLicencia" id="" class="btn"><i class="icon-arrow-left"></i> Volver</a>
                             </div>
                         </div>
                     </div>
