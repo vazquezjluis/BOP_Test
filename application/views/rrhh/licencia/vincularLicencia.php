@@ -22,7 +22,7 @@
                         <label  class="control-label">Persona <span class="required">*</span></label>
                         <div class="controls" id="persona_select">
                             <div class="input-append span6">
-                                <input name="persona"  class="input-block-level" id="persona" value="<?php echo set_value('persona'); ?>" type="text" required="required">
+                                <input name="persona" placeholder="Escribe aquí el apellido o nombre del empleado" class="input-block-level" id="persona" value="<?php echo set_value('persona'); ?>" type="text" required="required">
                                 <button id="cancel" type="button" class="btn btn-success" >Limpiar</button>
                             </div>
                         </div>
@@ -45,6 +45,7 @@
                                  }
                                 ?>
                             </select>
+                            <a href="<?php echo base_url()?>index.php/licencia/agregar" class="btn btn-default btn-mini"><i class="icon-plus icon-white"></i> Agregar nueva Licencia</a>
                         </div>
                     </div>
                     
