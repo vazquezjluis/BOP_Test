@@ -53,49 +53,29 @@ if(!$results){?>
     <thead>
         <tr style="backgroud-color: #2D335B">
             <th>#</th>
-            <th>Titulo</th>
+            <th>Tema</th>
             <th>Descripcion</th>
             <th>Inicio</th>
             <th>Finaliza</th>
-            <th>Ver Personas que participan </th>
+            <th>Capacitador</th>
+            <th>Cupo</th>
+            <th>Modalidad</th>
             <th></th>
             
         </tr>
     </thead>
     <tbody>
         <?php foreach ($results as $r) {
-            $personas_sector = '';
-            /* Obtengo las personas y los sectores */
-            if ($r->persona_sector!='' AND $r->persona_sector!=null){
-                if ($r->persona_sector == 'T'){
-                    //todas las personas del bingo 
-                }else{
-                    $sector_personas = explode('-_-', $r->persona_sector);
-                    $pos = strpos($sector_personas[0], 'persona');
-                    if ($pos === false) {
-                        //hay personas
-                        
-                        $personas_sector .="<br>".$sector_personas[1];
-                    } else {
-                        //hay solo sectores
-                        $personas_sector .="<br>".$sector_personas[0];
-                        $personas_sector .="<br> ";
-                        
-                        $personas_sector .="<br>".$sector_personas[1];
-                        
-                    }
-                }
-                
-            }else{
-                $personas_sector.="Todas";
-            }
+            
             echo '<tr>';
             echo '<td>'.$r->idCapacitacion.'</td>';
-            echo '<td>'.$r->titulo.'</td>';
+            echo '<td>'.$r->tema.'</td>';
             echo '<td>'.$r->descripcion.'</td>';
             echo '<td>'.$r->f_inicio.'</td>';
             echo '<td>'.$r->f_fin.'</td>';
-            echo '<td style="max-width:300px;">'.$personas_sector.'</td>';
+            echo '<td>'.$r->capacitador.'</td>';
+            echo '<td>'.$r->cupo.'</td>';
+            echo '<td>'.$r->modalidad.'</td>';
             
             echo '<td>
                       <a href="'.base_url().'index.php/capacitacion/editar/'.$r->idCapacitacion.'" class="btn btn-info tip-top" title="Editar Usuário"><i class="icon-pencil icon-white"></i></a>
