@@ -266,6 +266,18 @@ $config =
                                 ))
 
                 ,
+				'vincular_capacitacion' => array(array(
+                                	'field'=>'persona_id',
+                                	'label'=>'persona',
+                                	'rules'=>'required|trim'
+                                ),
+								array(
+                                	'field'=>'capacitacion',
+                                	'label'=>'capacitacion',
+                                	'rules'=>'required|trim'
+                                ))
+
+                ,
                 'receita' => array(array(
                                     'field'=>'descricao',
                                     'label'=>'Descrição',
