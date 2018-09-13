@@ -12,138 +12,69 @@
                 <?php if ($custom_error != '') {
                     echo '<div class="alert alert-danger">'.$custom_error.'</div>';
                 } ?>
-                <form action="<?php echo current_url(); ?>" id="formUsuario" method="post" class="form-horizontal" >
-                    <div class="control-group">
-                        <label for="titulo" class="control-label">Titulo<span class="required">*</span></label>
-                        <div class="controls">
-                            <input id="titulo" type="text" name="titulo" value="<?php echo set_value('titulo'); ?>"  />
+                <form action="<?php echo current_url(); ?>" id="formUsuario" method="post"  >
+                     <!--Tema , capacitador, institucion-->
+                    <div class="span12" style="padding: 1%">
+                        <div class="span4">
+                            <label for="titulo" >Tema<span class="required">*</span></label>
+                            <input id="tema" type="text" name="tema" value="<?php echo set_value('tema'); ?>" required="required"  />
+                        </div>
+                        <div class="span4">
+                            <label for="capacitador" >Capacitador<span class="required">*</span></label>
+                            <input id="capacitador" type="text" placeholder="Nombre y Apellido" name="capacitador" value="<?php echo set_value('capacitador'); ?>"  />
+                        </div>
+                        <div class="span4">
+                            <label for="institucion" >Institucion<span class="required">*</span></label>
+                            <input id="institucion" type="text" placeholder="Area o establecimiento" name="institucion" value="<?php echo set_value('institucion'); ?>"  />
                         </div>
                     </div>
                     
-                    <div class="control-group">
-                        <label for="descripcion" class="control-label">Descripcion<span class="required">*</span></label>
-                        <div class="controls">
-                            <input id="descripcion" type="text" name="descripcion" value="<?php echo set_value('descripcion'); ?>"  />
+                     <!--inicio, fin, institucion-->
+                    <div class="span12" style="padding: 1%; margin-left: 0px;">
+                        <div class="span4">
+                            <label for="f_inicio" class="control-label">Fecha Inicio<span class="required">*</span></label>
+                            <input id="f_inicio" type="date" name="f_inicio" value="<?php echo set_value('f_inicio'); ?>" required="required" />
+                        </div>
+                        <div class="span4">
+                            <label for="f_fin" class="control-label">Fecha Finalizacion<span class="required">*</span></label>
+                            <input id="f_fin" type="date" name="f_fin" value="<?php echo set_value('f_fin'); ?>" required="required" />
+                        </div>
+                        <div class="span4">
+                            <label for="cupo" >Cupo<span class="required">*</span></label>
+                            <input id="cupo" type="number" placeholder="" name="cupo" value="<?php echo set_value('cupo'); ?>" required="required" />
+                        </div>
+                    </div>
+                     
+                     
+                    <div class="span12" style="padding: 1%; margin-left: 0px;">
+                        <div class="span4">
+                            <label for="modalidad" class="control-label">Modalidad<span class="required">*</span></label>
+                            <label class="label "><input style="margin-left: 10px;" type="radio"  name="modalidad" value="taller"> Taller</label>
+                            <label class="label "><input style="margin-left: 10px;" type="radio"  name="modalidad" value="seminario"> Seminario</label>
+                            <label class="label "><input style="margin-left: 10px;" type="radio"  name="modalidad" value="curso"> Curso</label>
+                        </div>
+                        <div class="span4">
+                            <label for="evaluacion" class="control-label">Evaluacion<span class="required">*</span></label>
+                            <label class="label "><input style="margin-left: 10px;" type="radio"  name="evaluacion" value="no"> No</label>
+                            <label class="label "><input style="margin-left: 10px;" type="radio"  name="evaluacion" value="si"> Si</label>
+                        </div>
+                        <div class="span4">
+                            <label for="tipo" class="control-label">Tipo<span class="required">*</span></label>
+                            <label class="label "><input style="margin-left: 10px;" type="radio"  name="tipo" value="interno"> Interno</label>
+                            <label class="label "><input style="margin-left: 10px;" type="radio"  name="tipo" value="externo"> Externo</label>
+                        </div>
+                        
+                    </div>
+                     
+                    <div class="span12" style="padding: 1%; margin-left: 0px;">
+                        <div class="span6">
+                            <label for="descripcion" class="control-label">Descripcion<span class="required">*</span></label>
+                            <textarea id="descripcion" class="span12" rows="5"  type="text" name="descripcion" value="<?php echo set_value('descripcion'); ?>"  ></textarea>
                         </div>
                     </div>
                     
-                    <div class="control-group">
-                        <label for="f_inicio" class="control-label">Fecha Inicio<span class="required">*</span></label>
-                        <div class="controls">
-                            <input id="f_inicio" type="date" name="f_inicio" value="<?php echo set_value('f_inicio'); ?>"  />
-                        </div>
-                    </div>
-                    
-                    <div class="control-group">
-                        <label for="f_fin" class="control-label">Fecha Finalizacion<span class="required">*</span></label>
-                        <div class="controls">
-                            <input id="f_fin" type="date" name="f_fin" value="<?php echo set_value('f_fin'); ?>"  />
-                        </div>
-                    </div>
+                               
 
-                    
-                    <div class="control-group">
-                        <label  class="control-label">Estado*</label>
-                        <div class="controls">
-                            <select name="estado" id="estado">
-                                <option value="1">Activo</option>
-                                <option value="0">Inactivo</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!--ASOCIAR PERSONAS O SECTORES-->
-                    <div class="control-group">
-                        <label for="persona" class="control-label">Asociar a Personas o Sectores</label>
-                        <div class="controls">
-                            <div class="span6">
-                                <div class="accordion" id="accordion">
-                                <div class="accordion-group widget-box">
-                                  <div class="accordion-heading">
-                                      <div class="widget-title tipoModelo" data-tipo="persona">
-                                          <span class="icon"><i class="icon-list"></i></span>
-                                          <h5 id="filtrar_text">Mostrar personas</h5>
-                                          
-                                      </div>
-                                  </div>
-                                </div>
-                                <div class="accordion-body">
-                                    <div class="widget-content" style="border:1px solid #cccc;height: 150px;overflow-y:scroll; ">
-                                        <table class="table" id="personas">
-                                            <thead>
-                                                <tr>
-                                                    <td><input  type="text" id="filtrar" placeholder="Filtrar"></td>
-                                                    <td>
-                                                        <label>
-                                                            <input name="marcarTodos1" type="checkbox" value="1" id="marcarTodos1" />
-                                                            <span class="lbl"> Marcar Todos</span>
-                                                        </label></td>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php 
-                                                if($personas){
-                                                  foreach ($personas as $persona){                                  
-                                                      echo '<tr><td colspan="2"><label><input type="checkbox" name="persona[]" style="vertical-align: middle;position: relative;bottom: 3px;" value="'.$persona->id.'-'.$persona->nombre.', '.$persona->apellido.' "> '.$persona->nombre.', '.$persona->apellido.'</label></td></tr>';
-                                                  }
-                                                }
-                                
-                                                ?>
-                                            </tbody>
-                                        </table>
-                                </div>
-                            </div>
-                            </div>
-                            </div>
-                        </div>
-                       
-                    </div> 
-                    <div class="control-group">
-                        <label for="persona" class="control-label">Asociar a Personas o Sectores</label>
-                        <div class="controls">
-                            <div class="span6">
-                                <div class="accordion" id="accordion">
-                                <div class="accordion-group widget-box">
-                                  <div class="accordion-heading">
-                                      <div class="widget-title tipoModelo" data-tipo="sector">
-                                          <span class="icon"><i class="icon-list"></i></span>
-                                          <h5 id="filtrar_text">Mostrar Sector</h5>
-                                          
-                                      </div>
-                                  </div>
-                                </div>
-                                <div class="accordion-body">
-                                    <div class="widget-content" style="border:1px solid #cccc;height: 150px;overflow-y:scroll; ">
-                                        <table class="table" id="sectores">
-                                            <thead>
-                                                <tr>
-                                                    <td><input  type="text" id="filtrar" placeholder="Filtrar"></td>
-                                                    <td>
-                                                        <label>
-                                                            <input name="marcarTodos2" type="checkbox" value="1" id="marcarTodos2" />
-                                                            <span class="lbl"> Marcar Todos</span>
-                                                        </label></td>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php 
-                                                if($sector){
-                                                  foreach ($sector as $sec){                                  
-                                                      echo '<tr><td colspan="2"><label><input type="checkbox" name="sector[]" style="vertical-align: middle;position: relative;bottom: 3px;" value="'.$sec->PUESTO_TRABAJO.'"> '.$sec->PUESTO_TRABAJO.'</label></td></tr>';
-                                                  }
-                                                }
-                                
-                                                ?>
-                                            </tbody>
-                                        </table>
-                                </div>
-                            </div>
-                            </div>
-                            </div>
-                        </div>
-                        </div>
-                       
-                    </div> 
                     
                     <div class="form-actions">
                         <div class="span12">
