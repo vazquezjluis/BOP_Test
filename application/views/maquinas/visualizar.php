@@ -247,7 +247,7 @@ if (isset($result)){
                 <input type="hidden" name="sector" value="1">
                 <!--<input id="t_file_1" accept="image/*" type="file" required="true" name="userfile"  />-->
                 <label class="btn span12" id="lbl_file" style="margin: 0px;" ><span class="icon icon-camera"></span>  Tomar foto
-                        <input id="t_file_1" accept="image/*" type="file" required="true" name="userfile" style="display: none;" capture/>
+                        <input id="t_file_1" accept="image/*" type="file"  name="userfile" style="display: none;" capture/>
                 </label>
                 
                  <!--Datos propios del modulo-->
