@@ -131,27 +131,28 @@ class Capacitacion extends CI_Controller {
 
         $this->load->library('form_validation');    
         $this->data['custom_error'] = '';
-        $this->form_validation->set_rules('titulo', 'Titulo', 'trim|required');
-        $this->form_validation->set_rules('descripcion', 'Descripcion', 'trim|required');
+        $this->form_validation->set_rules('tema', 'tema', 'trim|required');
+//        $this->form_validation->set_rules('descripcion', 'Descripcion', 'trim|required');
         
         if ($this->form_validation->run() == false)
         {
             $this->data['custom_error'] = (validation_errors() ? '<div class="form_error">'.validation_errors().'</div>' : false);
         } else
         { 
-            if ($this->input->post('idUsuarios') == 1 && $this->input->post('estado') == 0)
-            {
-                $this->session->set_flashdata('error','El usuario administrador no puede ser desactivado!');
-                redirect(base_url().'index.php/usuarios/editar/'.$this->input->post('idUsuarios'));
-            }
-
+            //datos que vienen del formulario
             $data = array(
-                'titulo' => $this->input->post('titulo'),
-                'descripcion' => $this->input->post('descripcion'),
-                'f_inicio' => $this->input->post('f_inicio'),
-                'f_fin' => $this->input->post('f_fin'),
-                'estado' => $this->input->post('estado'),
-                'persona_sector' => $this->input->post('persona_sector')
+                    'tema' => $this->input->post('tema'),
+                    'descripcion' => $this->input->post('descripcion'),
+                    'f_inicio' => $this->input->post('f_inicio'),
+                    'f_fin' => $this->input->post('f_fin'),
+                    'f_registro' => date('Y-m-d'),
+                    'usuario' => $this->session->userdata('id'),
+                    'institucion' => $this->input->post('institucion'),
+                    'modalidad' => $this->input->post('modalidad'),
+                    'cupo' => $this->input->post('cupo'),
+                    'capacitador' => $this->input->post('capacitador'),
+                    'tipo' => $this->input->post('tipo'),
+                    'evaluacion' => $this->input->post('evaluacion')
             );
             
             if ($this->capacitacion_model->edit('capacitacion',$data,'idCapacitacion',$this->input->post('idCapacitacion')) == TRUE)
@@ -164,8 +165,8 @@ class Capacitacion extends CI_Controller {
                         'fecha_registro' => date('Y-m-d h:i:s')
                     );
                     if ($this->consola_model->add('consola',$acciones) == TRUE){
-                        $this->session->set_flashdata('success','Usuario editado con éxito!');
-                        redirect(base_url().'index.php/usuarios/editar/'.$this->input->post('idUsuarios'));
+                        $this->session->set_flashdata('success','Capacitacion editada con éxito!');
+//                        redirect(base_url().'index.php/usuarios/editar/'.$this->input->post('idUsuarios'));
                     }
                 }
                 else
@@ -189,7 +190,7 @@ class Capacitacion extends CI_Controller {
             redirect(base_url().'index.php/capacitacion/gestionar/');
         }
         $data = array(
-          'estado' => false
+          'estado' => 0
         );
         
          if($this->capacitacion_model->edit('capacitacion',$data,'idCapacitacion',$id)){
@@ -199,7 +200,7 @@ class Capacitacion extends CI_Controller {
           $this->session->set_flashdata('error','Error al eliminar la capacitacion!');  
         }  
 //            $this->capacitacion_model->delete('capacitacion','idCapacitacion',$id);             
-            redirect(base_url().'index.php/capacitacion/gestionar/');
+            redirect(base_url().'index.php/capacitacion');
     }
 }
 
