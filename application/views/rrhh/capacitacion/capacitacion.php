@@ -1,4 +1,5 @@
 <a href="<?php echo base_url()?>index.php/capacitacion/agregar" class="btn btn-success"><i class="icon-plus icon-white"></i> Agregar nuevo Curso o Capacitacion</a>
+<a href="<?php echo base_url()?>index.php/capacitacion/vincular" class="btn btn-default"><i class="icon-resize-small icon-white"></i> Vincular Capacitacion a un empleado</a>
 <?php
 if(!$results){?>
 <div class="widget-box">
