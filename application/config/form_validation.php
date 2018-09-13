@@ -233,8 +233,8 @@ $config =
 
                 ,
 				'capacitacion' => array(array(
-                                	'field'=>'titulo',
-                                	'label'=>'titulo',
+                                	'field'=>'tema',
+                                	'label'=>'tema',
                                 	'rules'=>'required|trim'
                                 ),
 								array(
