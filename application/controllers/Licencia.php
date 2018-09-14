@@ -164,7 +164,7 @@ class Licencia extends CI_Controller {
         $this->load->library('form_validation');    
         $this->data['custom_error'] = '';
         $this->form_validation->set_rules('titulo', 'Titulo', 'trim|required');
-        $this->form_validation->set_rules('descripcion', 'Descripcion', 'trim|required');
+//        $this->form_validation->set_rules('descripcion', 'Descripcion', 'trim|required');
         
         if ($this->form_validation->run() == false)
         {
