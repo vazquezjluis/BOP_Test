@@ -27,14 +27,15 @@ class Capacitacion extends CI_Controller {
     }
 
     function index(){
-        $this->gestionar();
+        $this->data['view'] = 'rrhh/capacitacion/capacitacion';
+       	$this->load->view('tema/header',$this->data);
     }
 
-    function gestionar(){
+    function listadoCapacitacion(){
         
         $this->load->library('pagination');
     
-        $config['base_url'] = base_url().'index.php/capacitacion/gestionar/';
+        $config['base_url'] = base_url().'index.php/capacitacion/listarCapacitacion/';
         $config['total_rows'] = $this->capacitacion_model->count('capacitacion');
         $config['per_page'] = 10;
         $config['next_link'] = 'Próxima';
@@ -61,7 +62,45 @@ class Capacitacion extends CI_Controller {
         $this->data['results'] = $this->capacitacion_model->get($config['per_page'],$this->uri->segment(3));
         
        
-        $this->data['view'] = 'rrhh/capacitacion/capacitacion';
+        $this->data['view'] = 'rrhh/capacitacion/listadoCapacitacion';
+       	$this->load->view('tema/header',$this->data);
+
+       
+		
+    }
+    
+    function listadoVinculo(){
+        
+        $this->load->library('pagination');
+    
+        $config['base_url'] = base_url().'index.php/capacitacion/listarVinculo/';
+        $config['total_rows'] = $this->capacitacion_model->count('capacitacion');
+        $config['per_page'] = 10;
+        $config['next_link'] = 'Próxima';
+        $config['prev_link'] = 'Anterior';
+        $config['full_tag_open'] = '<div class="pagination alternate"><ul>';
+        $config['full_tag_close'] = '</ul></div>';
+        $config['num_tag_open'] = '<li>';
+        $config['num_tag_close'] = '</li>';
+        $config['cur_tag_open'] = '<li><a style="color: #2D335B"><b>';
+        $config['cur_tag_close'] = '</b></a></li>';
+        $config['prev_tag_open'] = '<li>';
+        $config['prev_tag_close'] = '</li>';
+        $config['next_tag_open'] = '<li>';
+        $config['next_tag_close'] = '</li>';	
+        $config['first_link'] = 'Primera';
+        $config['last_link'] = 'Última';
+        $config['first_tag_open'] = '<li>';
+        $config['first_tag_close'] = '</li>';
+        $config['last_tag_open'] = '<li>';
+        $config['last_tag_close'] = '</li>';
+        
+        $this->pagination->initialize($config); 	
+
+        $this->data['results'] = $this->capacitacion_model->getPersonaCapacitacion($config['per_page'],$this->uri->segment(3));
+        
+       
+        $this->data['view'] = 'rrhh/capacitacion/listadoVinculo';
        	$this->load->view('tema/header',$this->data);
 
        
@@ -255,6 +294,26 @@ class Capacitacion extends CI_Controller {
         }  
 //            $this->capacitacion_model->delete('capacitacion','idCapacitacion',$id);             
             redirect(base_url().'index.php/capacitacion');
+    }
+    
+    public function eliminarCapacitacionPersona(){
+        $id =  $this->input->post('id');
+        if ($id == null){
+            $this->session->set_flashdata('error','Ocurrio un error al intentar eliminar la capacitacion.');            
+            redirect(base_url().'index.php/capacitacion/listadoVinculo/');
+        }
+        $data = array(
+          'estado' => 0
+        );
+        
+         if($this->capacitacion_model->edit('capacitacion_persona',$data,'idCapacitacionPersona',$id)){
+          $this->session->set_flashdata('success','Capacitacion eliminada!');  
+        }
+        else{
+          $this->session->set_flashdata('error','Error al eliminar la capacitacion!');  
+        }  
+//            $this->capacitacion_model->delete('capacitacion','idCapacitacion',$id);             
+            redirect(base_url().'index.php/capacitacion/listadoVinculo');
     }
 }
 
