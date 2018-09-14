@@ -19,7 +19,11 @@
                 } ?>
                 <form action="<?php echo current_url(); ?>" id="formVinculoLicencia" enctype="multipart/form-data" method="post" class="form-horizontal" >
                     <div class="control-group">
-                        <label  class="control-label">Persona <span class="required">*</span></label>
+                        <label  class="control-label">
+                            <label class="btn btn-default btn-mini"><input style="margin-left: 10px;margin-top:  -2px;" type="radio" checked="true" name="autocompleta" value="1"> Persona</label>
+                            <label class="btn btn-default btn-mini"><input style="margin-left: 10px;;margin-top:  -2px;" type="radio" disabled="true" name="autocompleta" value="2"> Sector </label>
+                            
+                        </label>
                         <div class="controls" id="persona_select">
                             <div class="input-append span6">
                                 <input name="persona" placeholder="escribe el nombre del empleado"  class="input-block-level" id="persona" value="<?php echo set_value('persona'); ?>" type="text" required="required">
