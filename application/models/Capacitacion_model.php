@@ -28,6 +28,24 @@ class Capacitacion_model extends CI_Model {
         $result =  !$one  ? $query->result() : $query->row();
         return $result;
     }
+    function getPersonaCapacitacion($perpage=0,$start=0,$one=false){
+        
+        $this->db->from('capacitacion_persona');
+        $this->db->select('capacitacion_persona.*, '
+                . ' persona_str(capacitacion_persona.idPersona) as persona, '
+                . ' capacitacion.tema, capacitacion.f_inicio, '
+                . ' capacitacion.f_fin, capacitacion.capacitador, capacitacion.modalidad  ');
+        $this->db->where('capacitacion_persona.estado',1);
+        $this->db->join('capacitacion',' capacitacion.idCapacitacion = capacitacion_persona.idCapacitacion ');
+        $this->db->limit($perpage,$start);
+        $this->db->order_by(" idCapacitacionPersona ","  ASC ");
+        //$this->db->join('capacitacion', 'usuarios.permisos_id = permisos.idPermiso', 'left');
+  
+        $query = $this->db->get();
+        
+        $result =  !$one  ? $query->result() : $query->row();
+        return $result;
+    }
 
      function getAllTipos(){
         $this->db->where('estado',1);
