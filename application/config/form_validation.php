@@ -236,11 +236,6 @@ $config =
                                 	'field'=>'tema',
                                 	'label'=>'tema',
                                 	'rules'=>'required|trim'
-                                ),
-								array(
-                                	'field'=>'descripcion',
-                                	'label'=>'descripcion',
-                                	'rules'=>'required|trim'
                                 ))
                 ,
 				'licencia' => array(array(
