@@ -22,6 +22,9 @@ class Persona extends CI_Controller {
 
         $this->load->model('persona_model', '', TRUE);
         $this->load->model('archivos_model', '', TRUE);
+        $this->load->model('capacitacion_model', '', TRUE);
+        $this->load->model('licencia_model', '', TRUE);
+        $this->load->model('premio_model', '', TRUE);
     }
 	
     function index(){
@@ -257,7 +260,9 @@ class Persona extends CI_Controller {
             if (count($this->data['result'])){
                 //obtiene la imagen del empleado
                 $this->data['url_img'] = $this->archivos_model->get('documentos','url',' funcionalidad = "persona" AND sector = 2 AND referencia = '.$this->data['result'][0]->id);
-                //obteingo las fallas de tickets en estado abierto (1)
+                //obtengo las capacitaciones del empleado
+                $this->data['capacitacion'] = $this->capacitacion_model->getPersonaCapacitacion(0,0,' capacitacion_persona.idPersona = '.$this->data['result'][0]->id);
+                $this->data['licencia'] = $this->licencia_model->getPersonaLicencia(' licencia_persona.idPersona = '.$this->data['result'][0]->id);
                 
             }
             else{
