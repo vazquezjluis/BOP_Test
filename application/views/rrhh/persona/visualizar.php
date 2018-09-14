@@ -91,17 +91,76 @@ if (isset($result)){
           
           <!--LICENCIAS-->
           <div id="tab2" class="tab-pane" style="min-height: 300px">
-
+              <?php
+              if (isset($licencia) and count($licencia)!=0){
+                  ;
+                ?>
+                <table  class='table table-bordered'>
+                    <tr><td colspan='2'><b> Licencias del empleado</b></td></tr>
+                    <tr>
+                        <td><b>#</b></td>
+                        <td><b>Titulo</b></td>
+                        <td><b>Inicio</b></td>
+                        <td><b>Finaliza</b></td>
+                        <td><b>Dias</b></td>
+                        <td><b>Descripcion</b></td>
+                    </tr>
+              <?php
+                    foreach ($licencia as $c){
+                    echo " <tr> 
+                                <td>".$c->idLicenciaPersona."</td> 
+                                <td>".$c->titulo."</td> 
+                                <td>".$c->f_inicio."</td> 
+                                <td>".$c->f_fin."</td> 
+                                <td>".$c->dias."</td> 
+                                <td>".$c->lpdesc."</td> 
+                           </tr>";
+                    } ?>
+                </table>
+                    <?php
+              }else{
+                   echo "<div class='alert alert-danger'>El empleado no tiene capacitaciones</div>";
+              }
+              ?>
           </div>
           
           <!--CAPACITACIONES-->
           <div id="tab3" class="tab-pane" style="min-height: 300px">
-
+              <?php
+              if (isset($capacitacion) and count($capacitacion)!=0){
+                ?>
+                <table  class='table table-bordered'>
+                    <tr><td colspan='2'><b> Capacitaciones del empleado</b></td></tr>
+                    <tr>
+                        <td><b>#</b></td>
+                        <td><b>Tema</b></td>
+                        <td><b>Inicio</b></td>
+                        <td><b>Finaliza</b></td>
+                        <td><b>Capacitador</b></td>
+                        <td><b>Institucion</b></td>
+                    </tr>
+              <?php
+                    foreach ($capacitacion as $c){
+                    echo " <tr> 
+                                <td>".$c->idCapacitacionPersona."</td> 
+                                <td>".$c->tema."</td> 
+                                <td>".$c->f_inicio."</td> 
+                                <td>".$c->f_fin."</td> 
+                                <td>".$c->capacitador."</td> 
+                                <td>".$c->institucion."</td> 
+                           </tr>";
+                    } ?>
+                </table>
+                    <?php
+              }else{
+                   echo "<div class='alert alert-danger'>El empleado no tiene capacitaciones</div>";
+              }
+              ?>
           </div>
           
           <!--PREMIOS-->
           <div id="tab4" class="tab-pane" style="min-height: 300px">
-
+              
           </div>
           
           <!--SANCIONES-->
