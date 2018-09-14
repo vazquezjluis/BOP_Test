@@ -127,15 +127,18 @@ class Persona_model extends CI_Model {
     
     public function autoCompletePersona($q){
 
-        $this->db->select('*');
+        $this->db->select('persona.*');
         $this->db->limit(10);
-        $this->db->like('apellido', $q);
-//        $this->db->where(' estado = 1 AND tipo="fisica" ');
+//        $this->db->like(' apellido ', $q);
+//        $this->db->like(' nombre ', $q);
+       $this->db->where(' apellido LIKE "%'.$q.'%"'
+               . ' OR nombre LIKE "%'.$q.'%" '
+               . ' OR legajo LIKE "%'.$q.'%"');
         $query = $this->db->get('persona');
         
         if($query->num_rows() > 0){
             foreach ($query->result_array() as $row){
-                $row_set[] = array('label'=>"[".$row['id']." - ".$row['apellido']." ".$row['nombre']."]",'id'=>$row['id']);
+                $row_set[] = array('label'=>"[".$row['legajo']." - ".$row['apellido']." ".$row['nombre']."]",'id'=>$row['id']);
             }
             
             echo json_encode($row_set);
