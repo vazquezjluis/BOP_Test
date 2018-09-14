@@ -21,10 +21,11 @@ class Persona extends CI_Controller {
 //        }
 
         $this->load->model('persona_model', '', TRUE);
+        $this->load->model('archivos_model', '', TRUE);
     }
 	
     function index(){
-        $this->gestionar();
+        $this->visualizar();
     }
 
     function gestionar(){
@@ -227,7 +228,7 @@ class Persona extends CI_Controller {
     }
     
     
-    public function visualizar(){
+    function visualizar(){
         //Para detectar el dispositivo y la version
         $this->load->library('user_agent');
         
@@ -238,28 +239,36 @@ class Persona extends CI_Controller {
             $this->data['movil'] =false;
         }
         
-
-//        if(!$this->uri->segment(3) || !is_numeric($this->uri->segment(3))){
-//            $this->session->set_flashdata('error','Item não pode ser encontrado, parâmetro não foi passado corretamente.');
-//            redirect('mapos');
-//        }
+        if(!$this->input->get('buscar') || !is_numeric($this->input->get('buscar'))){
+            
+        }else{
+            
+        
 
 //        if(!$this->permission->checkPermission($this->session->userdata('permissao'),'vCliente')){
 //           $this->session->set_flashdata('error','Você não tem permissão para visualizar clientes.');
 //           redirect(base_url());
 //        }
 
-        $this->data['custom_error'] = '';
-        $this->data['result'] = $this->articulo_model->getById($this->uri->segment(3));
-        $this->data['historial_articulo'] = $this->movimiento_articulo_model->get("movimiento_articulo","movimiento_articulo.*,usuario_str(movimiento_articulo.usuario)as usuario_str"," articulo = ".$this->uri->segment(3));
+            $this->data['custom_error'] = '';
+            
+            $this->data['result'] = $this->persona_model->get('persona','*','id = '.$this->input->get('buscar'));
+            
+            if (count($this->data['result'])){
+                //obtiene la imagen del empleado
+                $this->data['url_img'] = $this->archivos_model->get('documentos','url',' funcionalidad = "persona" AND sector = 2 AND referencia = '.$this->data['result'][0]->id);
+                //obteingo las fallas de tickets en estado abierto (1)
+                
+            }
+            else{
+                $this->data['custom_error'] = 'Error al obtener los datos del empleado.';
+                $this->data['result'] = null;
+            }
+        }
         
-        //obtiene la imagen del articulo
-        $this->data['url_img'] = $this->archivos_model->get('documentos','url',' sector = 4 AND referencia = '.$this->uri->segment(4));
-        //envio a la vista
-        $this->data['view'] = 'inventario/articulos/visualizar';
+        
+        $this->data['view'] = 'rrhh/persona/visualizar';
         $this->load->view('tema/header', $this->data);
-
-        
     }
 }
 
