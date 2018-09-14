@@ -43,6 +43,25 @@ class Licencia_model extends CI_Model {
         $result =  !$one  ? $query->result() : $query->row();
         return $result;
     }
+    
+    function getPersonaLicencia($where=''){
+        $this->db->from('licencia_persona');
+        $this->db->select('licencia_persona.*,licencia.*, licencia_persona.descripcion as lpdesc ,'
+                . ' licencia_str(licencia_persona.idLicencia) AS licencia, '
+                . ' persona_str(licencia_persona.idPersona) AS persona');
+        if ($where !=''){
+            $this->db->where('licencia_persona.estado = 1 AND '.$where);
+        }else{
+            $this->db->where('licencia_persona.estado = 1 ');
+        }
+        
+        $this->db->order_by('idLicenciaPersona','ASC');
+        $this->db->join('licencia', 'licencia.idLicencia = licencia_persona.idLicencia');
+  
+        $query = $this->db->get();
+        
+        return $query->result();
+    }
 
      function getAllTipos(){
         $this->db->where('estado',1);
