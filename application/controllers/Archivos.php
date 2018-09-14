@@ -17,6 +17,7 @@ class Archivos extends CI_Controller {
         $this->load->helper(array('codegen_helper'));
         $this->load->model('archivos_model','',TRUE);
         $this->load->model('maquinas_model','',TRUE);
+        $this->load->model('persona_model','',TRUE);
         $this->data['menuArquivos'] = 'Arquivos';
 	}
 
@@ -167,6 +168,19 @@ class Archivos extends CI_Controller {
                 $maquina = $this->maquinas_model->get('maquinas','nro_egm',' idMaquina = '.$this->input->post('referencia'));
                 $redirect =base_url() . 'index.php/maquinas/visualizar?buscar='.substr($maquina[0]->nro_egm,-4); 
 
+                break;
+            case "persona":
+                //si se va a modificar la imagen de la maquina
+                $busca = $this->archivos_model->get('documentos','idDocumentos',' funcionalidad = "persona" and sector = 2 AND referencia ='.$this->input->post('referencia'));
+
+                if (count($busca)){
+                    foreach ($busca as $b){
+                        $this->archivos_model->delete('documentos','idDocumentos',$b->idDocumentos);
+                    }
+                }
+                $persona = $this->persona_model->get('persona','id',' id = '.$this->input->post('referencia'));
+                $redirect =base_url() . 'index.php/persona/visualizar?buscar='.$persona[0]->id; 
+                
                 break;
             //preparado para otros sector
         }
