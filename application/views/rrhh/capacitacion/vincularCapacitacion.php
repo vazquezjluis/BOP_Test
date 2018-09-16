@@ -2,7 +2,14 @@
 <script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery-ui/js/jquery-ui-1.9.2.custom.js"></script>
 <script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery.validate.js"></script>
 
+<?php 
+if (isset($_GET['persona'])){
+    $get = "?buscar=".$_GET['persona'];
+}else{
+    $get = '';
+}
 
+?>
 
 <div class="row-fluid" style="margin-top:0">
     <div class="span12">
@@ -11,13 +18,14 @@
                 <span class="icon">
                     <i class="icon-user"></i>
                 </span>
-                <h5>Vincular Capacitacion</h5>
+                <h5>Vincular Capacitacion  <?php if (isset($_GET['persona'])){  echo "a ".strtoupper($_GET['persona_str']);} ?> </h5>
             </div>
             <div class="widget-content nopadding">
                 <?php if ($custom_error != '') {
                     echo '<div class="alert alert-danger">'.$custom_error.'</div>';
                 } ?>
                 <form action="<?php echo current_url(); ?>" id="formVinculoLicencia" enctype="multipart/form-data" method="post" class="form-horizontal" >
+                    <?php if (!isset($_GET['persona'])){?>
                     <div class="control-group">
                         <label  class="control-label">
                             <label class="btn btn-default btn-mini"><input style="margin-left: 10px;margin-top:  -2px;" type="radio" checked="true" name="autocompleta" value="1"> Persona</label>
@@ -32,7 +40,12 @@
                         </div>
                         <input name="persona_id" id="persona_id" type="hidden" value="0">
                     </div>
-                    
+                    <?php }
+                    else{
+                        echo '<input name="desde_persona"  type="hidden" value="1">';
+                        echo '<input name="persona_id" id="persona_id" type="hidden" value="'.$_GET['persona'].'">';
+                    }
+                    ?>
                     <div class="control-group">
                         <label  class="control-label">Capacitacion <span class="required">*</span></label>
                         <div class="controls">
