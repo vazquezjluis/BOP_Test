@@ -128,7 +128,7 @@ if (isset($result)){
                         <td><b>Titulo</b></td>
                         <td><b>Inicio</b></td>
                         <td><b>Finaliza</b></td>
-                        <td><b>Dias</b></td>
+                        <td><b>Dias tomados</b></td>
                         <td><b>Descripcion</b></td>
                         <td></td>
                     </tr>
@@ -136,10 +136,10 @@ if (isset($result)){
                     foreach ($licencia as $c){
                     echo " <tr> 
                                 <td>".$c->idLicenciaPersona."</td> 
-                                <td>".$c->titulo."</td> 
+                                <td>".$c->titulo." (".$c->dias_corresponde." dias)</td> 
                                 <td>".$c->f_inicio."</td> 
                                 <td>".$c->f_fin."</td> 
-                                <td>".$c->dias."</td> 
+                                <td>".$c->dias_tomados."</td> 
                                 <td>".$c->lpdesc."</td> 
                                 <td></td> 
                            </tr>";

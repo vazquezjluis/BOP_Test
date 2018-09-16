@@ -259,8 +259,11 @@ class Capacitacion extends CI_Controller {
                                 
                         $this->session->set_flashdata('success','Capacitacion vinculada con éxito!');
                             //redirect(base_url().'index.php/licencia/vincular');
-                        }
                     }
+                    if ($this->input->post('desde_persona')!==NULL){
+                        redirect(base_url().'index.php/persona/visualizar?buscar='.$this->input->post('persona_id'));
+                    }  
+                }
             else
             {
                 $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error al guardar la consola del vinculo de la capacitacion.</p></div>';

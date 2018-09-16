@@ -1,5 +1,5 @@
 <a href="<?php echo base_url()?>index.php/licencia/agregar" class="btn btn-success"><i class="icon-plus icon-white"></i> Agregar nueva Licencia</a>
-<button onclick="history.back()" class="btn"/><i class="icon-arrow-left"></i>Volver</button>
+<a href="javascript:history.back()" class="btn"/><i class="icon-arrow-left"></i>Volver</a>
 <?php
 if(!$results){?>
 <div class="widget-box">

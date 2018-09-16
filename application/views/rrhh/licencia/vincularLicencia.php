@@ -3,6 +3,15 @@
 <script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery.validate.js"></script>
 
 
+<?php 
+if (isset($_GET['persona'])){
+    $get = "?buscar=".$_GET['persona'];
+}else{
+    $get = '';
+}
+
+?>
+
 
 <div class="row-fluid" style="margin-top:0">
     <div class="span12">
@@ -11,13 +20,15 @@
                 <span class="icon">
                     <i class="icon-user"></i>
                 </span>
-                <h5>Vincular Licencia</h5>
+                <h5>Vincular Licencia <?php if (isset($_GET['persona'])){  echo "a ".strtoupper($_GET['persona_str']);} ?></h5>
             </div>
             <div class="widget-content nopadding">
                 <?php if ($custom_error != '') {
                     echo '<div class="alert alert-danger">'.$custom_error.'</div>';
                 } ?>
                 <form action="<?php echo current_url(); ?>" id="formVinculoLicencia" enctype="multipart/form-data" method="post" class="form-horizontal" >
+                    <?php if (!isset($_GET['persona'])){?>
+                    
                     <div class="control-group">
                         <label  class="control-label">Persona <span class="required">*</span></label>
                         <div class="controls" id="persona_select">
@@ -28,6 +39,12 @@
                         </div>
                         <input name="persona_id" id="persona_id" type="hidden" value="0">
                     </div>
+                    <?php }
+                    else{
+                        echo '<input name="desde_persona"  type="hidden" value="1">';
+                        echo '<input name="persona_id" id="persona_id" type="hidden" value="'.$_GET['persona'].'">';
+                    }
+                    ?>
                     
                     <div class="control-group">
                         <label  class="control-label">Licencia <span class="required">*</span></label>

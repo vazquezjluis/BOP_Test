@@ -38,7 +38,7 @@ class Licencia extends CI_Controller {
         $this->load->library('pagination');
     
         $config['base_url'] = base_url().'index.php/licencia/listadoLicencia/';
-        $config['total_rows'] = $this->licencia_model->count('licencia');
+        $config['total_rows'] = $this->licencia_model->countLicenciaActiva();
         $config['per_page'] = 10;
         $config['next_link'] = 'Próxima';
         $config['prev_link'] = 'Anterior';
@@ -75,7 +75,7 @@ class Licencia extends CI_Controller {
         $this->load->library('pagination');
     
         $config['base_url'] = base_url().'index.php/licencia/listadoVinculo/';
-        $config['total_rows'] = $this->licencia_model->count('licencia_persona');
+        $config['total_rows'] = $this->licencia_model->countLicenciaVinculoActiva();
         $config['per_page'] = 10;
         $config['next_link'] = 'Próxima';
         $config['prev_link'] = 'Anterior';
@@ -223,7 +223,7 @@ class Licencia extends CI_Controller {
         else{
           $this->session->set_flashdata('error','Error al eliminar la licencia!');  
         }  
-        redirect(base_url().'index.php/licencia/gestionar/');
+        redirect(base_url().'index.php/licencia/listadoLicencia');
     }
     
     
@@ -289,7 +289,12 @@ class Licencia extends CI_Controller {
                         $this->session->set_flashdata('success','Licencia vinculada con éxito!');
                             //redirect(base_url().'index.php/licencia/vincular');
                         }
-                    }
+                    if ($this->input->post('desde_persona')!==NULL){
+                        redirect(base_url().'index.php/persona/visualizar?buscar='.$this->input->post('persona_id'));
+                    }    
+                        
+                }
+                
             else
             {
                 $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error al guardar la consola del vinculo de la licencia.</p></div>';

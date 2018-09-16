@@ -19,10 +19,6 @@ if(!$results){?>
             <th>#</th>
             <th>Titulo</th>
             <th>Descripcion</th>
-            <th>Inicio</th>
-            <th>Finaliza</th>
-            <th>Ver Personas que participan </th>
-            
         </tr>
     </thead>
     <tbody>    
@@ -55,10 +51,6 @@ if(!$results){?>
             <th>#</th>
             <th>Tema</th>
             <th>Descripcion</th>
-            <th>Inicio</th>
-            <th>Finaliza</th>
-            <th>Capacitador</th>
-            <th>Cupo</th>
             <th>Modalidad</th>
             <th></th>
             
@@ -71,10 +63,6 @@ if(!$results){?>
             echo '<td>'.$r->idCapacitacion.'</td>';
             echo '<td>'.$r->tema.'</td>';
             echo '<td>'.$r->descripcion.'</td>';
-            echo '<td>'.$r->f_inicio.'</td>';
-            echo '<td>'.$r->f_fin.'</td>';
-            echo '<td>'.$r->capacitador.'</td>';
-            echo '<td>'.$r->cupo.'</td>';
             echo '<td>'.$r->modalidad.'</td>';
             
             echo '<td>

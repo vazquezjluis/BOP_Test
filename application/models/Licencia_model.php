@@ -46,7 +46,7 @@ class Licencia_model extends CI_Model {
     
     function getPersonaLicencia($where=''){
         $this->db->from('licencia_persona');
-        $this->db->select('licencia_persona.*,licencia.*, licencia_persona.descripcion as lpdesc ,'
+        $this->db->select('licencia_persona.*,licencia.*, licencia_persona.descripcion as lpdesc ,licencia_persona.dias as dias_tomados,licencia.dias as dias_corresponde,'
                 . ' licencia_str(licencia_persona.idLicencia) AS licencia, '
                 . ' persona_str(licencia_persona.idPersona) AS persona');
         if ($where !=''){
@@ -110,4 +110,18 @@ class Licencia_model extends CI_Model {
 	function count($table){
 		return $this->db->count_all($table);
 	}
+    function countLicenciaActiva(){
+        $this->db->from('licencia');
+        $this->db->select('*');
+        $this->db->where('estado',1);
+        $query = $this->db->get();
+        return count($query->result());
+    }
+    function countLicenciaVinculoActiva(){
+        $this->db->from('licencia_persona');
+        $this->db->select('*');
+        $this->db->where('estado',1);
+        $query = $this->db->get();
+        return count($query->result());
+    }
 }

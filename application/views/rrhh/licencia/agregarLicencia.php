@@ -41,7 +41,8 @@
                             <div class="span6 offset3">
                                 <button type="submit" class="btn btn-success"><i class="icon-plus icon-white"></i> Agregar</button>
 <!--                                <a href="<?php //echo base_url() ?>index.php/licencia" id="" class="btn"><i class="icon-arrow-left"></i> Volver</a>-->
-                                <input type="button" value="VOLVER" class="btn" onclick="history.back()" />
+                                
+                                <a href="javascript:history.back()"  class="btn"  /><i class="icon-arrow-left"></i>Volver</a>
                             </div>
                         </div>
                     </div>
