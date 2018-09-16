@@ -7,7 +7,7 @@
 <div class="span12" style="margin-left: 0px;">
 <form method="get" id="formBuscar" action="<?php echo current_url(); ?>">
         <div class="control-group">
-            <label  class="control-label">Persona <span class="required">*</span></label>
+            <label  class="control-label">Busca un empleado <span class="required">*</span></label>
             <div class="controls" id="persona_select">
                 <div class="input-append span6">
                     <input  placeholder="Escribe aquí el apellido o nombre del empleado" class="input-block-level" id="persona" value="" type="text" required="required">
@@ -79,7 +79,7 @@ if (isset($result)){
                                 <tbody>
                                     <tr>
                                     <td>
-                                        <a  href="<?php echo base_url()?>index.php/licencia/vincular">
+                                        <a  href="<?php echo base_url()?>index.php/licencia/vincular?persona=<?php echo $result[0]->id;?>&persona_str=<?php echo $result[0]->nombre.' '.$result[0]->apellido;?>">
                                             <label><i class="icon-edit"></i>
                                                 &nbsp;-&nbsp;Crear LICENCIA 
                                                 </label>
@@ -97,7 +97,7 @@ if (isset($result)){
                                 </tr>
                                 <tr>
                                     <td>
-                                        <a  href="<?php echo base_url()?>index.php/capacitacion/vincular">
+                                        <a  href="<?php echo base_url()?>index.php/capacitacion/vincular?persona=<?php echo $result[0]->id;?>&persona_str=<?php echo $result[0]->nombre.' '.$result[0]->apellido;?>">
                                             <label><i class="icon-edit"></i>
                                                 &nbsp;-&nbsp;Crear CAPACITACION 
                                                 </label>
@@ -130,6 +130,7 @@ if (isset($result)){
                         <td><b>Finaliza</b></td>
                         <td><b>Dias</b></td>
                         <td><b>Descripcion</b></td>
+                        <td></td>
                     </tr>
               <?php
                     foreach ($licencia as $c){
@@ -140,6 +141,7 @@ if (isset($result)){
                                 <td>".$c->f_fin."</td> 
                                 <td>".$c->dias."</td> 
                                 <td>".$c->lpdesc."</td> 
+                                <td></td> 
                            </tr>";
                     } ?>
                 </table>
@@ -164,6 +166,7 @@ if (isset($result)){
                         <td><b>Finaliza</b></td>
                         <td><b>Capacitador</b></td>
                         <td><b>Institucion</b></td>
+                        <td></td>
                     </tr>
               <?php
                     foreach ($capacitacion as $c){
@@ -174,6 +177,7 @@ if (isset($result)){
                                 <td>".$c->f_fin."</td> 
                                 <td>".$c->capacitador."</td> 
                                 <td>".$c->institucion."</td> 
+                                <td></td> 
                            </tr>";
                     } ?>
                 </table>
@@ -198,15 +202,22 @@ if (isset($result)){
                         <td><b>Fecha entrega</b></td>
                         <td><b>Tipo</b></td>
                         <td><b>Descripcion</b></td>
+                        <td></td>
                     </tr>
               <?php
                     foreach ($premio as $c){
                     echo " <tr> 
                                 <td>".$c->idPremioPersona."</td> 
-                                <td>".$c->nombre."</td> 
-                                <td>".$c->fecha_entrega."</td> 
+                                <td>".$c->nombre."</td>";
+                    if ($c->fecha_entrega==0){
+                        echo "<td>no se especificó la fecha de entrega</td>";
+                    }else{
+                        echo "<td>".$c->fecha_entrega."</td> ";
+                    }
+                    echo "
                                 <td>".$c->tipo."</td> 
                                 <td>".$c->descripcion."</td>  
+                                <td></td>  
                            </tr>";
                     } ?>
                 </table>
