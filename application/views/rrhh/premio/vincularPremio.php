@@ -79,7 +79,7 @@ if (isset($_GET['persona'])){
                     <div class="control-group">
                         <label for="f_entrega" class="control-label">Tipo</label>
                         <div class="controls">
-                            <label class="label label-default"><input style="margin-left: 10px;" type="radio" name="tipo" value="mensual"> Mensual</label>
+                            <label class="label label-default"><input style="margin-left: 10px;" type="radio" name="tipo" value="mensual" checked="checked"> Mensual</label>
                             <label class="label label-success"><input style="margin-left: 10px;" type="radio"  name="tipo" value="anual"> Anual</label>
                         </div>
                     </div>
