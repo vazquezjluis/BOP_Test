@@ -229,12 +229,10 @@ class Persona extends CI_Controller {
                   
         redirect(base_url().'index.php/articulo/gestionar/');
     }
-    
-    
+       
     function visualizar(){
         //Para detectar el dispositivo y la version
         $this->load->library('user_agent');
-        
         
         if($this->agent->is_mobile()){
             $this->data['movil'] =true;
@@ -245,8 +243,6 @@ class Persona extends CI_Controller {
         if(!$this->input->get('buscar') || !is_numeric($this->input->get('buscar'))){
             
         }else{
-            
-        
 
 //        if(!$this->permission->checkPermission($this->session->userdata('permissao'),'vCliente')){
 //           $this->session->set_flashdata('error','Você não tem permissão para visualizar clientes.');
@@ -263,6 +259,7 @@ class Persona extends CI_Controller {
                 //obtengo las capacitaciones del empleado
                 $this->data['capacitacion'] = $this->capacitacion_model->getPersonaCapacitacion(0,0,' capacitacion_persona.idPersona = '.$this->data['result'][0]->id);
                 $this->data['licencia'] = $this->licencia_model->getPersonaLicencia(' licencia_persona.idPersona = '.$this->data['result'][0]->id);
+                $this->data['premio'] = $this->premio_model->getPremioPersona('premio_persona.estado = 1 AND premio_persona.idPersona = '.$this->data['result'][0]->id);
                 
             }
             else{
