@@ -186,7 +186,35 @@ if (isset($result)){
           
           <!--PREMIOS-->
           <div id="tab4" class="tab-pane" style="min-height: 300px">
-              
+              <?php
+              if (isset($premio) and count($premio)!=0){
+                  ;
+                ?>
+                <table  class='table table-bordered'>
+                    <tr><td colspan='2'><b> Premios del empleado</b></td></tr>
+                    <tr>
+                        <td><b>#</b></td>
+                        <td><b>Premio</b></td>
+                        <td><b>Fecha entrega</b></td>
+                        <td><b>Tipo</b></td>
+                        <td><b>Descripcion</b></td>
+                    </tr>
+              <?php
+                    foreach ($premio as $c){
+                    echo " <tr> 
+                                <td>".$c->idPremioPersona."</td> 
+                                <td>".$c->nombre."</td> 
+                                <td>".$c->fecha_entrega."</td> 
+                                <td>".$c->tipo."</td> 
+                                <td>".$c->descripcion."</td>  
+                           </tr>";
+                    } ?>
+                </table>
+                    <?php
+              }else{
+                   echo "<div class='alert alert-danger'>El empleado no tiene capacitaciones</div>";
+              }
+              ?>
           </div>
           
           <!--SANCIONES-->
