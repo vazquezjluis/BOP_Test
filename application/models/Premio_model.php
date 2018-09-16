@@ -28,6 +28,18 @@ class Premio_model extends CI_Model {
         $result =  !$one  ? $query->result() : $query->row();
         return $result;
     }
+    function getPremioPersona($where=''){
+        
+        $this->db->select('premio_persona.*,premio_str(premio_persona.idPremio) as nombre');
+        $this->db->from("premio_persona");
+        $this->db->order_by('premio_persona.fecha_registro','desc');
+        if($where){
+            $this->db->where($where);
+        }
+        $query = $this->db->get();
+        
+        return $query->result();
+    }
 
     function getActive($table,$fields){
         
