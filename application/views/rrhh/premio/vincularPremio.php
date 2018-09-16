@@ -38,7 +38,7 @@ if (isset($_GET['persona'])){
                     </div>
                     <?php }
                     else{
-                        
+                        echo '<input name="desde_persona"  type="hidden" value="1">';
                         echo '<input name="persona_id" id="persona_id" type="hidden" value="'.$_GET['persona'].'">';
                     }
                     ?>
@@ -88,7 +88,8 @@ if (isset($_GET['persona'])){
                         <div class="span12">
                             <div class="span6 offset3">
                                 <button type="submit" class="btn btn-success"><i class="icon-plus icon-white"></i> Agregar</button>
-                                <a href="<?php echo base_url() ?>index.php/persona/visualizar<?php echo $get;?>" id="" class="btn"><i class="icon-arrow-left"></i> Volver</a>
+                                <!--<a href="<?php echo base_url() ?>index.php/persona/visualizar<?php // echo $get;?>" id="" class="btn"><i class="icon-arrow-left"></i> Volver</a>-->
+                                <a href="javascript:history.back()" class="btn">Volver</a>
                             </div>
                         </div>
                     </div>
