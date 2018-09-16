@@ -22,6 +22,7 @@ class Premio extends CI_Controller {
 
         
         $this->load->model('premio_model', '', TRUE);
+        $this->load->model('consola_model', '', TRUE);
     }
 	
     function index(){
@@ -58,7 +59,7 @@ class Premio extends CI_Controller {
 
 		  $this->data['results'] = $this->premio_model->get(
                           'premio',
-                          'idPremio,nombre,f_premio,estado','',$config['per_page'],$this->uri->segment(3));
+                          'idPremio,nombre,descripcion',' premio.estado = 1',$config['per_page'],$this->uri->segment(3));
        
 	    $this->data['view'] = 'rrhh/premio/premio';
        	$this->load->view('tema/header',$this->data);
@@ -75,37 +76,30 @@ class Premio extends CI_Controller {
             $this->data['custom_error'] = (validation_errors() ? '<div class="form_error">' . validation_errors() . '</div>' : false);
         } else {
             
-            $nombrePermiso = $this->input->post('nombre');
-            $registro = date('Y-m-d');
-            $estado = 1;
-
             
-            
-            $permisos = serialize($permisos);
-
             $data = array(
-                'nombre' => $nombrePermiso,
-                'fecha_registro' => $registro,
-                'permisos' => $permisos,
-                'estado' => $estado
+                'nombre' => $this->input->post('nombre'),
+                'descripcion' => $this->input->post('descripcion'),
+                'f_registro' => date('Y-m-d')
             );
 
-            if ($this->permisos_model->add('permisos', $data) == TRUE) {
+            if ($this->premio_model->add('premio', $data) == TRUE) {
                 $acciones = array(
                     'usuario' => $this->session->userdata('id'),
                     'accion_id' => 1,
-                    'accion' => 'Agrega el permiso : '.$nombrePermiso.' - '.$permisos,
+                    'accion' => 'Agrega el premio : '.$this->input->post('nombre'),
                     'modulo' => 2,
                     'fecha_registro' => date('Y-m-d h:i:s')
                 );
                 
                 if ($this->consola_model->add('consola',$acciones) == TRUE){
-                    $this->session->set_flashdata('success', 'Permisos agregados con exito!');
-                    redirect(base_url() . 'index.php/permisos/agregar/');
+                    $this->session->set_flashdata('success', 'Premio agregados con exito!');
+                    //redirect(base_url() . 'index.php/permisos/agregar/');
                 }
             } else {
                 $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error.</p></div>';
             }
+           
         }
 
         $this->data['view'] = 'rrhh/premio/agregarPremio';
@@ -124,88 +118,31 @@ class Premio extends CI_Controller {
             $this->data['custom_error'] = (validation_errors() ? '<div class="form_error">' . validation_errors() . '</div>' : false);
         } else {
             
-            $nombrePermiso = $this->input->post('nombre');
-            $estado = $this->input->post('estado');
-           /* 
-            * v... Visualizar
-            * e... Editar
-            * d... Deletar 
-            * c... Crear
-            * 
-            */
-            $permisos = array(
-                  'cUsuario' => $this->input->post('cUsuario'),
-                  'cPermiso' => $this->input->post('cPermiso'),
-                  'cConsola' => $this->input->post('cConsola'),
-                  'cBackup' => $this->input->post('cBackup'),
-                
-                  'vMaquina' => $this->input->post('vMaquina'),
-                  'eMaquina' => $this->input->post('eMaquina'),
-                  'dMaquina' => $this->input->post('dMaquina'),
-                  'cMaquina' => $this->input->post('cMaquina'),
-                
-                  'vFallas' => $this->input->post('vFallas'),
-                  'eFallas' => $this->input->post('eFallas'),
-                  'dFallas' => $this->input->post('dFallas'),
-                  'cFallas' => $this->input->post('cFallas'),
-                
-                  'vArticulos' => $this->input->post('vArticulos'),
-                  'eArticulos' => $this->input->post('eArticulos'),
-                  'dArticulos' => $this->input->post('dArticulos'),
-                  'cArticulos' => $this->input->post('cArticulos'),  
-                
-                  'vCategorias' => $this->input->post('vCategorias'),
-                  'eCategorias' => $this->input->post('eCategorias'),
-                  'dCategorias' => $this->input->post('dCategorias'),
-                  'cCategorias' => $this->input->post('cCategorias'),  
-                
-                  'vTicket' => $this->input->post('vTicket'),
-                  'cTicket' => $this->input->post('cTicket'),
-                
-                  'vLaboratorio' => $this->input->post('vLaboratorio'),
-                
-                  'vManuales' => $this->input->post('vManuales'),
-                
-                  'vImporMaquinas' => $this->input->post('vImporMaquinas'),
-                  'vImporArticulos' => $this->input->post('vImporArticulos'),
-                  'vImporArticulos_maq' => $this->input->post('vImporArticulos_maq'),
-                  'vImporPersona' => $this->input->post('vImporPersona'),
-                
-                  'vPersonas' => $this->input->post('vPersonas'),
-                  'vLicencias' => $this->input->post('vLicencias'),
-                  'vCapacitacion' => $this->input->post('vCapacitacion'),
-                  'vPremios' => $this->input->post('vPremios'),
-                
-                  'vRep_maquinas' => $this->input->post('vRep_maquinas')
-
-            );
-            $permisos = serialize($permisos);
-
             $data = array(
-                'nombre' => $nombrePermiso,
-                'permisos' => $permisos,
-                'estado' => $estado
+                'nombre' => $this->input->post('nombre'),
+                'descripcion' => $this->input->post('descripcion'),
+                
             );
 
-            if ($this->permisos_model->edit('permisos', $data, 'idPermiso', $this->input->post('idPermiso')) == TRUE) {
+            if ($this->premio_model->edit('premio', $data, 'idPremio', $this->input->post('idPremio')) == TRUE) {
                 $acciones = array(
                         'usuario' => $this->session->userdata('id'),
                         'accion_id' => 2,
-                        'accion' => 'Edita al permiso '.$this->input->post('idPermiso').': '.$nombrePermiso.' - '.$permisos,
+                        'accion' => 'Edita al premio '.$this->input->post('idPremio'),
                         'modulo' => 2,
                         'fecha_registro' => date('Y-m-d h:i:s')
                     );
                 if ($this->consola_model->add('consola',$acciones) == TRUE){
-                    $this->session->set_flashdata('success', 'Permiso editado con éxito!');
-                    redirect(base_url() . 'index.php/permisos/editar/'.$this->input->post('idPermiso'));
+                    $this->session->set_flashdata('success', 'Premio editado con éxito!');
+//                    redirect(base_url() . 'index.php/permisos/editar/'.$this->input->post('idPermiso'));
                 }
             } else {
                 $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error.</p></div>';
             }
         }
 
-        $this->data['result'] = $this->permisos_model->getById($this->uri->segment(3));
-        $this->data['view'] = 'permisos/editarPermiso';
+        $this->data['result'] = $this->premio_model->getById($this->uri->segment(3));
+        $this->data['view'] = 'rrhh/premio/editarPremio';
         $this->load->view('tema/header', $this->data);
 
     }
@@ -215,21 +152,76 @@ class Premio extends CI_Controller {
         $id =  $this->input->post('id');
         if ($id == null){
             $this->session->set_flashdata('error','Ocurrio un error al intentar desactivar el permiso.');            
-            redirect(base_url().'index.php/permisos/gestionar/');
+            redirect(base_url().'index.php/premio/');
         }
         $data = array(
-          'estado' => false
+          'estado' => 0
         );
-        if($this->permisos_model->edit('permisos',$data,'idPermiso',$id)){
-          $this->session->set_flashdata('success','Permiso desactivado con exito!');  
+        if($this->premio_model->edit('premio',$data,'idPremio',$id)){
+          $this->session->set_flashdata('success','premio desactivado con exito!');  
         }
         else{
           $this->session->set_flashdata('error','Error al desactivar el permiso!');  
         }         
         
                   
-        redirect(base_url().'index.php/permisos/gestionar/');
+        redirect(base_url().'index.php/premio/');
     }
+    
+    function vincular(){
+        
+        //
+        
+        
+        $this->load->library('form_validation');    
+		$this->data['custom_error'] = '';	
+        if ($this->form_validation->run('vincular_premio') == false)
+        {
+             $this->data['custom_error'] = (validation_errors() ? '<div class="alert alert-danger">'.validation_errors().'</div>' : false);
+        } 
+        else
+        {    
+            //datos
+            $data_premio_persona = array(
+                'idPremio' => $this->input->post('premio'),
+                'idPersona' => $this->input->post('persona_id'),
+                'descripcion' => $this->input->post('descripcion'),
+                'fecha_registro' => date('Y-m-d'),
+                'fecha_entrega' => $this->input->post('f_entrega'),                
+                'usuario' => $this->session->userdata('id')
+            );
+            
+            if ($this->premio_model->add('premio_persona',$data_premio_persona) == TRUE)
+                {   
+                    $id_premio_persona = $this->db->insert_id();
+                    $acciones = array(
+                        'usuario' => $this->session->userdata('id'),
+                        'accion_id' => 1,
+                        'accion' => 'Vincula el premio: '.$this->input->post('idPremio').' con la persona '.$this->input->post('persona_id'),
+                        'modulo' => 2,
+                        'fecha_registro' => date('Y-m-d')
+                    );
+                    if ($this->consola_model->add('consola',$acciones) == TRUE){
+                                
+                        $this->session->set_flashdata('success','premio vinculado con éxito!');
+                            //redirect(base_url().'index.php/licencia/vincular');
+                        }
+                    }
+            else
+            {
+                $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error al guardar la consola del vinculo de la licencia.</p></div>';
+            }
+            
+        }
+        
+        
+        $this->data['premio'] = $this->premio_model->get("premio","*","estado = 1");
+        $this->data['view'] = 'rrhh/premio/vincularPremio';
+        $this->load->view('tema/header',$this->data);
+   
+       
+    }	
+    
 }
 
 

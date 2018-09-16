@@ -1,3 +1,7 @@
+<?php if (count($_POST)>0){
+     
+    echo "<script>history.back();</script>";
+}?>
 <script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery-ui/js/jquery-ui-1.9.2.custom.js"></script>
 <div class="row-fluid" style="margin-top:0">
     <div class="span12">
@@ -21,34 +25,21 @@
                     </div>
                     
                     <div class="control-group">
-                        <label for="descripcion" class="control-label">Descripcion <span class="required">*</span></label>
+                        <label for="descripcion" class="control-label">Descripcion </label>
                         <div class="controls">
-                            <textarea  required="required" id="descripcion" type="text" name="descripcion"><?php echo set_value('descripcion'); ?></textarea>   
+                            <textarea  id="descripcion" type="text" name="descripcion"><?php echo set_value('descripcion'); ?></textarea>   
                         </div>
                     </div>
                     
-                    <div class="control-group">
-                        <label for="imagen" class="control-label">Imagen <span class="required">*</span></label>
-                        <div class="controls">
-                            <img  class="span2"  id="imgSalida">
-                            <label class="btn span3" id="lbl_file" style="margin: 0px;" ><span class="icon icon-camera"></span>  Cargar imagen    
-                            <input id="file-input" accept="image/*" type="file" required="true" name="userfile" style="display: none;" capture/>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="control-group">
-                        <label  class="control-label">Fecha y hora <span class="required">*</span></label>
-                        <div class="controls">
-                            <input type="date" name="f_premio" id="f_premio">
-                        </div>
-                    </div>
+                    
                     
                     <div class="form-actions">
                         <div class="span12">
                             <div class="span6 offset3">
                                 <button type="submit" class="btn btn-success"><i class="icon-plus icon-white"></i> Agregar</button>
-                                <a href="<?php echo base_url() ?>index.php/rrhh/premio" id="" class="btn"><i class="icon-arrow-left"></i> Volver</a>
+                                <button class="btn btn-default" onclick="history.back()"><i class="icon-arrow-left"></i> Volver</button>
+                                
+                                <!--<a href="<?php // echo base_url() ?>index.php/premio" id="" class="btn"><i class="icon-arrow-left"></i> Volver</a>-->
                             </div>
                         </div>
                     </div>
@@ -124,11 +115,11 @@
            $('#formPremio').validate({
             rules : {
                   nombre:{ required: true},
-                  descripcion:{ required: true},
+//                  descripcion:{ required: true},
                   
             },
             messages: {
-                  descripcion :{ required: 'Campo Requerido.'},
+//                  descripcion :{ required: 'Campo Requerido.'},
                   nombre :{ required: 'Campo Requerido'}
                   
             },

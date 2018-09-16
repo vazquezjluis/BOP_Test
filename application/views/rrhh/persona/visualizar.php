@@ -6,7 +6,6 @@
 
 <div class="span12" style="margin-left: 0px;">
 <form method="get" id="formBuscar" action="<?php echo current_url(); ?>">
-    
         <div class="control-group">
             <label  class="control-label">Persona <span class="required">*</span></label>
             <div class="controls" id="persona_select">
@@ -17,8 +16,6 @@
             </div>
             <input name="buscar" id="persona_id" type="hidden" value="0">
         </div>
-        
-    
 </form>
 </div>
 <?php if ( isset($custom_error)) {
@@ -68,7 +65,7 @@ if (isset($result)){
                 <div class="span8" style="font-size: 14px;">
                     <?php 
                       
-                      echo '<div class="span4">
+                      echo '<div class="span6">
                                 <b>Legajo: </b>'.$result[0]->legajo.'<br>
                                 <b>Nombre: </b>'.$result[0]->nombre.'<br>
                                 <b>Apellido: </b>'.$result[0]->apellido.'<br>
@@ -76,11 +73,40 @@ if (isset($result)){
                                 <b>Ingreso: </b>'.$result[0]->fecha_ingreso.'<br>
                                 <b>Direccion: </b>'.$result[0]->direccion.'<br>
                             </div>
-                            <div class="span4">
                             
-                            </div>
-                            <div class="span4">';
-                      
+                            <div class="span6">'; ?>
+                              <table class="table table-bordered" style="background-color: #FFF;box-shadow: 2px 2px 2px 2px;">
+                                <tbody>
+                                    <tr>
+                                    <td>
+                                        <a  href="<?php echo base_url()?>index.php/licencia/vincular">
+                                            <label><i class="icon-edit"></i>
+                                                &nbsp;-&nbsp;Crear LICENCIA 
+                                                </label>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a  href="<?php echo base_url()?>index.php/premio/vincular?persona=<?php echo $result[0]->id;?>&persona_str=<?php echo $result[0]->nombre.' '.$result[0]->apellido;?>">
+                                            <label><i class="icon-edit"></i>
+                                                &nbsp;-&nbsp;Crear PREMIO 
+                                                </label>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a  href="<?php echo base_url()?>index.php/capacitacion/vincular">
+                                            <label><i class="icon-edit"></i>
+                                                &nbsp;-&nbsp;Crear CAPACITACION 
+                                                </label>
+                                        </a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                    <?php
                        echo'</div>';
                       ?>  
                 </div>  

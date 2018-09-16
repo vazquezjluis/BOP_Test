@@ -271,6 +271,17 @@ $config =
                                 	'label'=>'capacitacion',
                                 	'rules'=>'required|trim'
                                 ))
+                ,
+				'vincular_premio' => array(array(
+                                	'field'=>'persona_id',
+                                	'label'=>'persona',
+                                	'rules'=>'required|trim'
+                                ),
+								array(
+                                	'field'=>'premio',
+                                	'label'=>'premio',
+                                	'rules'=>'required|trim'
+                                ))
 
                 ,
                 'receita' => array(array(
