@@ -106,10 +106,19 @@ class Articulo_model extends CI_Model {
         $this->db->order_by('articulos.idArticulo','desc');
         $this->db->limit($perpage,$start);
         $query = $this->db->get();
+       
         
         return $query->result();
     }
     
+    function list_articulo_generico(){
+        $query = $this->db->query("  SELECT COUNT(stock) as stock,tipo_modelo,
+        SUBSTRING_INDEX(articulos.codigo,SUBSTR(articulos.codigo,-3),1) as codigo
+        FROM articulos
+        GROUP BY SUBSTRING_INDEX(articulos.codigo,SUBSTR(articulos.codigo,-3),1) "
+                );
+        return $query->result();
+    }
     public function autoCompleteFallasLogica($q){
 
         $this->db->select('*');

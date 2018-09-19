@@ -135,7 +135,9 @@ $prioridad = array(
                                                             <label>
                                                                 <input type="checkbox" class="articulo" id="art_'.$art->idArticulo.'" name="entra['.$art->idArticulo.']" style="vertical-align: middle;position: relative;bottom: 3px;" value="0" articulo="'.$art->idArticulo.'"> '
                                                         . '         '.$art->nombre.' <i id="stk_'.$art->idArticulo.'" total="'.$art->stock.'">('.$art->stock.' en stock )</i></label> </td>
-                                                        <td style="padding-bottom:0px;"><label style="padding-bottom:0px;"><input type="number" id="'.$art->idArticulo.'" disabled class="cantidad"  value="" min="1" style="width:50px;"> </td>
+                                                        
+                                                                <input type="hidden" id="'.$art->idArticulo.'"   value="1" > 
+                                                        
                                                       </tr>';
                                                 }
                                             }
@@ -160,7 +162,7 @@ $prioridad = array(
                                                             </label> 
                                                         </td>
                                                         <td style="padding-bottom:0px;"><label style="padding-bottom:0px;">
-                                                            <input type="number" id="mov_'.$mov_art->articulo.'" disabled min="1" max="'.$mov_art->cantidad.'" class="mov_cantidad"  value="'.$mov_art->cantidad.'"  style="width:50px;"> 
+                                                            <input type="hiddden" id="mov_'.$mov_art->articulo.'"  max="'.$mov_art->cantidad.'"   value="1" > 
                                                         </td>
                                                         <td style="padding-bottom:0px;">
                                                             <select name="locacion['.$mov_art->articulo.']" id="locacion_'.$mov_art->articulo.'" disabled>

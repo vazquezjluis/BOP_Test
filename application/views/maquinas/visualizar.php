@@ -359,24 +359,16 @@ if (isset($result)){
                                                         <td style="padding-bottom:0px;">
                                                             <label>
                                                                 <input type="checkbox" class="mov_articulo" id="mov_art_'.$mov_art->articulo.'" name="sale['.$mov_art->articulo.']" style="vertical-align: middle;position: relative;bottom: 3px;" value="1" articulo="'.$mov_art->articulo.'"> '
-                                                                .$mov_art->articulo_str.' 
-                                                                <input type="hidden" name="locacion" value="laboratorio"/>
+                                                                .$mov_art->articulo_str.' (la parte irá al labratorio)
+                                                                
                                                             </label> 
-                                                        </td>
-                                                        <td style="padding-bottom:0px;">
-                                                            <select name="locacion['.$mov_art->articulo.']" id="locacion_'.$mov_art->articulo.'" >
-                                                                <option value="">Enviar a</option>
-                                                                <option value="laboratorio">Laboratorio</option>
-                                                                <option value="stock">Stock</option>
-                                                                <option value="scrap">Scrap</option>
-                                                                <option value="baja">Baja</option>
-                                                            </select> 
                                                         </td>
                                                       </tr>';
                                                 }
                                             echo "  
                                                 </tbody>
                                             </table>
+                                            <input type='hidden' name='locacion' value='laboratorio'/>
                                         ";
                                             
                                         }else{

@@ -30,6 +30,42 @@ class Articulo extends CI_Controller {
         $this->gestionar();
     }
 
+    function paniol(){
+         $this->load->library('pagination');
+
+        $config['base_url'] = base_url().'index.php/articulo/gestionar/';
+        $config['total_rows'] = $this->articulo_model->count('articulos');
+        $config['per_page'] = 10;
+        $config['next_link'] = 'Próxima';
+        $config['prev_link'] = 'Anterior';
+        $config['full_tag_open'] = '<div class="pagination alternate"><ul>';
+        $config['full_tag_close'] = '</ul></div>';
+        $config['num_tag_open'] = '<li>';
+        $config['num_tag_close'] = '</li>';
+        $config['cur_tag_open'] = '<li><a style="color: #2D335B"><b>';
+        $config['cur_tag_close'] = '</b></a></li>';
+        $config['prev_tag_open'] = '<li>';
+        $config['prev_tag_close'] = '</li>';
+        $config['next_tag_open'] = '<li>';
+        $config['next_tag_close'] = '</li>';
+        $config['first_link'] = 'Primera';
+        $config['last_link'] = 'Última';
+        $config['first_tag_open'] = '<li>';
+        $config['first_tag_close'] = '</li>';
+        $config['last_tag_open'] = '<li>';
+        $config['last_tag_close'] = '</li>';
+        $config['page_query_string'] = TRUE;
+
+        $this->pagination->initialize($config); 	
+
+        //$this->data['results'] = $this->articulo_model->get('articulos','*',' estado !=90',$this->input->get('per_page'),$config['per_page']);
+        //$config['per_page'],$this->input->get('per_page'),$where
+//        $this->data['results'] = $this->articulo_model->list_articulos($config['per_page'],$this->input->get('per_page'),'');//'*',' estado !=90',$this->input->get('per_page'),$config['per_page']);
+        $this->data['results'] = $this->articulo_model->list_articulo_generico();//'*',' estado !=90',$this->input->get('per_page'),$config['per_page']);
+        $this->data['modelos'] = $this->maquinas_model->get_modelos();           
+        $this->data['view'] = 'inventario/articulos/paniol';
+       	$this->load->view('tema/header',$this->data);
+    }
     function gestionar(){
         
         $this->load->library('pagination');
@@ -62,12 +98,20 @@ class Articulo extends CI_Controller {
         //$this->data['results'] = $this->articulo_model->get('articulos','*',' estado !=90',$this->input->get('per_page'),$config['per_page']);
         //$config['per_page'],$this->input->get('per_page'),$where
         $this->data['results'] = $this->articulo_model->list_articulos($config['per_page'],$this->input->get('per_page'),'');//'*',' estado !=90',$this->input->get('per_page'),$config['per_page']);
-                  
-        $this->data['view'] = 'inventario/articulos/articulos';
+        
+                 
+        $this->data['view'] = 'inventario/articulos/paniol';
        	$this->load->view('tema/header',$this->data);
 
     }
-	
+
+    function autoCompleteArticulo(){
+        if (isset($_GET['term'])){
+            $q = strtolower($_GET['term']);
+            
+            $this->articulo_model->autoCompleteArticulo($q);
+        }
+    }
     function agregar() {
 
         if(!$this->permission->checkPermission($this->session->userdata('permiso'),'cArticulos')){

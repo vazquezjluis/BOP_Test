@@ -127,6 +127,10 @@
                     <li><a href="<?php  echo base_url()?>index.php/articulo">Articulos </a></li>
                     <!--<li><a href="#">Articulos (en construccion)</a></li>-->
                 <?php } 
+                   if($this->permission->checkPermission($this->session->userdata('permiso'),'vArticulos')){ ?>
+                    <li><a href="<?php  echo base_url()?>index.php/articulo/paniol">Pañol</a></li>
+                    <!--<li><a href="#">Articulos (en construccion)</a></li>-->
+                <?php } 
                 if($this->permission->checkPermission($this->session->userdata('permiso'),'vCategorias')){ ?>
                     <li><a href="#">Categorias (en construccion)</a></li>
                 <?php  }?>

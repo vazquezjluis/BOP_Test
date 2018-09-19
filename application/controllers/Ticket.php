@@ -225,8 +225,9 @@ class Ticket extends CI_Controller {
                 $this->input->post('entra') == NULL ? $arr_entra = array():$arr_entra = $this->input->post('entra');
                 $this->input->post('sale') == NULL ? $arr_sale = array():$arr_sale = $this->input->post('sale');
                 if (count($arr_entra) or count($arr_sale)){
-                       $mi_maquina = $this->maquinas_model->getByEgm($mi_maquina->nro_egm);
+                        $mi_maquina = $this->maquinas_model->getByEgm($mi_maquina->nro_egm);
                         $texto = '#Relevamiento de partes : <br>';
+                        
                         //Partes que ENTRAN a la maquina
                         if (count($arr_entra)){
                            $texto.=" Entra ";
@@ -270,7 +271,8 @@ class Ticket extends CI_Controller {
                                         $data_art_maquina = array(
                                             "cantidad"=>$nueva_cantidad,
                                             "usuario"=>$this->session->userdata('id'),
-                                            "fecha_hora"=>date("Y-m-d h:i:s")
+                                            "fecha_hora"=>date("Y-m-d h:i:s"),
+                                            "estado"=>0 //activo
                                         );
                                         if ($this->articulos_maquinas_model->edit("articulos_maquinas",$data_art_maquina,"idArticuloMaquina",$articulos_maquinas[0]->idArticuloMaquina)==TRUE){
                                             
@@ -302,37 +304,48 @@ class Ticket extends CI_Controller {
                            foreach ($arr_sale as $sale_articulo=>$sale_cantidad){
                                
                                if ($sale_cantidad > 0 and $sale_cantidad!=''){
-                                   $locacion = $this->input->post('locacion');
-                                   $nueva_locacion=$locacion[$sale_articulo];
-                                   //obtengo el articulo
-                                   $este_articulo = $this->articulo_model->getById($sale_articulo);
-                                   
-                                   $texto.="[".$este_articulo->nombre." x ".$sale_cantidad." ]";
-                                   
-                                   $data_mov_articulo = array(
-                                       "articulo" =>$sale_articulo,
-                                       "cantidad" =>$sale_cantidad,
-                                       "fecha_hora"=>date('Y-m-d H:i:s'),
-                                       "movimiento"=>'M#'.$mi_maquina->nro_egm.' > '.$nueva_locacion,
-                                       "usuario" => $this->session->userdata('id'),
-                                       "locacion" => $nueva_locacion 
-                                   );
+                                    $locacion = $this->input->post('locacion');
+                                    $nueva_locacion=$locacion[$sale_articulo];
+                                    //obtengo el articulo
+                                    $este_articulo = $this->articulo_model->getById($sale_articulo);
 
+                                    $texto.="[".$este_articulo->nombre." x ".$sale_cantidad." ]";
+
+                                    $data_mov_articulo = array(
+                                        "articulo" =>$sale_articulo,
+                                        "cantidad" =>$sale_cantidad,
+                                        "fecha_hora"=>date('Y-m-d H:i:s'),
+                                        "movimiento"=>'M#'.$mi_maquina->nro_egm.' > '.$nueva_locacion,
+                                        "usuario" => $this->session->userdata('id'),
+                                        "locacion" => $nueva_locacion 
+                                    );
+                                    
                                     if ($this->movimiento_articulo_model->add('movimiento_articulo',$data_mov_articulo) == TRUE){ 
                                         //crea el registro del movimiento del articulo
                                         switch ($nueva_locacion){
                                             case "laboratorio":
                                                 $this->load->model('laboratorio_model', '', TRUE);
+                                                //verificamos si existe el articulo en la maquina en la tabla articulos_maquinas
+                                                $articulos_laboratorio = $this->articulos_laboratorio_model->get("articulos_laboratorio","*"," articulo = ".$sale_articulo." and maquina =".$mi_maquina->nro_egm);
                                                 $data_laboratorio = array(
-                                                    "articulo"=>$sale_articulo,
-                                                    "maquina"=>$mi_maquina->nro_egm,
-                                                    "cantidad"=>$sale_cantidad,
-                                                    "usuario"=>$this->session->userdata('id'),
-                                                    "fecha_hora"=>date('Y-m-d H:i:s'),
-                                                    "asignado"=>"",
-                                                    "estado"=>1
-                                                );
-                                                $this->laboratorio_model->add("articulos_laboratorio",$data_laboratorio);
+                                                        "articulo"=>$sale_articulo,
+                                                        "maquina"=>$mi_maquina->nro_egm,
+                                                        "cantidad"=>$sale_cantidad,
+                                                        "usuario"=>$this->session->userdata('id'),
+                                                        "fecha_hora"=>date('Y-m-d H:i:s'),
+                                                        "asignado"=>"",
+                                                        "estado"=>1
+                                                    );
+                                                if (count($articulos_laboratorio)){//existe
+                                                    //actualiza el registro
+                                                    $this->laboratorio_model->edit("articulos_laboratorio",$data_laboratorio,"idArticuloLaboratorio",$articulos_laboratorio[0]->idArticuloLaboratorio);
+                                                    
+                                                }else{
+                                                    //crea un registro nuevo
+                                                    $this->laboratorio_model->add("articulos_laboratorio",$data_laboratorio);
+                                                }
+                                                
+                                                
                                             break;
                                             case "scrap":
                                             break;
