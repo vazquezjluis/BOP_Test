@@ -308,6 +308,50 @@ class Articulo extends CI_Controller {
 
         
     }
+    
+    function getArticuloModelo(){
+        $html = '';
+        $modelos = $this->maquinas_model->get_modelos();
+        $articulo = $this->articulo_model->list_articulo_generico(" having codigo = '".$_GET['codigo']."'");
+        $modelos_elegidos = array();
+        if ($articulo[0]->tipo_modelo!=''){
+            $modelos_elegidos = explode("-_-", $articulo[0]->tipo_modelo);
+        }
+        foreach ($modelos as $m){
+            $checked = "";
+            if (count($modelos_elegidos)){
+              if (in_array($m->modelo, $modelos_elegidos)){
+                  $checked="checked";
+              }
+            }
+            
+            $html.='<tr id="losModelos"><td><label>'
+                    . '<input type="checkbox" '.$checked.' name="tipoModelo[]" '
+                    . 'style="vertical-align: middle;position: relative;bottom: '
+                    . '3px;" value="'.$m->modelo.'"> '.$m->modelo.'</label></td></tr>"';
+        }
+        echo $html;
+    }
+    
+    function asociarArticuloModelo(){
+       
+        if (count($this->input->post('tipoModelo'))){
+            $modelos = implode("-_-", $this->input->post('tipoModelo'));
+        }else{
+            $modelos='';
+        }
+        $data = array( 
+            'tipo_modelo' => $modelos
+        );
+        //obtengo todos los articulos con el mismo codigo generico
+        $articulos = $this->articulo_model->list_articulo_generico(" having codigo = '".$this->input->post('codigo')."'");
+        $articulos = explode(',', $articulos[0]->id);
+        foreach ($articulos as $idArticulo){
+            $this->articulo_model->edit('articulos', $data, 'idArticulo', $idArticulo);
+        }
+        $this->paniol();
+            
+    }
 }
 
 

@@ -111,11 +111,14 @@ class Articulo_model extends CI_Model {
         return $query->result();
     }
     
-    function list_articulo_generico(){
-        $query = $this->db->query("  SELECT COUNT(stock) as stock,tipo_modelo,
-        SUBSTRING_INDEX(articulos.codigo,SUBSTR(articulos.codigo,-3),1) as codigo
-        FROM articulos
-        GROUP BY SUBSTRING_INDEX(articulos.codigo,SUBSTR(articulos.codigo,-3),1) "
+    function list_articulo_generico($having = ''){
+        
+        $query = $this->db->query("  SELECT GROUP_CONCAT(idArticulo) as id,
+            COUNT(stock) as stock,tipo_modelo,
+            SUBSTRING_INDEX(articulos.codigo,SUBSTR(articulos.codigo,-3),1) as codigo
+            FROM articulos
+            GROUP BY SUBSTRING_INDEX(articulos.codigo,SUBSTR(articulos.codigo,-3),1) ".$having
+                
                 );
         return $query->result();
     }

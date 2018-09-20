@@ -121,7 +121,7 @@ if(!$results){?>
 //                    echo '<a href="'.base_url().'index.php/articulo/editar/'.$r->idArticulo.'" class="btn btn-info tip-top" title="Editar Articulo"><i class="icon-pencil icon-white"></i></a>';
 //                }
 //                if($this->permission->checkPermission($this->session->userdata('permiso'),'dArticulos')){
-                    echo '<a href="#modal-excluir" class="btn  tip-top " role="button" data-toggle="modal" articulo="'.$r->codigo.'"  title="Asociar modelo">
+                    echo '<a href="#modal-excluir"  class="btn  tip-top vincular_modelo" role="button" data-toggle="modal" codigoArticuloGenerico="'.$r->codigo.'"  title="Asociar modelo">
                                     <i class="icon-resize-small icon-white"></i></a>';
 //                }             
                 echo'</td>';
@@ -141,7 +141,7 @@ if(!$results){?>
  
 <!-- Modal -->
 <div id="modal-excluir" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <form action="<?php //  echo base_url() ?>index.php/articulo/asociar" method="post" >
+  <form action="<?php   echo base_url() ?>index.php/articulo/asociarArticuloModelo" method="post" >
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
     <h5 id="myModalLabel">Asociar Articulo a modelo</h5>
@@ -149,12 +149,6 @@ if(!$results){?>
   <div class="modal-body">
     <input type="hidden" id="codigoArticulo" name="codigo" value="" />
     <div class="widget-content" style="border:1px solid #cccc;height: 150px;overflow-y:scroll; ">
-        <?php
-//            $modelos_elegidos = array();
-//            if ($result->tipo_modelo!=''){
-//                $modelos_elegidos = explode("-_-", $result->tipo_modelo);
-//            }
-        ?>
             <table class="table" id="modelos">
                 <thead>
                     <tr>
@@ -168,73 +162,100 @@ if(!$results){?>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php 
-                    if($modelos){
-                      foreach ($modelos as $model){
-                          $checked = "";
-//                          if (count($modelos_elegidos)){
-//                            if (in_array($model->modelo, $modelos_elegidos)){
-//                                $checked="checked";
-//                            }
-//                          }
-                          echo '<tr><td><label><input type="checkbox" '.$checked.' name="tipoModelo[]" style="vertical-align: middle;position: relative;bottom: 3px;" value="'.$model->modelo.'"> '.$model->modelo.'</label></td></tr>';
-                      }
-                    }
-
-                    ?>
+                    <tr id="losModelos" ></tr>
                 </tbody>
             </table>
         </div>
   </div>
   <div class="modal-footer">
     <button class="btn" data-dismiss="modal" aria-hidden="true">Cancelar</button>
-    <button class="btn btn-danger">Eliminar</button>
+    <button class="btn btn-success">Guardar</button>
   </div>
   </form>
 </div>
 
 <script type="text/javascript">
       $(document).ready(function(){
+          //marcar todos
+          $("#marcarTodos").change(function () {
+                $("input:checkbox").prop('checked', $(this).prop("checked"));
+          });
+          //muestra los modelos
+          $(".vincular_modelo").click(function(){
+              $.ajax({
+                    type: "GET",
+                    url: "<?php echo base_url(); ?>index.php/articulo/getArticuloModelo?codigo="+$(this).attr("codigoArticuloGenerico"),
+                        
+                    success: function(data){
+                        $("#losModelos").replaceWith(data);
+                    }
+              });
+          });
+          //setea el hidden con el codigo del articulo seleccionado
+          $(document).on('click', 'a', function(event) {       
+               var articulo = $(this).attr('codigoArticuloGenerico');
+               $('#codigoArticulo').val(articulo);
+          });
           
-          $("#cancel").hide();
-          $("#articulo").autocomplete({
-            source: "<?php echo base_url(); ?>index.php/articulo/autoCompleteArticulo",
-            minLength: 1,
-            select: function( event, ui ) {
-                 $("#persona_id").val(ui.item.id);
-                 $("#cancel").show();
+          
+          //Filtrar 
+            var contenido_fila;
+            var coincidencias;
+            var codigoAscci;
+          $("#filtrar").keyup(function(){
+                if(!checkTeclaDel(event)){
+                    filtrar($(this).val());
                 }
-          });
+            });
+            function filtrar(cadena){
+              $("#modelos tbody tr").each(function(){
+                  $(this).removeClass('ocultar');
+                  contenido_fila =  $(this).find('td:eq(0)').text();
+                  exp = new RegExp(cadena,'gi');
+                  coincidencias = contenido_fila.match(exp);
+                  if(coincidencias!=null){
+                      $(this).addClass('resaltar');
+                  }else{
+                      $(this).addClass('ocultar');
+                  }
+              } );
+          }
           
-          $("#cancel").click(function(){
-              $("#persona_id").val("");
-              $("#persona").val("");
-              $("#persona").attr("readonly",false);
-              $(this).hide();
-          });
+          function mostrarFilas(){
+              $("#modelos tbody tr").each(function(){
+                  $(this).removeClass('ocultar resaltar');
+              });
+          }
           
-          
-          
+          function checkTeclaDel(e){
+              
+              codigoAscci = e.which;
+              
+              if(codigoAscci==8){
+                  if($("#filtrar").val().length>0){
+                      filtrar($("#filtrar").val());
+                  }else{
+                      mostrarFilas();
+                  }
+                  return true;
+              }else{
+                  return false;
+              }
+          } 
+            
+            
       });
-      
-        
- 
-
 </script>
-<script type="text/javascript">
+<!--<script type="text/javascript">
 $(document).ready(function(){
 
-   $(document).on('click', 'a', function(event) {       
-        var articulo = $(this).attr('articulo');
-        $('#codigoArticulo').val(articulo);
-
-    });
+   
     
     
     
     $("#cancel").hide();
     $("#persona").autocomplete({
-        source: "<?php echo base_url(); ?>index.php/licencia/autoCompletePersona",
+        source: "<?php // echo base_url(); ?>index.php/licencia/autoCompletePersona",
         minLength: 1,
         select: function( event, ui ) {
                 $("#persona_id").val(ui.item.id);
@@ -252,5 +273,5 @@ $(document).ready(function(){
 
 });
 
-</script>
+</script>-->
 
