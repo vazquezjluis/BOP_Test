@@ -1272,60 +1272,60 @@ class Importador extends CI_Controller {
                     $cod_articulo = $dato2;
                     
                     //obtengo el articulo con el mismo codigo
-                    $articulo = $this->articulo_model->get('articulos','*',' codigo = "'.$cod_articulo.'" ');
+                    $articulo = $this->articulo_model->get("articulos","*"," articulos.codigo = '".$cod_articulo."' ");
                     
                     //cuenta si existe el articulo
                     if (count($articulo)){
                         
                         $id_articulo = $articulo[0]->idArticulo ;
                         
-                        $articulos_maquinas = $this->articulos_maquinas_model->get('articulos_maquinas','*',' articulo = '.$id_articulo.' and maquina =  '.$uid);
+                        $articulos_maquinas = $this->articulos_maquinas_model->get('articulos_maquinas','*',' articulo = '.$id_articulo.' and maquina =  '.$uid.' AND estado = 0 ');
                         
                         
-                        if (count($articulos_maquinas)){
-                            $id_registro = $articulos_maquinas[0]->idArticuloMaquina;
-                            $cantidad_en_maquina = $articulos_maquinas[0]->cantidad;
-                            if ($cantidad_en_maquina != trim($array['cantidad'])){
-                                $distinto.=" <tr><td> Cantidad </td> <td>".$cantidad_en_maquina." </td> <td> ".$array['cantidad']."</td></tr>";
-                            }
-                            if($distinto !=''){
-                                $tabla = '<table cellpadding="4"   style="width:60%;margin-left:3%;margin-bottom:1%;" border="1">
-                                            <tr>
-                                                <td colspan="3"># Maquina <b>'.$uid.'</b> -> Articulo <b>'.$cod_articulo.'</b></td>
-                                            </tr>
-                                            <tr>
-                                                <td></td>
-                                                <td>Actual</td>
-                                                <td>Nuevo del archivo excel</td>
-                                            </tr>'.$distinto.'</table>';
-                            
-                                $diferencia = $cantidad_en_maquina - $array['cantidad'];
-                                if ($diferencia<0){
-                                    $diferencia = abs($diferencia);
-                                }
-
-                                //verificamos si la diferencia es suficiente en el stock
-                                if ($articulo[0]->stock >= $diferencia){
-                                    $nuevo_stock = $articulo[0]->stock - $diferencia;
-                                    $data_articulo = array (
-                                        "stock" => $nuevo_stock
-                                    );
-                                    //modificamos el stock 
-                                    if ($this->articulo_model->edit('articulos',$data_articulo,'idArticulo',$articulo[0]->idArticulo)){
-                                        //ok
-                                    }else{/* error*/}
-                                }
-                                $_SESSION['update_import'][$id_registro]  = $array['cantidad'];                            
-                                return $tabla;
-                            }
-                        }
-                        //nuevo registro
-                        else{
+//                        if (count($articulos_maquinas)){
+//                            $id_registro = $articulos_maquinas[0]->idArticuloMaquina;
+//                            $cantidad_en_maquina = $articulos_maquinas[0]->cantidad;
+//                            if ($cantidad_en_maquina != trim($array['cantidad'])){
+//                                $distinto.=" <tr><td> Cantidad </td> <td>".$cantidad_en_maquina." </td> <td> ".$array['cantidad']."</td></tr>";
+//                            }
+//                            if($distinto !=''){
+//                                $tabla = '<table cellpadding="4"   style="width:60%;margin-left:3%;margin-bottom:1%;" border="1">
+//                                            <tr>
+//                                                <td colspan="3"># Maquina <b>'.$uid.'</b> -> Articulo <b>'.$cod_articulo.'</b></td>
+//                                            </tr>
+//                                            <tr>
+//                                                <td></td>
+//                                                <td>Actual</td>
+//                                                <td>Nuevo del archivo excel</td>
+//                                            </tr>'.$distinto.'</table>';
+//                            
+//                                $diferencia = $cantidad_en_maquina - $array['cantidad'];
+//                                if ($diferencia<0){
+//                                    $diferencia = abs($diferencia);
+//                                }
+//
+//                                //verificamos si la diferencia es suficiente en el stock
+//                                if ($articulo[0]->stock >= $diferencia){
+//                                    $nuevo_stock = $articulo[0]->stock - $diferencia;
+//                                    $data_articulo = array (
+//                                        "stock" => $nuevo_stock
+//                                    );
+//                                    //modificamos el stock 
+//                                    if ($this->articulo_model->edit('articulos',$data_articulo,'idArticulo',$articulo[0]->idArticulo)){
+//                                        //ok
+//                                    }else{/* error*/}
+//                                }
+//                                $_SESSION['update_import'][$id_registro]  = $array['cantidad'];                            
+//                                return $tabla;
+//                            }
+//                        }
+//                        //nuevo registro
+//                        else{
                             $_SESSION['new_import'][$key]['maquina']  = $array['nro_egm'];
-                            $_SESSION['new_import'][$key]['articulo'] = $id_articulo;
+                            $_SESSION['new_import'][$key]['articulo'] = $cod_articulo;
                             $_SESSION['new_import'][$key]['nombre']   = $articulo[0]->nombre;
                             $_SESSION['new_import'][$key]['cantidad'] = $array['cantidad'];
-                        }
+//                        }
                     }
                     //
                 break;    
@@ -1623,13 +1623,13 @@ class Importador extends CI_Controller {
                             $success_nuevos++;
                             //obtengo el articulo y su stock
                             $diff = 0;
-                            $el_articulo = $this->articulo_model->getById($val['articulo']);
-                            $diff = $el_articulo->stock - $val['cantidad'];
+                            $el_articulo = $this->articulo_model->list_articulos(0,0," articulos.codigo = '".$val["articulo"]."'");
+                            $diff = $el_articulo[0]->stock - $val['cantidad'];
                              
                             $data_art = array(
                                 "stock"=> $diff
                             );
-                            if($this->articulo_model->edit('articulos',$data_art,'idArticulo',$val['articulo'])){
+                            if($this->articulo_model->edit('articulos',$data_art,'idArticulo',$el_articulo[0]->idArticulo)){
                                 $movimiento = '#Articulos_maquinas :';
                                 $data_movimiento = array(
                                     "articulo"=>$val['articulo'],
@@ -1652,32 +1652,32 @@ class Importador extends CI_Controller {
                 } 
                
                 //modificaciones
-                if (isset($_SESSION['update_import']) and count($_SESSION['update_import'])){                    
-                    
-                    foreach ($_SESSION['update_import'] as $idArticuloMaquina =>$cantidad){
-                        $data_update = array('cantidad' => $cantidad);
-                        if ($this->articulos_maquinas_model->edit('articulos_maquinas', $data_update,'idArticuloMaquina',$idArticuloMaquina)) {
-                             //agregado con exito
-                            $success_update++;
-                            $articulos_maquinas  = $this->articulos_maquinas_model->get('articulos_maquinas','*',' idArticuloMaquina = '.$idArticuloMaquina);
-                            $articulo            = $this->articulo_model->get('articulos','*',' idArticulo = '.$articulos_maquinas[0]->articulo);
-                            
-                            $data_movimiento = array(
-                                "articulo"=>$articulo[0]->idArticulo,
-                                "cantidad"=> 0,
-                                "fecha_hora"=>date('Y-m-d h:m:s'),
-                                "movimiento"=>"Actualizado desde la importacion de articulos a maquinas",
-                                "usuario"=>$this->session->userdata('id'),
-                                "locacion"=>'M#'.$articulos_maquinas[0]->maquina
-                            );
-                            $this->movimiento_articulo_model->add('movimiento_articulo', $data_movimiento);
-                            
-                        }
-                        else{
-                            //$errores[] = $datos['nro_egm'];
-                        }    
-                    }    
-                } 
+//                if (isset($_SESSION['update_import']) and count($_SESSION['update_import'])){                    
+//                    
+//                    foreach ($_SESSION['update_import'] as $idArticuloMaquina =>$cantidad){
+//                        $data_update = array('cantidad' => $cantidad);
+//                        if ($this->articulos_maquinas_model->edit('articulos_maquinas', $data_update,'idArticuloMaquina',$idArticuloMaquina)) {
+//                             //agregado con exito
+//                            $success_update++;
+//                            $articulos_maquinas  = $this->articulos_maquinas_model->get('articulos_maquinas','*',' idArticuloMaquina = '.$idArticuloMaquina);
+//                            $articulo            = $this->articulo_model->get('articulos','*',' idArticulo = '.$articulos_maquinas[0]->articulo);
+//                            
+//                            $data_movimiento = array(
+//                                "articulo"=>$articulo[0]->idArticulo,
+//                                "cantidad"=> 0,
+//                                "fecha_hora"=>date('Y-m-d h:m:s'),
+//                                "movimiento"=>"Actualizado desde la importacion de articulos a maquinas",
+//                                "usuario"=>$this->session->userdata('id'),
+//                                "locacion"=>'M#'.$articulos_maquinas[0]->maquina
+//                            );
+//                            $this->movimiento_articulo_model->add('movimiento_articulo', $data_movimiento);
+//                            
+//                        }
+//                        else{
+//                            //$errores[] = $datos['nro_egm'];
+//                        }    
+//                    }    
+//                } 
                
                 $this->session->set_flashdata('success', '
                         <strong>'.$success_update.'</strong> registros modificados <br>
