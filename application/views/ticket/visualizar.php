@@ -133,11 +133,10 @@ $prioridad = array(
                                                 echo '<tr> 
                                                         <td style="padding-bottom:0px;">
                                                             <label>
-                                                                <input type="checkbox" class="articulo" id="art_'.$art->idArticulo.'" name="entra['.$art->idArticulo.']" style="vertical-align: middle;position: relative;bottom: 3px;" value="0" articulo="'.$art->idArticulo.'"> '
-                                                        . '         '.$art->nombre.' <i id="stk_'.$art->idArticulo.'" total="'.$art->stock.'">('.$art->stock.' en stock )</i></label> </td>
-                                                        
-                                                                <input type="hidden" id="'.$art->idArticulo.'"   value="1" > 
-                                                        
+                                                                <input type="checkbox" class="articulo" id="art_'.$art->codigo.'" name="entra['.$art->codigo.']" style="vertical-align: middle;position: relative;bottom: 3px;" value="0" articulo="'.$art->codigo.'"> '
+                                                                .$art->codigo.'
+                                                            </label> 
+                                                        </td>
                                                       </tr>';
                                                 }
                                             }
@@ -157,21 +156,9 @@ $prioridad = array(
                                                 echo '<tr> 
                                                         <td style="padding-bottom:0px;">
                                                             <label>
-                                                                <input type="checkbox" class="mov_articulo" id="mov_art_'.$mov_art->articulo.'" name="sale['.$mov_art->articulo.']" style="vertical-align: middle;position: relative;bottom: 3px;" value="'.$mov_art->cantidad.'" articulo="'.$mov_art->articulo.'"> '
-                                                                .$mov_art->articulo_str.' 
+                                                                <input type="checkbox" class="mov_articulo" id="mov_art_'.$mov_art->articulo.'" name="sale['.$mov_art->articulo.']" style="vertical-align: middle;position: relative;bottom: 3px;" value="1" articulo="'.$mov_art->articulo.'"> '
+                                                                .$mov_art->articulo.' 
                                                             </label> 
-                                                        </td>
-                                                        <td style="padding-bottom:0px;"><label style="padding-bottom:0px;">
-                                                            <input type="hiddden" id="mov_'.$mov_art->articulo.'"  max="'.$mov_art->cantidad.'"   value="1" > 
-                                                        </td>
-                                                        <td style="padding-bottom:0px;">
-                                                            <select name="locacion['.$mov_art->articulo.']" id="locacion_'.$mov_art->articulo.'" disabled>
-                                                                <option value="">Enviar a</option>
-                                                                <option value="laboratorio">Laboratorio</option>
-                                                                <option value="stock">Stock</option>
-                                                                <option value="scrap">Scrap</option>
-                                                                <option value="baja">Baja</option>
-                                                            </select> 
                                                         </td>
                                                       </tr>';
                                                 }

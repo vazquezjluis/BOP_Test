@@ -162,88 +162,72 @@ class Novedades extends CI_Controller {
                         //Partes que ENTRAN a la maquina
                         if (count($arr_entra)){
                            $texto.=" Entra ";
-                           foreach ($arr_entra as $articulo=>$cantidad){
-                               //Valida si existe una cantidad
-                               if ($cantidad > 0 and $cantidad!=''){
-                                   $este_articulo = $this->articulo_model->getById($articulo);
-                                   $texto.="[".$este_articulo->nombre." x ".$cantidad." ]";
-                                   $data_mov_articulo = array(
-                                       "articulo" =>$articulo,
-                                       "cantidad" =>$cantidad,
-                                       "fecha_hora"=>date('Y-m-d H:m:s'),
-                                       "movimiento"=>'stock > M#'.$mi_maquina->nro_egm,
-                                       "usuario" => $this->session->userdata('id'),
-                                       "locacion" =>"M#".$mi_maquina->nro_egm   
-                                   );
+                           foreach ($arr_entra as $codigo_generico=>$cantidad){
+                                //obtengo el primer articulo con el mismo codigo generico 
+                                $articulos = $this->articulo_model->list_articulo_generico(" having codigo = '".$codigo_generico."'");    
+                                $este_articulo = $this->articulo_model->get('articulos','*',' stock = 1 AND idArticulo in ('.$articulos[0]->id.')');
+                                
+                                $texto.="[".$codigo_generico." x 1 ]";
+                                $data_mov_articulo = array(
+                                    "articulo" =>$codigo_generico,
+                                    "cantidad" =>1,
+                                    "fecha_hora"=>date('Y-m-d H:m:s'),
+                                    "movimiento"=>'stock > M#'.$mi_maquina->nro_egm,
+                                    "usuario" => $this->session->userdata('id'),
+                                    "locacion" =>"M#".$mi_maquina->nro_egm   
+                                );
 
-                                    if ($this->movimiento_articulo_model->add('movimiento_articulo',$data_mov_articulo) == TRUE){ 
+                                if ($this->movimiento_articulo_model->add('movimiento_articulo',$data_mov_articulo) == TRUE){ 
+                                    $this->session->set_flashdata('success','Novedades registrado con éxito!');
+                                }else{
+                                    $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error al agregar la parte que entra en el relevamiento.</p></div>';
+                                }
+                                //modificamos el stock del articulo que entra
 
-                                        $this->session->set_flashdata('success','Novedades registrado con éxito!');
-                                    }else{
-                                        $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error al agregar la parte que entra en el relevamiento.</p></div>';
-                                    }
-                                    //modificamos el stock del articulo que entra
+                                $nuevo_stock = $este_articulo->stock - 1;
+                                $stock_articulo = array(
+                                    "stock" =>$nuevo_stock
+                                );
+                                if ($this->articulo_model->edit('articulos',$stock_articulo,'idArticulo',$este_articulo[0]->idArticulo) == TRUE){   
+                                    $this->session->set_flashdata('success','Articulo modificado con éxito!');
+                                }else{
+                                    $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error al modificar el articulo.</p></div>';
+                                }
 
-                                    $nuevo_stock = $este_articulo->stock - $cantidad;
-                                    $stock_articulo = array(
-                                        "stock" =>$nuevo_stock
-                                    );
-                                    if ($this->articulo_model->edit('articulos',$stock_articulo,'idArticulo',$este_articulo->idArticulo) == TRUE){   
-                                        $this->session->set_flashdata('success','Articulo modificado con éxito!');
-                                    }else{
-                                        $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error al modificar el articulo.</p></div>';
-                                    }
+                                $data_art_maquina = array(
+                                    "articulo"=>$este_articulo[0]->codigo,
+                                    "maquina"=>$mi_maquina->nro_egm,
+                                    "cantidad"=>1,
+                                    "usuario"=>$this->session->userdata('id'),
+                                    "fecha_hora"=>date("Y-m-d h:i:s")
+                                );
+                                if ($this->articulos_maquinas_model->add("articulos_maquinas",$data_art_maquina)==TRUE){
 
-                                    //verificamos si existe el articulo en la maquina en la tabla articulos_maquinas
-                                    $articulos_maquinas = $this->articulos_maquinas_model->get("articulos_maquinas","*"," estado = 0 AND articulo = ".$este_articulo->idArticulo." and maquina =".$mi_maquina->nro_egm);
-                                    if (count($articulos_maquinas)){//si existe el articulo entonces actualiza
-                                        //obtengo la cantidad y luego actualizo la nueva cantidad
-                                        $nueva_cantidad = $articulos_maquinas[0]->cantidad + $cantidad;
-                                        $data_art_maquina = array(
-                                            "cantidad"=>$nueva_cantidad,
-                                            "usuario"=>$this->session->userdata('id'),
-                                            "fecha_hora"=>date("Y-m-d h:i:s")
-                                        );
-                                        if ($this->articulos_maquinas_model->edit("articulos_maquinas",$data_art_maquina,"idArticuloMaquina",$articulos_maquinas[0]->idArticuloMaquina)==TRUE){
-                                            
-                                        }else{
-                                            die("Error: #434rrd# No se pudo actualizar el articulo a la maquina, ".$articulo." ".$cantidad);
-                                        }
-                                    }else{//si no existe el articulo lo crea
-                                        $data_art_maquina = array(
-                                            "articulo"=>$articulo,
-                                            "maquina"=>$mi_maquina->nro_egm,
-                                            "cantidad"=>$cantidad,
-                                            "usuario"=>$this->session->userdata('id'),
-                                            "fecha_hora"=>date("Y-m-d h:i:s")
-                                        );
-                                        if ($this->articulos_maquinas_model->add("articulos_maquinas",$data_art_maquina)==TRUE){
-                                            
-                                        }else{
-                                            die("Error: #434vvd# No se pudo agregar el articulo a la maquina, ".$articulo." ".$cantidad);
-                                        }
-                                    }
+                                }else{
+                                    die("Error: #434vvd# No se pudo agregar el articulo a la maquina, articulo ".$este_articulo[0]->codigo);
+                                }
+                                    
                                    
-                               }
+                               
                            }
                         }
                         
                         //Partes que SALEN de la maquina
                         if (count($arr_sale)){
                            $texto.=" Sale ";
-                           foreach ($arr_sale as $sale_articulo=>$sale_cantidad){
-                               
-                               if ($sale_cantidad > 0 and $sale_cantidad!=''){
+                           foreach ($arr_sale as $codigo_generico=>$sale_cantidad){
+                                
                                    $locacion = $this->input->post('locacion');
-                                   $nueva_locacion=$locacion[$sale_articulo];
+                                   $nueva_locacion=$locacion[$cod_generico];
                                    //obtengo el articulo
-                                   $este_articulo = $this->articulo_model->getById($sale_articulo);
+                                   $este_articulo = $this->articulos_maquinas_model->get('articulos_maquinas','*',' maquina = '.$mi_maquina->nro_egm.' and articulo like "%'.$codigo_generico.'%"');
+
                                    
-                                   $texto.="[".$este_articulo->nombre." x ".$sale_cantidad." ]";
+                                   $texto.="[".$este_articulo->nombre." x 1 ]";
                                    
                                    $data_mov_articulo = array(
-                                       "articulo" =>$sale_articulo,
-                                       "cantidad" =>$sale_cantidad,
+                                       "articulo" =>$este_articulo[0]->articulo,
+                                       "cantidad" =>1,
                                        "fecha_hora"=>date('Y-m-d H:i:s'),
                                        "movimiento"=>'M#'.$mi_maquina->nro_egm.' > '.$nueva_locacion,
                                        "usuario" => $this->session->userdata('id'),
@@ -256,9 +240,9 @@ class Novedades extends CI_Controller {
                                             case "laboratorio":
                                                 $this->load->model('laboratorio_model', '', TRUE);
                                                 $data_laboratorio = array(
-                                                    "articulo"=>$sale_articulo,
+                                                    "articulo"=>$este_articulo[0]->articulo,
                                                     "maquina"=>$mi_maquina->idMaquina,
-                                                    "cantidad"=>$sale_cantidad,
+                                                    "cantidad"=>1,
                                                     "usuario"=>$this->session->userdata('id'),
                                                     "fecha_hora"=>date('Y-m-d H:i:s'),
                                                     "asignado"=>"",
@@ -279,28 +263,17 @@ class Novedades extends CI_Controller {
                                     }
                                     
                                     
-                                    
-                                    
-                                    //sabemos que este articlo existe en la tabla articulos_maquinas porque "sale"
-                                    //por lo tanto solo actualizamos la cantidad
-                                    $articulos_maquinas = $this->articulos_maquinas_model->get("articulos_maquinas","*"," maquina = ".$mi_maquina->nro_egm." AND articulo = ".$este_articulo->idArticulo);
-                                    if(count($articulos_maquinas)){
-                                        $nueva_cantidad = $articulos_maquinas[0]->cantidad - $sale_cantidad;
-                                        $data_art_maquina_2 = array(
-                                            "cantidad"=>$nueva_cantidad,
-                                            "usuario_salida"=>$this->session->userdata('id'),
-                                            "fecha_salida"=>date("Y-m-d h:i:s"),
-                                            "estado"=>1
-                                        );
-                                        if ($this->articulos_maquinas_model->edit("articulos_maquinas",$data_art_maquina_2,'idArticuloMaquina',$articulos_maquinas[0]->idArticuloMaquina)==TRUE){
-                                            
-                                        }else{
-                                            die("error: #3k4j53 el id ,".$articulos_maquinas[0]->idArticuloMaquina." articulo ".$este_articulo->idArticulo." no se puede modificar");
-                                        }
+                                    $data_art_maquina = array(
+                                        "estado"=>1,
+                                        "usuario_salida"=>$this->session->userdata('id'),
+                                        "fecha_salida"=>date("Y-m-d h:i:s"),
+                                    );
+                                    if ($this->articulos_maquinas_model->edit("articulos_maquinas",$data_art_maquina,'articulo',$este_articulo[0]->articulo)==TRUE){
+
                                     }else{
-                                        die("error: #sd2123 el articulo ".$este_articulo->idArticulo." no existe en la tabla articulos_maquina numero egm = ".$mi_maquina->nro_egm);
+                                        die("error: #3k4j53 el id ,".$articulos_maquinas[0]->idArticuloMaquina." articulo ".$este_articulo->idArticulo." no se puede modificar");
                                     }
-                               }
+                                    
                            }
                         }
                         
