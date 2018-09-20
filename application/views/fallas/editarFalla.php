@@ -97,11 +97,11 @@
                                                   foreach ($articulos as $art){
                                                       $checked = "";
                                                       if (count($partes_elegidas)){
-                                                        if (in_array($art->idArticulo, $partes_elegidas)){
+                                                        if (in_array($art->codigo, $partes_elegidas)){
                                                             $checked="checked";
                                                         }
                                                       }
-                                                      echo '<tr><td><label><input type="checkbox" '.$checked.' name="articulo[]" style="vertical-align: middle;position: relative;bottom: 3px;" value="'.$art->idArticulo.'"> '.$art->nombre.'</label></td></tr>';
+                                                      echo '<tr><td><label><input type="checkbox" '.$checked.' name="articulo[]" style="vertical-align: middle;position: relative;bottom: 3px;" value="'.$art->codigo.'"> '.$art->codigo.'</label></td></tr>';
                                                   }
                                                 }
                                 

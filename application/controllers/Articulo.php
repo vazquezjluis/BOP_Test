@@ -313,10 +313,14 @@ class Articulo extends CI_Controller {
         $html = '';
         $modelos = $this->maquinas_model->get_modelos();
         $articulo = $this->articulo_model->list_articulo_generico(" having codigo = '".$_GET['codigo']."'");
+        
         $modelos_elegidos = array();
-        if ($articulo[0]->tipo_modelo!=''){
-            $modelos_elegidos = explode("-_-", $articulo[0]->tipo_modelo);
+        if (count($articulo)){
+            if ($articulo[0]->tipo_modelo!=''){
+                $modelos_elegidos = explode("-_-", $articulo[0]->tipo_modelo);
+            }
         }
+        
         foreach ($modelos as $m){
             $checked = "";
             if (count($modelos_elegidos)){

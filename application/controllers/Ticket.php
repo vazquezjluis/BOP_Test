@@ -231,19 +231,21 @@ class Ticket extends CI_Controller {
                         //Partes que ENTRAN a la maquina
                         if (count($arr_entra)){
                            $texto.=" Entra ";
-                           foreach ($arr_entra as $articulo=>$cantidad){
-                               //Valida si existe una cantidad
-                               if ($cantidad > 0 and $cantidad!=''){
-                                   $este_articulo = $this->articulo_model->getById($articulo);
-                                   $texto.="[".$este_articulo->nombre." x ".$cantidad." ]";
-                                   $data_mov_articulo = array(
-                                       "articulo" =>$articulo,
-                                       "cantidad" =>$cantidad,
+                           foreach ($arr_entra as $codigo_generico=>$cantidad){//cantidad siempre es 1
+                                    //obtengo el primer articulo con el mismo codigo generico 
+                                    $articulos = $this->articulo_model->list_articulo_generico(" having codigo = '".$codigo_generico."'");
+                                    
+                                    $este_articulo = $this->articulo_model->get('articulos','*',' stock = 1 AND idArticulo in ('.$articulos[0]->id.')');
+            
+                                    $texto.="[".$este_articulo[0]->nombre." x 1 ]";
+                                    $data_mov_articulo = array(
+                                       "articulo" =>$este_articulo[0]->codigo,
+                                       "cantidad" =>1,
                                        "fecha_hora"=>date('Y-m-d H:m:s'),
                                        "movimiento"=>'stock > M#'.$mi_maquina->nro_egm,
                                        "usuario" => $this->session->userdata('id'),
                                        "locacion" =>"M#".$mi_maquina->nro_egm   
-                                   );
+                                    );
 
                                     if ($this->movimiento_articulo_model->add('movimiento_articulo',$data_mov_articulo) == TRUE){ 
 
@@ -253,48 +255,31 @@ class Ticket extends CI_Controller {
                                     }
                                     //modificamos el stock del articulo que entra
 
-                                    $nuevo_stock = $este_articulo->stock - $cantidad;
+                                    $nuevo_stock = $este_articulo[0]->stock - 1;
                                     $stock_articulo = array(
                                         "stock" =>$nuevo_stock
                                     );
-                                    if ($this->articulo_model->edit('articulos',$stock_articulo,'idArticulo',$este_articulo->idArticulo) == TRUE){   
+                                    if ($this->articulo_model->edit('articulos',$stock_articulo,'idArticulo',$este_articulo[0]->idArticulo) == TRUE){   
                                        // $this->session->set_flashdata('success','Articulo modificado con éxito!');
                                     }else{
                                         $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error al modificar el articulo.</p></div>';
                                     }
-
-                                    //verificamos si existe el articulo en la maquina en la tabla articulos_maquinas
-                                    $articulos_maquinas = $this->articulos_maquinas_model->get("articulos_maquinas","*"," articulo = ".$este_articulo->idArticulo." and maquina =".$mi_maquina->nro_egm);
-                                    if (count($articulos_maquinas)){//si existe el articulo entonces actualiza
-                                        //obtengo la cantidad y luego actualizo la nueva cantidad
-                                        $nueva_cantidad = $articulos_maquinas[0]->cantidad + $cantidad;
-                                        $data_art_maquina = array(
-                                            "cantidad"=>$nueva_cantidad,
-                                            "usuario"=>$this->session->userdata('id'),
-                                            "fecha_hora"=>date("Y-m-d h:i:s"),
-                                            "estado"=>0 //activo
-                                        );
-                                        if ($this->articulos_maquinas_model->edit("articulos_maquinas",$data_art_maquina,"idArticuloMaquina",$articulos_maquinas[0]->idArticuloMaquina)==TRUE){
-                                            
-                                        }else{
-                                            die("Error: #434rrd# No se pudo actualizar el articulo a la maquina, ".$articulo." ".$cantidad);
-                                        }
-                                    }else{//si no existe el articulo lo crea
-                                        $data_art_maquina = array(
-                                            "articulo"=>$articulo,
+                                    
+                                    //guardo en articulos_maquina el codigo del articulo y el estado
+                                    $data_art_maquina = array(
+                                            "articulo"=>$este_articulo[0]->codigo,
                                             "maquina"=>$mi_maquina->nro_egm,
-                                            "cantidad"=>$cantidad,
+                                            "cantidad"=>1,
+                                            "estado"=>0,//activo
                                             "usuario"=>$this->session->userdata('id'),
                                             "fecha_hora"=>date("Y-m-d h:i:s")
                                         );
-                                        if ($this->articulos_maquinas_model->add("articulos_maquinas",$data_art_maquina)==TRUE){
+                                    if ($this->articulos_maquinas_model->add("articulos_maquinas",$data_art_maquina)==TRUE){
                                             
-                                        }else{
-                                            die("Error: #434vvd# No se pudo agregar el articulo a la maquina, ".$articulo." ".$cantidad);
-                                        }
+                                    }else{
+                                        die("Error: #434vvd# No se pudo agregar el articulo a la maquina, articulo ".$este_articulo[0]->codigo);
                                     }
                                    
-                               }
                            }
                         }
                         

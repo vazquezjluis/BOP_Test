@@ -109,18 +109,11 @@ if (isset($result)){
                       <?php
                       if ($articulos_maquinas){
                           echo "<table  class='table table-bordered'>
-                                    <tr><td colspan='3'><b> Partes en la maquina</b></td></tr>
-                                    <tr>
-                                        <td><b>S/N</b></td>
-                                        <td><b>Parte</b></td>
-                                        <td><b>Cant.</b></td>
-                                    </tr>
+                                    <tr><td ><b> Partes en la maquina</b></td></tr>
                                     ";
                           foreach ($articulos_maquinas as $am){
                               echo "<tr> 
                                      <td>".$am->articulo."</td> 
-                                     <td>".$am->articulo_str."</td> 
-                                     <td>".$am->cantidad."</td> 
                                     </tr>";           
                           }
                           echo "</table>";
@@ -324,17 +317,17 @@ if (isset($result)){
                                         </label>
                                     </div>
                                     <div class='span12' style='background-color:#fcf8e3;margin-left: 0;margin-bottom:10px;;padding:1% 0 0 1%;' >
-                                        <div class='span8' id='p1' style='display:none;'>
+                                        <div class='span6' id='p1' style='display:none;'>
                                             <label><strong>Parte que entra:</strong></label>
                                             <table class='table table-bordered' style='width:90%;' id='modelos'>
                                                 <tbody>";
-                                            if(count($articulos)){ 
+                                            if(count($articulos)){
                                                 foreach ($articulos as $art){                                  
-                                                echo '<tr id="tr_entra_'.$art->idArticulo.'" style="display:none"> 
+                                                echo '<tr id="tr_entra_'.$art->codigo.'" style="display:none"> 
                                                         <td style="padding-bottom:0px;">
                                                             <label>
-                                                                <input type="checkbox" class="articulo" id="art_'.$art->idArticulo.'" name="entra['.$art->idArticulo.']" style="vertical-align: middle;position: relative;bottom: 3px;" value="1" articulo="'.$art->idArticulo.'"> 
-                                                                 '.$art->nombre.' </label> 
+                                                                <input type="checkbox" class="articulo" id="art_'.$art->codigo.'" name="entra['.$art->codigo.']" style="vertical-align: middle;position: relative;bottom: 3px;" value="1" articulo="'.$art->codigo.'"> 
+                                                                 '.$art->codigo.' </label> 
                                                         </td>
                                                      </tr>';
                                                 }
@@ -345,7 +338,7 @@ if (isset($result)){
                                             </table>
                                         </div> ";
                                 
-                                echo"   <div class='span8' id='p2' style='display:none;'>
+                                echo"   <div class='span6' id='p2' style='display:none;'>
                                             <label><strong>Parte que sale:</strong></label>
                                             ";
                                         if(count($articulos_maquinas)){
@@ -372,7 +365,7 @@ if (isset($result)){
                                         ";
                                             
                                         }else{
-                                            echo "No hay articulos";
+                                            echo "No hay articulos la maquina no tiene partes asociadas.";
                                         }
                                 echo "   </div>
                                     </div>";
@@ -429,8 +422,8 @@ $(document).on('click', 'a', function(event) {
         
         //si existe el atributo en el a href y este tiene algun dato entonces significa que hay tickets previos sobre la maquina
         if ($(this).attr('ticketPrevio')!='' && $(this).attr('ticketPrevio')!=undefined){
-            console.log($(this).attr('ticketPrevio'));
-            console.log(maquina);
+//            console.log($(this).attr('ticketPrevio'));
+//            console.log(maquina);
             $('#referencia').val(maquina);
             
             var html = '<div id="ticket_previos">\n\
@@ -493,7 +486,7 @@ $(document).on('change', 'input[type="checkbox"]', function(event) {
               if($(this).attr("art")!=""){//si la falla esta asociadoa a algun articulo
                  $("#releva_partes").show();
                  var articulos = $(this).attr("art").split('-_-');
-                 
+                 console.log(articulos);
                  for(i=0;i<= articulos.length;i++){
                     $("#tr_entra_"+articulos[i]).show();
                     $("#tr_sale_"+articulos[i]).show();

@@ -70,7 +70,7 @@
                                                 <?php 
                                                 if($articulos){
                                                   foreach ($articulos as $articulo){                                  
-                                                      echo '<tr><td colspan="2"><label><input type="checkbox" name="articulo[]" style="vertical-align: middle;position: relative;bottom: 3px;" value="'.$articulo->idArticulo.'"> '.$articulo->nombre.'</label></td></tr>';
+                                                      echo '<tr><td colspan="2"><label><input type="checkbox" name="articulo[]" style="vertical-align: middle;position: relative;bottom: 3px;" value="'.$articulo->codigo.'"> '.$articulo->codigo.'</label></td></tr>';
                                                   }
                                                 }
                                 

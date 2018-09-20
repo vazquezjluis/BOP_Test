@@ -67,12 +67,12 @@ if(!$results){?>
     </thead>
     <tbody>
         <?php
-        $articulos = array();
-        if (isset($results_articulo)){
-            foreach ($results_articulo as $ra){
-                $articulos [$ra->idArticulo]= $ra->nombre;
-            }
-        }
+//        $articulos = array();
+//        if (isset($results_articulo)){
+//            foreach ($results_articulo as $ra){
+//                $articulos [$ra->idArticulo]= $ra->nombre;
+//            }
+//        }
         
         $gravedad = array(
             1=>array("important","Grave"),
@@ -92,7 +92,7 @@ if(!$results){?>
                         $str_art = '';
                         $explo = explode("-_-", $r->articulo);
                         foreach ($explo as $e){
-                            $str_art.= ", ".$articulos[$e];
+                            $str_art.= ", ".$e;
                         }
                         echo substr($str_art, 1);
                     }
