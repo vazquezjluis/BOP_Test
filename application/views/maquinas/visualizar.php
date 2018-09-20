@@ -194,7 +194,7 @@ if (isset($result)){
                         
                         echo '<tr>
                                 <td>'.$hp->idArticuloMaquina.'</td>
-                                <td>'.$hp->articulo_str.'</td>
+                                <td>'.$hp->articulo.'</td>
                                 <td>'.$hp->fecha_salida.'</td>
                                 <td>#'.$hp->usuario_salida.'</td>
                               </tr>';
@@ -348,11 +348,11 @@ if (isset($result)){
                                             foreach ($articulos_maquinas as $mov_art){ 
                                                 
                                                 //por defecto el articulo que sale de la maquina, se dirige al laboratorio
-                                                echo '<tr id="tr_sale_'.$mov_art->articulo.'" style="display:none"> 
+                                                echo '<tr id="tr_sale_'.str_replace(substr($mov_art->articulo, -3), "", $mov_art->articulo).'" style="display:none"> 
                                                         <td style="padding-bottom:0px;">
                                                             <label>
                                                                 <input type="checkbox" class="mov_articulo" id="mov_art_'.$mov_art->articulo.'" name="sale['.$mov_art->articulo.']" style="vertical-align: middle;position: relative;bottom: 3px;" value="1" articulo="'.$mov_art->articulo.'"> '
-                                                                .$mov_art->articulo_str.' (la parte irá al labratorio)
+                                                                .$mov_art->articulo.' (la parte irá al labratorio)
                                                                 
                                                             </label> 
                                                         </td>

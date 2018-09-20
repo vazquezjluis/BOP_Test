@@ -220,7 +220,6 @@ class Ticket extends CI_Controller {
                     }
                 }
                 
-                //Verifica si el usuario genera un relevamiento de partes
                 //#RELEVAMIENTO DE PARTES (ARTICULOS)
                 $this->input->post('entra') == NULL ? $arr_entra = array():$arr_entra = $this->input->post('entra');
                 $this->input->post('sale') == NULL ? $arr_sale = array():$arr_sale = $this->input->post('sale');
@@ -286,50 +285,39 @@ class Ticket extends CI_Controller {
                         //Partes que SALEN de la maquina
                         if (count($arr_sale)){
                            $texto.=" Sale ";
-                           foreach ($arr_sale as $sale_articulo=>$sale_cantidad){
+                           foreach ($arr_sale as $codigo_generico=>$sale_cantidad){
                                
-                               if ($sale_cantidad > 0 and $sale_cantidad!=''){
-                                    $locacion = $this->input->post('locacion');
-                                    $nueva_locacion=$locacion[$sale_articulo];
                                     //obtengo el articulo
-                                    $este_articulo = $this->articulo_model->getById($sale_articulo);
+                                    $este_articulo = $this->articulos_maquinas_model->get('articulos_maquinas','*',' maquina = '.$mi_maquina->nro_egm.' and articulo like "%'.$codigo_generico.'%"');
 
-                                    $texto.="[".$este_articulo->nombre." x ".$sale_cantidad." ]";
+                                    $texto.="[".$este_articulo[0]->articulo." x 1 ]";
 
                                     $data_mov_articulo = array(
-                                        "articulo" =>$sale_articulo,
-                                        "cantidad" =>$sale_cantidad,
+                                        "articulo" =>$este_articulo[0]->articulo,
+                                        "cantidad" =>1,
                                         "fecha_hora"=>date('Y-m-d H:i:s'),
-                                        "movimiento"=>'M#'.$mi_maquina->nro_egm.' > '.$nueva_locacion,
+                                        "movimiento"=>'M#'.$mi_maquina->nro_egm.' > laboratorio',
                                         "usuario" => $this->session->userdata('id'),
-                                        "locacion" => $nueva_locacion 
+                                        "locacion" => "laboratorio" 
                                     );
+                                    $nueva_locacion = "laboratorio";
                                     
                                     if ($this->movimiento_articulo_model->add('movimiento_articulo',$data_mov_articulo) == TRUE){ 
                                         //crea el registro del movimiento del articulo
                                         switch ($nueva_locacion){
                                             case "laboratorio":
                                                 $this->load->model('laboratorio_model', '', TRUE);
-                                                //verificamos si existe el articulo en la maquina en la tabla articulos_maquinas
-                                                $articulos_laboratorio = $this->articulos_laboratorio_model->get("articulos_laboratorio","*"," articulo = ".$sale_articulo." and maquina =".$mi_maquina->nro_egm);
+                                                
                                                 $data_laboratorio = array(
-                                                        "articulo"=>$sale_articulo,
+                                                        "articulo"=>$este_articulo[0]->articulo,
                                                         "maquina"=>$mi_maquina->nro_egm,
-                                                        "cantidad"=>$sale_cantidad,
+                                                        "cantidad"=>1,
                                                         "usuario"=>$this->session->userdata('id'),
                                                         "fecha_hora"=>date('Y-m-d H:i:s'),
                                                         "asignado"=>"",
                                                         "estado"=>1
                                                     );
-                                                if (count($articulos_laboratorio)){//existe
-                                                    //actualiza el registro
-                                                    $this->laboratorio_model->edit("articulos_laboratorio",$data_laboratorio,"idArticuloLaboratorio",$articulos_laboratorio[0]->idArticuloLaboratorio);
-                                                    
-                                                }else{
-                                                    //crea un registro nuevo
-                                                    $this->laboratorio_model->add("articulos_laboratorio",$data_laboratorio);
-                                                }
-                                                
+                                                $this->laboratorio_model->add("articulos_laboratorio",$data_laboratorio);
                                                 
                                             break;
                                             case "scrap":
@@ -339,34 +327,22 @@ class Ticket extends CI_Controller {
                                                 
                                         }
 
-                                        $this->session->set_flashdata('success','Novedades registrado con éxito!');
                                     }else{
                                         $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error al agregar la parte que entra en el relevamiento.</p></div>';
                                     }
                                     
-                                    
-                                    
-                                    
-                                    //sabemos que este articlo existe en la tabla articulos_maquinas porque "sale"
-                                    //por lo tanto solo actualizamos la cantidad
-                                    $articulos_maquinas = $this->articulos_maquinas_model->get("articulos_maquinas","*"," maquina = ".$mi_maquina->nro_egm." AND articulo = ".$este_articulo->idArticulo);
-                                    if(count($articulos_maquinas)){
-                                        $nueva_cantidad = $articulos_maquinas[0]->cantidad - $sale_cantidad;
-                                        $data_art_maquina_2 = array(
-                                            "cantidad"=>$nueva_cantidad,
-                                            "estado"=>1,
-                                            "usuario_salida"=>$this->session->userdata('id'),
-                                            "fecha_salida"=>date("Y-m-d h:i:s"),
-                                        );
-                                        if ($this->articulos_maquinas_model->edit("articulos_maquinas",$data_art_maquina_2,'idArticuloMaquina',$articulos_maquinas[0]->idArticuloMaquina)==TRUE){
-                                            
-                                        }else{
-                                            die("error: #3k4j53 el id ,".$articulos_maquinas[0]->idArticuloMaquina." articulo ".$este_articulo->idArticulo." no se puede modificar");
-                                        }
+                                        
+                                    $data_art_maquina = array(
+                                        "estado"=>1,
+                                        "usuario_salida"=>$this->session->userdata('id'),
+                                        "fecha_salida"=>date("Y-m-d h:i:s"),
+                                    );
+                                    if ($this->articulos_maquinas_model->edit("articulos_maquinas",$data_art_maquina,'articulo',$este_articulo[0]->articulo)==TRUE){
+
                                     }else{
-                                        die("error: #sd2123 el articulo ".$este_articulo->idArticulo."no existe.");
+                                        die("error: #3k4j53 el id ,".$articulos_maquinas[0]->idArticuloMaquina." articulo ".$este_articulo->idArticulo." no se puede modificar");
                                     }
-                               }
+                               
                            }
                         }
                         

@@ -318,8 +318,8 @@ class Maquinas extends CI_Controller {
                 //$this->data['maquinas_fallas'] = $this->fallas_model->getMaquinas_fallas(0,0,false,'array',' AND idMaquina = '.$this->uri->segment(3));
                 $this->data['fallas_maquina'] = $this->fallas_maquinas_model->get('fallas_maquinas','idFallas_maquinas,ticket,falla,fallas_str(falla) as descripcion, usuario_str(usuario) as usuario,fecha_registro',' estado = 1 AND  maquina = '.$this->data['result'][0]->nro_egm);
                 $this->data['historial_fallas'] = $this->fallas_maquinas_model->get('fallas_maquinas','idFallas_maquinas,ticket,fallas_str(falla) as descripcion, usuario_str(usuario) as usuario,fecha_registro',' estado = 0 AND  maquina = '.$this->data['result'][0]->nro_egm);
-                $this->data['articulos_maquinas'] = $this->articulos_maquinas_model->get('articulos_maquinas','articulos_maquinas.*, articulo_str(articulo) as articulo_str',' estado = 0 AND maquina = '.$this->data['result'][0]->nro_egm);
-                $this->data['historial_partes'] = $this->articulos_maquinas_model->get('articulos_maquinas','articulos_maquinas.*, articulo_str(articulo) as articulo_str, usuario_str(usuario_salida) as usuario_salida',' estado = 1 AND maquina = '.$this->data['result'][0]->nro_egm);
+                $this->data['articulos_maquinas'] = $this->articulos_maquinas_model->get('articulos_maquinas','articulos_maquinas.*',' estado = 0 AND maquina = '.$this->data['result'][0]->nro_egm);
+                $this->data['historial_partes'] = $this->articulos_maquinas_model->get('articulos_maquinas','articulos_maquinas.*,  usuario_str(usuario_salida) as usuario_salida',' estado = 1 AND maquina = '.$this->data['result'][0]->nro_egm);
                 
                 //Si la referencia es hacia una maquina entonces
                 //Obtengo los articulos asociados al modelo de la maquina
