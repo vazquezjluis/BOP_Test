@@ -159,6 +159,7 @@ $prioridad = array(
                                                                 <input type="checkbox" class="mov_articulo" id="mov_art_'.$mov_art->articulo.'" name="sale['.$mov_art->articulo.']" style="vertical-align: middle;position: relative;bottom: 3px;" value="1" articulo="'.$mov_art->articulo.'"> '
                                                                 .$mov_art->articulo.' 
                                                             </label> 
+                                                            <input type="hidden" name="locacion" value="laboratorio">
                                                         </td>
                                                       </tr>';
                                                 }

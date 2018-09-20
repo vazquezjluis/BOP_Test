@@ -100,7 +100,7 @@ class Articulo extends CI_Controller {
         $this->data['results'] = $this->articulo_model->list_articulos($config['per_page'],$this->input->get('per_page'),'');//'*',' estado !=90',$this->input->get('per_page'),$config['per_page']);
         
                  
-        $this->data['view'] = 'inventario/articulos/paniol';
+        $this->data['view'] = 'inventario/articulos/articulos';
        	$this->load->view('tema/header',$this->data);
 
     }

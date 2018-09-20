@@ -80,13 +80,13 @@ if(!$results){?>
                 echo '<td> ';
                  echo '<a href="'.base_url().'index.php/articulo/visualizar/'.$r->idArticulo.'"  class="btn tip-top" title="Ver detalle"><i class="icon-eye-open"></i></a>'; 
                  
-                if($this->permission->checkPermission($this->session->userdata('permiso'),'eArticulos')){ 
-                    echo '<a href="'.base_url().'index.php/articulo/editar/'.$r->idArticulo.'" class="btn btn-info tip-top" title="Editar Articulo"><i class="icon-pencil icon-white"></i></a>';
-                }
-                if($this->permission->checkPermission($this->session->userdata('permiso'),'dArticulos')){
-                    echo '<a href="#modal-excluir" class="btn btn-danger tip-top " role="button" data-toggle="modal" articulo="'.$r->idArticulo.'"  title="Eliminar Articulo">
-                                    <i class="icon-remove icon-white"></i></a>';
-                }             
+//                if($this->permission->checkPermission($this->session->userdata('permiso'),'eArticulos')){ 
+//                    echo '<a href="'.base_url().'index.php/articulo/editar/'.$r->idArticulo.'" class="btn btn-info tip-top" title="Editar Articulo"><i class="icon-pencil icon-white"></i></a>';
+//                }
+//                if($this->permission->checkPermission($this->session->userdata('permiso'),'dArticulos')){
+//                    echo '<a href="#modal-excluir" class="btn btn-danger tip-top " role="button" data-toggle="modal" articulo="'.$r->idArticulo.'"  title="Eliminar Articulo">
+//                                    <i class="icon-remove icon-white"></i></a>';
+//                }             
                 echo'</td>';
             echo '</tr>';
             

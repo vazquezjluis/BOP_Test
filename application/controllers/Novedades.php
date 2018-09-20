@@ -218,7 +218,8 @@ class Novedades extends CI_Controller {
                            foreach ($arr_sale as $codigo_generico=>$sale_cantidad){
                                 
                                    $locacion = $this->input->post('locacion');
-                                   $nueva_locacion=$locacion[$cod_generico];
+//                                   $nueva_locacion=$locacion[$cod_generico];
+                                   $nueva_locacion="laboratorio";
                                    //obtengo el articulo
                                    $este_articulo = $this->articulos_maquinas_model->get('articulos_maquinas','*',' maquina = '.$mi_maquina->nro_egm.' and articulo like "%'.$codigo_generico.'%"');
 
@@ -241,7 +242,7 @@ class Novedades extends CI_Controller {
                                                 $this->load->model('laboratorio_model', '', TRUE);
                                                 $data_laboratorio = array(
                                                     "articulo"=>$este_articulo[0]->articulo,
-                                                    "maquina"=>$mi_maquina->idMaquina,
+                                                    "maquina"=>$mi_maquina->nro_egm,
                                                     "cantidad"=>1,
                                                     "usuario"=>$this->session->userdata('id'),
                                                     "fecha_hora"=>date('Y-m-d H:i:s'),

@@ -99,7 +99,7 @@ if(!$results){?>
                 
             echo '<tr">';
             echo '<td>'.$r->idArticuloLaboratorio.'</td>';
-            echo '<td> '.$r->articulo_str.'</td>';
+            echo '<td> '.$r->articulo.'</td>';
             echo '<td>'.date('d/m/Y H:m:s',strtotime($r->fecha_hora)).'</td>';
             echo '<td>'.$r->usuario_str.'</td>';
             echo '<td>'.$r->asignado_str.'</td>';
