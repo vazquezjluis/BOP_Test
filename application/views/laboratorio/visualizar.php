@@ -16,7 +16,7 @@
             <tbody>
                 <tr>
                     <td style="text-align: right"><strong>Articulo / Parte</strong></td>
-                    <td><?php echo "COD#".$result[0]->articulo." - ".$result[0]->articulo_str; ?> </td>
+                    <td><?php echo "COD#  - ".$result[0]->articulo ; ?> </td>
                 </tr>
                 <tr>
                     <td style="text-align: right"><strong>Solicitado</strong></td>
@@ -99,7 +99,7 @@
                                         <select name="estado" id="estado" >
                                             <option value="">Selecione estado</option>
                                             <option value="1" <?php if ($result[0]->estado==1){ echo "selected";}?>>Averiado</option>
-                                            <option value="2" <?php if ($result[0]->estado==2){ echo "selected";}?>>Reparado</option>
+                                            <option value="0" <?php if ($result[0]->estado==2){ echo "selected";}?>>Reparado</option>
                                         </select>
                                     </div>
                                 </div>
@@ -122,16 +122,16 @@
                             </div>
                             
                             <div class="span4" > 
-                                <label for="locacion">Enviar a:</label>
+                                <label for="locacion">Enviar el articulo a:</label>
                                 <select name="locacion" id="locacion" >
                                     <option value="">Seleccione</option>
-                                    <option value="stock">Stock</option>
-                                    <option value="scrap">Scrap</option>
-                                    <option value="baja">dar de baja</option>
+                                    <option value="stock">Pañol</option>
+<!--                                    <option value="scrap">Scrap</option>
+                                    <option value="baja">dar de baja</option>-->
                                     
                                 </select>
-                                <input type="hidden" id="total" name="total"  value="<?php echo $result[0]->cantidad; ?>" min="1" style="width:50px;">
-                                <input type="number" name="cantidad" id="cantidad" disabled  max="<?php echo $result[0]->cantidad; ?>"  value="<?php echo $result[0]->cantidad; ?>" min="1" style="width:50px;">
+                                <!--<input type="hidden" id="total" name="total"  value="<?php // echo $result[0]->cantidad; ?>" min="1" style="width:50px;">-->
+                                <input type="hidden" name="cantidad" id="cantidad" disabled   value="1" >
                             </div>
                         </div>
                         <div class="span12"> 

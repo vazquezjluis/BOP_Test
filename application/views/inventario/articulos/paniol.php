@@ -95,7 +95,10 @@ if(!$results){?>
         <!--<th>#</th>-->
         <!--<th>Articulo</th>-->
         <th>Codigo</th>
-        <th>Stock</th>
+        <th>en Stock</th>
+        <th>en Maquinas</th>
+        <th>en Laboratorio</th>
+        <th>Modelos asociados</th>
         <th>Asociar a modelo</th>
         <!--<th>Laboratorio</th>-->
         <!--<th>Estado</th>-->
@@ -110,6 +113,9 @@ if(!$results){?>
 //                echo '<td>'.$r->nombre.'</td>';s
                 echo '<td>'.$r->codigo.'</td>';
                 echo '<td>'.$r->stock.'</td>';
+                echo '<td>'.$r->en_maquina.'</td>';
+                echo '<td>'.$r->en_laboratorio.'</td>';
+                echo '<td>'.str_replace('-_-', ',', $r->tipo_modelo).'</td>';
 //                echo '<td>'.$r->maquina.'</td>';
 //                echo '<td>'.$r->laboratorio.'</td>';
 //                echo '<td>'.$estado.'</td>';
@@ -207,7 +213,7 @@ if(!$results){?>
                     filtrar($(this).val());
                 }
             });
-            function filtrar(cadena){
+          function filtrar(cadena){
               $("#modelos tbody tr").each(function(){
                   $(this).removeClass('ocultar');
                   contenido_fila =  $(this).find('td:eq(0)').text();

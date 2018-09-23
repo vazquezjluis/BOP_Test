@@ -163,7 +163,7 @@ class Fallas extends CI_Controller {
 		$this->data['result'] = $this->fallas_model->getById($this->uri->segment(3));
                 
 		$this->load->model('articulo_model');
-                $this->data['articulos'] = $this->articulo_model->list_articulo_generico(' HAVING  stock > 0');
+                $this->data['articulos'] = $this->articulo_model->list_articulo_generico();
         
 		$this->data['view'] = 'fallas/editarFalla';
                 $this->load->view('tema/header',$this->data);

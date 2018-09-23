@@ -115,7 +115,9 @@ class Articulo_model extends CI_Model {
         
         $query = $this->db->query("  SELECT GROUP_CONCAT(idArticulo) as id,
             SUM(stock) as stock,tipo_modelo,
-            SUBSTRING_INDEX(articulos.codigo,SUBSTR(articulos.codigo,-3),1) as codigo
+            codigo_generico(articulos.codigo) as codigo,
+            en_maquina(codigo_generico(articulos.codigo)) as en_maquina,
+            en_laboratorio(codigo_generico(articulos.codigo)) as en_laboratorio
             FROM articulos
             GROUP BY SUBSTRING_INDEX(articulos.codigo,SUBSTR(articulos.codigo,-3),1) ".$having
                 

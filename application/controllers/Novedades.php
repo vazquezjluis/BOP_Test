@@ -184,7 +184,7 @@ class Novedades extends CI_Controller {
                                 }
                                 //modificamos el stock del articulo que entra
 
-                                $nuevo_stock = $este_articulo->stock - 1;
+                                $nuevo_stock = $este_articulo[0]->stock - 1;
                                 $stock_articulo = array(
                                     "stock" =>$nuevo_stock
                                 );
@@ -319,31 +319,26 @@ class Novedades extends CI_Controller {
                     case "stock":
                         
                         
-                        if ($this->input->post('total')<$this->input->post('cantidad')){
-                            //si la cantidad es mayor entonces hay un error
-                            die("Error: #wer452 No puede pasar un cantidad mayor que la que tiene en la reparacion");
-                        }elseif($this->input->post('total')==$this->input->post('cantidad')){
-                            //si la cantidad es igual al total la reparacion pasa a reparado automaticamente    
-                           $estado = 2; 
+                        if ($this->input->post('estado') == 0){
+                            $estado = 0;
                         }else{
-                           $estado = $this->input->post('estado');
+                            $estado = 1;
                         }
-                        //edito el articulo_laboratorio con la cantidad
-                        $new_cantidad = $this->input->post('total') - $this->input->post('cantidad');
-                        
-                        $data_art_lab = array(
-                            "cantidad"=>$new_cantidad,
+                        $data_art_lab = array(                            
                             "estado"=>$estado
                         );
                         $this->laboratorio_model->edit('articulos_laboratorio',$data_art_lab,'idArticuloLaboratorio', $this->input->post('referencia'));
                         
                         //sumo la cantidad al stock
                         $this->load->model('articulo_model', '', TRUE); 
-                        $este_articulo = $this->articulo_model->getById($this->input->post('articulo'));
+                        $codigo = $this->input->post('articulo');
                         
-                        $nuevo_stock = $este_articulo->stock + $this->input->post('cantidad');
-                        $new_data_art = array("stock"=>$nuevo_stock);
-                        if($this->articulo_model->edit('articulos',$new_data_art,'idArticulo',$this->input->post('articulo'))==TRUE){
+                        $este_articulo = $this->articulo_model->list_articulos(0,0," codigo = '".$codigo."'");
+                        $nueva_cantidad = $este_articulo[0]->stock + 1;
+                        
+                        $nueva_cantidad = $este_articulo[0]->stock + 1;
+                        $new_data_art = array("stock"=>$nueva_cantidad);
+                        if($this->articulo_model->edit('articulos',$new_data_art,'idArticulo',$este_articulo[0]->idArticulo)==TRUE){
                             //ok
                         }else{
                             die("Error: lkj#242 no se pudo sumar la cantidad al stock");
@@ -353,7 +348,7 @@ class Novedades extends CI_Controller {
                         $this->load->model('movimiento_articulo_model', '', TRUE);
                         $data_mov_articulo = array(
                                        "articulo" =>$this->input->post('articulo'),
-                                       "cantidad" =>$this->input->post('cantidad'),
+                                       "cantidad" =>1,
                                        "fecha_hora"=>date('Y-m-d H:i:s'),
                                        "movimiento"=>'laboratorio > stock',
                                        "usuario" => $this->session->userdata('id'),
@@ -368,40 +363,40 @@ class Novedades extends CI_Controller {
                         break;
                     case "scrap":
                         
-                        if ($this->input->post('total')<$this->input->post('cantidad')){
-                            //si la cantidad es mayor entonces hay un error
-                            die("Error: #wer452 No puede pasar un cantidad mayor que la que tiene en la reparacion");
-                        }elseif($this->input->post('total')==$this->input->post('cantidad')){
-                            //si la cantidad es igual al total la reparacion pasa a reparado automaticamente    
-                           $estado = 2; 
-                        }else{
-                           $estado = $this->input->post('estado');
-                        }
-                        //edito el articulo_laboratorio con la cantidad
-                        $new_cantidad = $this->input->post('total') - $this->input->post('cantidad');
-                        
-                        $data_art_lab = array(
-                            "cantidad"=>$new_cantidad,
-                            "estado"=>$estado
-                        );
-                        $this->laboratorio_model->edit('articulos_laboratorio',$data_art_lab,'idArticuloLaboratorio', $this->input->post('referencia'));
-                        
-                        
-                        //genero un nuevo movimiento para este arculo
-                        $this->load->model('movimiento_articulo_model', '', TRUE);
-                        $data_mov_articulo = array(
-                                       "articulo" =>$this->input->post('articulo'),
-                                       "cantidad" =>$this->input->post('cantidad'),
-                                       "fecha_hora"=>date('Y-m-d H:i:s'),
-                                       "movimiento"=>'laboratorio > scrap',
-                                       "usuario" => $this->session->userdata('id'),
-                                       "locacion" =>"scrap"
-                                   );
-                        if($this->movimiento_articulo_model->add('movimiento_articulo',$data_mov_articulo)==true){
-                            //ok
-                        }else{
-                            die("Error: 6sfdgsd no se pudo agregar el movimiento del articulo ");
-                        }
+//                        if ($this->input->post('total')<$this->input->post('cantidad')){
+//                            //si la cantidad es mayor entonces hay un error
+//                            die("Error: #wer452 No puede pasar un cantidad mayor que la que tiene en la reparacion");
+//                        }elseif($this->input->post('total')==$this->input->post('cantidad')){
+//                            //si la cantidad es igual al total la reparacion pasa a reparado automaticamente    
+//                           $estado = 2; 
+//                        }else{
+//                           $estado = $this->input->post('estado');
+//                        }
+//                        //edito el articulo_laboratorio con la cantidad
+//                        $new_cantidad = $this->input->post('total') - $this->input->post('cantidad');
+//                        
+//                        $data_art_lab = array(
+//                            "cantidad"=>$new_cantidad,
+//                            "estado"=>$estado
+//                        );
+//                        $this->laboratorio_model->edit('articulos_laboratorio',$data_art_lab,'idArticuloLaboratorio', $this->input->post('referencia'));
+//                        
+//                        
+//                        //genero un nuevo movimiento para este arculo
+//                        $this->load->model('movimiento_articulo_model', '', TRUE);
+//                        $data_mov_articulo = array(
+//                                       "articulo" =>$this->input->post('articulo'),
+//                                       "cantidad" =>$this->input->post('cantidad'),
+//                                       "fecha_hora"=>date('Y-m-d H:i:s'),
+//                                       "movimiento"=>'laboratorio > scrap',
+//                                       "usuario" => $this->session->userdata('id'),
+//                                       "locacion" =>"scrap"
+//                                   );
+//                        if($this->movimiento_articulo_model->add('movimiento_articulo',$data_mov_articulo)==true){
+//                            //ok
+//                        }else{
+//                            die("Error: 6sfdgsd no se pudo agregar el movimiento del articulo ");
+//                        }
                         
                         break;
                     case "baja":
