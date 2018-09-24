@@ -30,7 +30,7 @@
                             <div class="span12">
                                 <div class="span6 offset3">
                                 <a href="'.base_url().'index.php/Importador/cancel_import" id="" class="btn btn-danger"><i class="icon-remove-sign"></i> Cancelar importacion</a>
-                                    <button type="submit" class="btn btn-success"><i class="icon-arrow-right"></i> Continuar</button>
+                                    
                                 </div>
                             </div>
                         </div>

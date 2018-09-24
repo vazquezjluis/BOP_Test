@@ -817,6 +817,7 @@ class Importador extends CI_Controller {
         $_SESSION['errores']['cod_articulo_length'] = array();
         $_SESSION['errores']['cantidad_length'] = array();
         $_SESSION['errores']['cantidad_format'] = array();
+        $_SESSION['errores']['articulo_repetido_repeat'] = array();
         
         
         for($i = 0; $i < count($_SESSION['datos_excel']); $i++){
@@ -858,14 +859,27 @@ class Importador extends CI_Controller {
                 }
             }
             
+            
+            
         }
+        
+        //solo para verificar repetidos
+        //valida que el codigo del articulo no sea repetido
+        
+        if ($this->codigo_repetido()){
+            array_push($_SESSION['errores']['articulo_repetido_repeat'], -1);
+            if (!in_array($i, $_SESSION['errores']['gral'])){
+                array_push($_SESSION['errores']['gral'], -1);
+            }
+        }
+        
         return true;
     }
     
     function presubmit_articulos_maquinas(){
         $html = '';
         $this->data['result']= array();
-       
+        
         if (count($_SESSION['errores']['gral'])){
             foreach($_SESSION['errores']['gral'] as $gral){
                 //numero de EGM
@@ -884,18 +898,43 @@ class Importador extends CI_Controller {
                     $html.= $this->create_update($gral,'text','cod_articulo','cod_articulo');
                 }
                 //numero de serie
-                if(in_array($gral, $_SESSION['errores']['nro_serie_length'])){
-                    $html.= $this->create_update($gral,'text','nro_serie','nro_serie');
+//                if(in_array($gral, $_SESSION['errores']['nro_serie_length'])){
+//                    $html.= $this->create_update($gral,'text','nro_serie','nro_serie');
+//                }
+                //numero de serie
+                if(in_array($gral, $_SESSION['errores']['articulo_repetido_repeat'])){
+                    $html.= $this->create_update($gral,'text','articulo_repetido','articulo_repetido');
                 }
                 
             }
             $this->data['html'] = $html;
+            
         }else{
             $this->data['result'] = $this->previo_importacion('articulos_maquinas');
         }
     }
     
-    //funcion para crear campos para edicion
+    function codigo_repetido(){
+        for($i = 0; $i < count($_SESSION['datos_excel']); $i++){
+            $array[] = $_SESSION['datos_excel'][$i]['cod_articulo'];
+        }
+        $repeated = array_filter(array_count_values($array), function($count) {
+            return $count > 1;
+        });
+        foreach ($repeated as $key => $value) {
+            $_SESSION['repetido'][$key]=$value;
+            //return true;//encuentra un articulo con codigo repetido
+        }
+        if (isset($_SESSION['repetido'])){
+            return true;
+        }else{
+            return false;
+        }
+        
+    }
+    
+    //**********************
+    
     function create_update($row, $_type, $field, $field_name){
         $html='<tr><td>';
         $celda = $row+2;
@@ -940,6 +979,15 @@ class Importador extends CI_Controller {
                             $html.='La cantidad de caracteres del '.$field_name.' no corresponde. Fila '.$celda.' <br>';
                         }
                     }
+                    if(isset($_SESSION['errores'][$field.'_repeat'])){
+                        if(in_array($row, $_SESSION['errores'][$field.'_repeat'])){
+                            $html.='<b style="color:red">Existen codigos de articulos repetidos. revise el archivo, asegurese de quitar los codigos repetidos y vuelva a subirlo.</b>  <br>';
+                            foreach ($_SESSION['repetido'] as $key =>$value){
+                                $html.="-".$key." repetido ".$value." veces.<br>";
+                            }
+                        }
+                    }
+                   
 		break;
 		case 'numeric':
 //			if((in_array($row, $_SESSION['errors'][$field]) and strlen($_SESSION['file_data'][$row][$field]) > 0 and $field != 'nro_documento') or  $field == 'nro_documento' and strlen($_SESSION['file_data'][$row][$field]) > 5):
@@ -958,8 +1006,10 @@ class Importador extends CI_Controller {
 //			endif;
 		break;
         }
-	$html.= '</td><td><input type="text" required="required" value="'.$_SESSION['datos_excel'][$row][$field].'" id="'.$field.'['.$row.'][]" name="'.$field.'['.$row.'][]"/></td>';
-       
+        //solo los errores con campos positivos pueden ser modificados, los campos negativos no pueden ser modificados, como el repetidos
+        if ($row>0){
+//            $html.= '</td><td><input type="text" required="required" value="'.$_SESSION['datos_excel'][$row][$field].'" id="'.$field.'['.$row.'][]" name="'.$field.'['.$row.'][]"/></td>';
+        }
         return $html;
     }
 
@@ -1334,10 +1384,6 @@ class Importador extends CI_Controller {
         }
     }
     
-//            function index(){
-//        $this->gestionar();
-//    }
-
     function cancel_import($tipo=''){
         unset($_SESSION['datos_excel']);
         unset($_SESSION['errores']);
@@ -1966,10 +2012,6 @@ class Importador extends CI_Controller {
     
     public function visualizar(){
 
-//        if(!$this->uri->segment(3) || !is_numeric($this->uri->segment(3))){
-//            $this->session->set_flashdata('error','Item não pode ser encontrado, parâmetro não foi passado corretamente.');
-//            redirect('mapos');
-//        }
 
         if(!$this->permission->checkPermission($this->session->userdata('permiso'),'vTicket')){
            $this->session->set_flashdata('error','Usted no tiene permiso para visualizar Tickets.');
