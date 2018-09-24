@@ -818,8 +818,17 @@ class Importador extends CI_Controller {
         $_SESSION['errores']['cantidad_length'] = array();
         $_SESSION['errores']['cantidad_format'] = array();
         $_SESSION['errores']['articulo_repetido_repeat'] = array();
+        $_SESSION['errores']['inventario_stock'] = array();
         
+        //solo para verificar repetidos
+        //valida que el codigo del articulo no sea repetido
         
+        if ($this->codigo_repetido()){
+            array_push($_SESSION['errores']['articulo_repetido_repeat'], -1);
+            if (!in_array(-1, $_SESSION['errores']['gral'])){
+                array_push($_SESSION['errores']['gral'], -1);
+            }
+        }
         for($i = 0; $i < count($_SESSION['datos_excel']); $i++){
             
             //valida datos del nro_egm
@@ -858,19 +867,14 @@ class Importador extends CI_Controller {
                     array_push($_SESSION['errores']['gral'], $i);
                 }
             }
-            
-            
-            
-        }
-        
-        //solo para verificar repetidos
-        //valida que el codigo del articulo no sea repetido
-        
-        if ($this->codigo_repetido()){
-            array_push($_SESSION['errores']['articulo_repetido_repeat'], -1);
-            if (!in_array($i, $_SESSION['errores']['gral'])){
-                array_push($_SESSION['errores']['gral'], -1);
+            //validacion del stock, es necesario que existe estock para que la parte sea trasladada a la maquina
+            if(!$this->hay_stock($_SESSION['datos_excel'][$i]['cod_articulo'])){
+                array_push($_SESSION['errores']['inventario_stock'], $i);
+                if(!in_array($i, $_SESSION['errores']['gral'])){
+                    array_push($_SESSION['errores']['gral'], $i);
+                }
             }
+            
         }
         
         return true;
@@ -905,6 +909,9 @@ class Importador extends CI_Controller {
                 if(in_array($gral, $_SESSION['errores']['articulo_repetido_repeat'])){
                     $html.= $this->create_update($gral,'text','articulo_repetido','articulo_repetido');
                 }
+                if(in_array($gral, $_SESSION['errores']['inventario_stock'])){
+                    $html.= $this->create_update($gral,'text','inventario','inventario');
+                }
                 
             }
             $this->data['html'] = $html;
@@ -927,6 +934,21 @@ class Importador extends CI_Controller {
         }
         if (isset($_SESSION['repetido'])){
             return true;
+        }else{
+            return false;
+        }
+        
+    }
+    
+    function hay_stock($codigo){
+        $this->load->model('articulo_model', '', TRUE);
+        $articulo=$this->articulo_model->getByCodigo($codigo);
+        if (isset($articulo)){
+            if($articulo->stock == 0){
+                return false;
+            }else{
+                return true;
+            }
         }else{
             return false;
         }
@@ -979,12 +1001,18 @@ class Importador extends CI_Controller {
                             $html.='La cantidad de caracteres del '.$field_name.' no corresponde. Fila '.$celda.' <br>';
                         }
                     }
+                    if(isset($_SESSION['errores'][$field.'_stock'])){
+                        if(in_array($row, $_SESSION['errores'][$field.'_stock'])){
+                            $html.='No hay stock para el articulo '.$field_name.' . Fila '.$celda.' <br>';
+                        }
+                    }
                     if(isset($_SESSION['errores'][$field.'_repeat'])){
                         if(in_array($row, $_SESSION['errores'][$field.'_repeat'])){
                             $html.='<b style="color:red">Existen codigos de articulos repetidos. revise el archivo, asegurese de quitar los codigos repetidos y vuelva a subirlo.</b>  <br>';
                             foreach ($_SESSION['repetido'] as $key =>$value){
                                 $html.="-".$key." repetido ".$value." veces.<br>";
                             }
+                            unset($_SESSION['repetido']);
                         }
                     }
                    

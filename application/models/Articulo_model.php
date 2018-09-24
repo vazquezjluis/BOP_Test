@@ -55,6 +55,16 @@ class Articulo_model extends CI_Model {
         $this->db->limit(1);
         return $this->db->get('articulos')->row();
     }
+    function getByCodigo($codigo){
+        $this->db->where('codigo',$codigo);
+        $this->db->limit(1);
+        return $this->db->get('articulos')->row();
+    }
+    function getByCodigoGenerico($codigo){
+        $this->db->where('codigo_generico(codigo)',$codigo);
+        $this->db->limit(1);
+        return $this->db->get('articulos')->row();
+    }
     
     function add($table,$data){
         $this->db->insert($table, $data);         
