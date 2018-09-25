@@ -102,6 +102,9 @@ class Articulo_model extends CI_Model {
     function count($table){
         return count($this->get($table,"*"," estado != 90"));
     }
+    function countPaniol($having){
+        return count($this->list_articulo_generico($having));
+    }
     
      function list_articulos($perpage = 0,$start = 0,$where=''){
         
@@ -123,15 +126,15 @@ class Articulo_model extends CI_Model {
     
     function list_articulo_generico($having = ''){
         
-        $query = $this->db->query("  SELECT GROUP_CONCAT(idArticulo) as id,
+        $SQL = "  SELECT GROUP_CONCAT(idArticulo) as id,
             SUM(stock) as stock,tipo_modelo,
             codigo_generico(articulos.codigo) as codigo,
             en_maquina(codigo_generico(articulos.codigo)) as en_maquina,
             en_laboratorio(codigo_generico(articulos.codigo)) as en_laboratorio
             FROM articulos
-            GROUP BY SUBSTRING_INDEX(articulos.codigo,SUBSTR(articulos.codigo,-3),1) ".$having
-                
-                );
+            GROUP BY SUBSTRING_INDEX(articulos.codigo,SUBSTR(articulos.codigo,-3),1) ".$having;
+       
+        $query = $this->db->query($SQL);
         return $query->result();
     }
     public function autoCompleteFallasLogica($q){

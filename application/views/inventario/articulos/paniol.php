@@ -1,7 +1,9 @@
-<link rel="stylesheet" href="<?php echo base_url();?>assets/js/jquery-ui/css/smoothness/jquery-ui-1.9.2.custom.css" />
-<script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery-ui/js/jquery-ui-1.9.2.custom.js"></script>
+<!--<link rel="stylesheet" href="<?php // echo base_url();?>assets/js/jquery-ui/css/smoothness/jquery-ui-1.9.2.custom.css" />
+<script type="text/javascript" src="<?php // echo base_url()?>assets/js/jquery-ui/js/jquery-ui-1.9.2.custom.js"></script>-->
 <script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery.validate.js"></script>
-
+<script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery.dataTables.min.js" ></script>
+<link href="<?php  echo base_url()?>assets/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
+<!--<link href="<?php //  echo base_url()?>assets/css/jquery.dataTables_themeroller.css" rel="stylesheet" type="text/css"/>-->
 <style>
 /* Hiding the checkbox, but allowing it to be focused */
 .badgebox
@@ -32,27 +34,9 @@
     /* Move the check mark back when checked */
 	text-indent: 0;
 }
+
 </style>
 
-
-<div class="span12" style="margin-left: 0px;">
-    <div class="span4">
-        <label class="control-label inline">Filtrar</label>
-        <input type="text" id="articulo" class="span12" placeholder="Escribe el codigo o el nombre del articulo">
-        <!--<input type="button" class="btn" id="cancel" value="Reset" >-->
-    </div>
-    <div class="span4">
-        
-    </div>
-    <div class="span4 float-right">
-<!--<a href="<?php // echo base_url();?>index.php/maquinas/agregar" class="btn btn-success">-->
-            <?php // if($this->permission->checkPermission($this->session->userdata('permiso'),'cArticulos')){ ?>
-        <!--<a href="<?php // echo base_url()?>index.php/articulo/agregar" class="btn btn-success" style="float: right;">-->
-                <!--<i class="icon-plus icon-white"></i> Agregar nuevo Articulo</a>-->
-            <?php // } ?>
-    </div>
-    
-</div>
 
 <?php
 if(!$results){?>
@@ -89,21 +73,25 @@ if(!$results){?>
      </div>
 
 <div class="widget-content nopadding">
-<div style="overflow-x:auto;">
-<table class="table table-bordered">
-    <tr>
-        <!--<th>#</th>-->
-        <!--<th>Articulo</th>-->
-        <th>Codigo</th>
-        <th>en Stock</th>
-        <th>en Maquinas</th>
-        <th>en Laboratorio</th>
-        <th>Modelos asociados</th>
-        <th>Asociar a modelo</th>
-        <!--<th>Laboratorio</th>-->
-        <!--<th>Estado</th>-->
-        <!--<th></th>-->
-    </tr>
+<div style="overflow-x:auto;padding: 1%;">
+    <table class="table table-striped table-bordered"  id="registros">
+    
+        <thead>
+            <tr>
+            <!--<th>#</th>-->
+            <!--<th>Articulo</th>-->
+            <th>Codigo</th>
+            <th>en Stock</th>
+            <th>en Maquinas</th>
+            <th>en Laboratorio</th>
+            <th>Modelos asociados</th>
+            <th>Asociar a modelo</th>
+            <!--<th>Laboratorio</th>-->
+            <!--<th>Estado</th>-->
+            <!--<th></th>-->
+            </tr>
+        </thead>
+    <tbody>
         <?php 
         foreach ($results as $r) {
 //            if($r->estado == 1){$estado = "Activo";}else{$estado="Inactivo";}
@@ -139,7 +127,7 @@ if(!$results){?>
 </div>
 </div>
 </div>
-<?php   echo $this->pagination->create_links(); 
+<?php  // echo $this->pagination->create_links(); 
 }?>
 
 
@@ -182,6 +170,12 @@ if(!$results){?>
 
 <script type="text/javascript">
       $(document).ready(function(){
+          //tbla de datos
+          $('#registros').dataTable( {
+            "bInfo": false,
+            "bLengthChange": false,
+            "nTHead":false
+          } );
           //marcar todos
           $("#marcarTodos").change(function () {
                 $("input:checkbox").prop('checked', $(this).prop("checked"));
