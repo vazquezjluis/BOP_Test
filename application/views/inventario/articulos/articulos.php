@@ -1,43 +1,23 @@
 <link rel="stylesheet" href="<?php echo base_url();?>assets/js/jquery-ui/css/smoothness/jquery-ui-1.9.2.custom.css" />
 <script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery-ui/js/jquery-ui-1.9.2.custom.js"></script>
 <script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery.validate.js"></script>
-<div class="span12" style="margin-left: 0px;">
-    <div class="span4">
-        <label class="control-label inline">Filtrar</label>
-        <input type="text" id="articulo" class="span12" placeholder="Escribe el codigo o el nombre del articulo">
-        <!--<input type="button" class="btn" id="cancel" value="Reset" >-->
-    </div>
-    <div class="span4">
-        
-    </div>
-    <div class="span4 float-right">
-<!--<a href="<?php // echo base_url();?>index.php/maquinas/agregar" class="btn btn-success">-->
-            <?php if($this->permission->checkPermission($this->session->userdata('permiso'),'cArticulos')){ ?>
-        <!--<a href="<?php echo base_url()?>index.php/articulo/agregar" class="btn btn-success" style="float: right;">-->
-                <!--<i class="icon-plus icon-white"></i> Agregar nuevo Articulo</a>-->
-            <?php } ?>
-    </div>
-    
-</div>
+<script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery.dataTables.min.js" ></script>
+<link href="<?php  echo base_url()?>assets/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
 
 <?php
 if(!$results){?>
 
-        <div class="widget-box">
+    <div class="widget-box">
         <div class="widget-title">
             <span class="icon">
                 <i class="icon-barcode"></i>
             </span>
             <h5>Inventario</h5>
-
         </div>
-
         <div class="widget-content nopadding">
-            
             <div class="quick-actions_homepage">
                 <p>No hay Articulos cargados</p>
             </div>
-
         </div>
     </div>
 
@@ -51,19 +31,20 @@ if(!$results){?>
             <i class="icon-barcode"></i>
          </span>
         <h5>Articulos</h5>
-        
      </div>
-
 <div class="widget-content nopadding">
-<div style="overflow-x:auto;">
-<table class="table table-bordered">
-    <tr>
-        <th>#</th>
-        <th>Articulo</th>
-        <th>Codigo</th>
-        <th>Stock</th>
-        <th></th>
-    </tr>
+<div style="overflow-x:auto;padding: 1%;">
+    <table class="table table-bordered table-striped" id="registros">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Articulo</th>
+                <th>Codigo</th>
+                <th>Stock</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
         <?php 
         foreach ($results as $r) {
             if($r->estado == 1){$estado = "Activo";}else{$estado="Inactivo";}
@@ -91,12 +72,12 @@ if(!$results){?>
             echo '</tr>';
             
         }?>
-    </tbody>
+        </tbody>
 </table>
 </div>
 </div>
 </div>
-<?php   echo $this->pagination->create_links(); 
+<?php //   echo $this->pagination->create_links(); 
 }?>
 
 
@@ -122,6 +103,12 @@ if(!$results){?>
 
 <script type="text/javascript">
       $(document).ready(function(){
+          //tbla de datos
+          $('#registros').dataTable( {
+            "bInfo": false,
+            "bLengthChange": false,
+            "nTHead":false
+          } );
           
           $("#cancel").hide();
           $("#articulo").autocomplete({
