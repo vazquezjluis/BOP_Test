@@ -3,7 +3,7 @@
 <script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery.validate.js"></script>
 <script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery.dataTables.min.js" ></script>
 <link href="<?php  echo base_url()?>assets/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
-<!--<link href="<?php //  echo base_url()?>assets/css/jquery.dataTables_themeroller.css" rel="stylesheet" type="text/css"/>-->
+
 <style>
 /* Hiding the checkbox, but allowing it to be focused */
 .badgebox
