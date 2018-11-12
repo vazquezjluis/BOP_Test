@@ -112,6 +112,9 @@
               <?php if($this->permission->checkPermission($this->session->userdata('permiso'),'vRep_maquinas')){ ?>
                 <li><a href="<?php echo base_url()?>index.php/Reportes/maquinas">Maquinas</a></li>
               <?php } ?>
+              <?php if($this->permission->checkPermission($this->session->userdata('permiso'),'vPersonas')){ ?>
+                <li><a href="<?php echo base_url()?>index.php/Reportes/personas">Personas</a></li>
+              <?php } ?>
                 <li><a href="#">Fallas (en construccion)</a></li>
           </ul>
         </li>
