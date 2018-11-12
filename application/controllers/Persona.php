@@ -25,6 +25,7 @@ class Persona extends CI_Controller {
         $this->load->model('capacitacion_model', '', TRUE);
         $this->load->model('licencia_model', '', TRUE);
         $this->load->model('premio_model', '', TRUE);
+        $this->load->model('lenox_model', '', TRUE);
     }
 	
     function index(){
@@ -268,7 +269,10 @@ class Persona extends CI_Controller {
             }
         }
         
-        
+        //$this->data['lenox_persona'] = $this->lenox_model->get_all();
+        //echo "<pre>";
+        //var_dump($this->data['lenox_persona']);
+        //echo "</pre>";
         $this->data['view'] = 'rrhh/persona/visualizar';
         $this->load->view('tema/header', $this->data);
     }

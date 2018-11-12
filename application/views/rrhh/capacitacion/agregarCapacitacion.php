@@ -49,7 +49,7 @@
                         </div>
                     </div> 
                     
-                     <!--inicio, fin, institucion-->
+                     <!--inicio, fin, cupo, capacitador-->
                     <div class="span12" style="padding: 1%; margin-left: 0px;">
                         <div class="span3">
                             <label for="f_inicio" class="control-label">Fecha Inicio<span class="required">*</span></label>
@@ -66,6 +66,11 @@
                         <div class="span4">
                             <label for="capacitador" >Capacitador/es<span class="required">*</span></label>
                             <input id="capacitador" type="text" style="width: 80%" placeholder="Nombre y Apellido" name="capacitador" value="<?php echo set_value('capacitador'); ?>"  />
+                            
+                        </div>
+                        <div class="span1">
+                            <label>&nbsp;</label>
+                            <button id="agregar_fecha" style="margin-bottom: 10px;" class="btn btn-primary"><b>+</b></button>
                         </div>
                     </div>
                      

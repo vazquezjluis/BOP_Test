@@ -32,7 +32,7 @@ class Articulo extends CI_Controller {
 
     function paniol(){
         
-        $this->data['results'] = $this->articulo_model->list_articulo_generico();
+        $this->data['results'] = $this->articulo_model->list_articulo_generico_paniol();
         $this->data['modelos'] = $this->maquinas_model->get_modelos();           
         $this->data['view'] = 'inventario/articulos/paniol';
        	$this->load->view('tema/header',$this->data);

@@ -176,7 +176,7 @@ class Importador extends CI_Controller {
                         
                         //obtiene los datos
                         if ($this->get_datos_articulos($name,$path,$file)==false){
-                            $this->session->set_flashdata('error',"Ocurrió un error al obtener los datos del archivo excel"); 
+//                            $this->session->set_flashdata('error',"Ocurrió un error al obtener los datos del archivo excel"); 
                             $error = 'get_datos_articulos';
                             $this->cancel_import('articulos');
                         }
@@ -269,7 +269,7 @@ class Importador extends CI_Controller {
                         
                         //obtiene los datos
                         if ($this->get_datos_articulos_maquinas($name,$path,$file)==false){
-                            $this->session->set_flashdata('error',"Ocurrió un error al obtener los datos del archivo excel"); 
+//                            $this->session->set_flashdata('error',"Ocurrió un error al obtener los datos del archivo excel"); 
                             $error = 'get_datos_articulos';
                             $this->cancel_import('articulos_maquinas');
                         }
@@ -708,6 +708,25 @@ class Importador extends CI_Controller {
       //numero de columnas
       $total_cols = $objPHPExcel->getActiveSheet()->getHighestColumn();//ejemplo A,B
       
+      //valida los datos de los codigos internos del articulo 
+      $error = '';
+      for ($a = 2;$a <= $total_rows; $a++){
+          if (strlen($objPHPExcel->getActiveSheet()->getCell('B'.$a)->getCalculatedValue())!==3){
+              $error .= " [columna B fila ".$a."] ";
+          }
+          if (strlen($objPHPExcel->getActiveSheet()->getCell('C'.$a)->getCalculatedValue())!==3){
+              $error .= " [columna C fila ".$a."] ";
+          }
+          if (strlen($objPHPExcel->getActiveSheet()->getCell('D'.$a)->getCalculatedValue())!==3){
+              $error .= " [columna D fila ".$a."] ";
+          }
+          
+      }
+      if($error!=''){
+        $this->session->set_flashdata('error',"Las columnas B,C Y D deben tener 3 caracteres. Verifique las siguientes celdas ".$error); 
+        return false;
+      }
+      
       //recorre las filas
       for($i = 2; $i <= $total_rows ; $i++){
             
@@ -791,6 +810,25 @@ class Importador extends CI_Controller {
       //numero de columnas
       $total_cols = $objPHPExcel->getActiveSheet()->getHighestColumn();//ejemplo A,B
       
+      //valida los datos de los codigos internos del articulo 
+      //valida los datos de los codigos internos del articulo 
+      $error = '';
+      for ($a = 2;$a <= $total_rows; $a++){
+          if (strlen($objPHPExcel->getActiveSheet()->getCell('C'.$a)->getCalculatedValue())!==3){
+              $error .= " [columna C fila ".$a."] ";
+          }
+          if (strlen($objPHPExcel->getActiveSheet()->getCell('D'.$a)->getCalculatedValue())!==3){
+              $error .= " [columna D fila ".$a."] ";
+          }
+          if (strlen($objPHPExcel->getActiveSheet()->getCell('E'.$a)->getCalculatedValue())!==3){
+              $error .= " [columna E fila ".$a."]";
+          }
+          
+      }
+      if($error!=''){
+        $this->session->set_flashdata('error',"Las columnas C,D Y E deben tener 3 caracteres. Verifique las siguientes celdas ".$error); 
+        return false;
+      }
       //recorre las filas
       for($i = 2; $i <= $total_rows ; $i++){
             
@@ -804,6 +842,7 @@ class Importador extends CI_Controller {
             
           
       }
+      
       return true;
       
     }

@@ -126,6 +126,17 @@ class Articulo_model extends CI_Model {
     
     function list_articulo_generico($having = ''){
         
+        $SQL = "  SELECT GROUP_CONCAT(idArticulo) as id,SUM(stock) as stock,
+            tipo_modelo,
+            codigo_generico(articulos.codigo) as codigo
+            FROM articulos
+            GROUP BY SUBSTRING_INDEX(articulos.codigo,SUBSTR(articulos.codigo,-3),1) ".$having;
+       
+        $query = $this->db->query($SQL);
+        return $query->result();
+    }
+	function list_articulo_generico_paniol($having = ''){
+        
         $SQL = "  SELECT GROUP_CONCAT(idArticulo) as id,
             SUM(stock) as stock,tipo_modelo,
             codigo_generico(articulos.codigo) as codigo,

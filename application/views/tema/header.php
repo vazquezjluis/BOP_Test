@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="<?php echo base_url();?>assets/css/matrix-style.css" />
 <link rel="stylesheet" href="<?php echo base_url();?>assets/css/matrix-media.css" />
 <link href="<?php echo base_url();?>assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
-<link rel="stylesheet" href="<?php echo base_url();?>assets/css/fullcalendar.css" /> 
+<!--link rel="stylesheet" href="<?php //echo base_url();?>assets/css/fullcalendar.css" /--> 
 <?php header('Content-Type: text/html; charset=UTF-8'); ?>
 <!--<link href="<?php //   echo base_url();?>assets/css/css.css" rel="stylesheet" type="text/css"/>-->
 <!--<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css'>-->

@@ -15,6 +15,7 @@ class Fallas extends CI_Controller {
         if( (!session_id()) || (!$this->session->userdata('conectado'))){
             redirect('bingoOasis/login');
         }
+		
         $this->load->model('fallas_model', '', TRUE);
         $this->load->model('consola_model', '', TRUE);
         $this->load->model('articulo_model', '', TRUE);
@@ -52,8 +53,10 @@ class Fallas extends CI_Controller {
         
         $this->pagination->initialize($config); 	
         $this->data['results'] = $this->fallas_model->get('fallas','*',' estado != 90 ',$config['per_page'],$this->uri->segment(3));       
-        $this->data['results_articulo'] = $this->articulo_model->list_articulo_generico();       
-        $this->data['view'] = 'fallas/fallas';
+		
+        //$this->data['results_articulo'] = $this->articulo_model->list_articulo_generico();       
+        $this->data['results_articulo'] = array();
+		$this->data['view'] = 'fallas/fallas';
        	$this->load->view('tema/header',$this->data);
 
     }
