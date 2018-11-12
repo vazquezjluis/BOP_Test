@@ -80,6 +80,60 @@ class Reportes extends CI_Controller{
             $this->load->view('tema/header',$this->data);
     }
 
+    public function personas(){
+        $where = " 1=1 ";
+//            if($this->input->get('uid')!=''){
+//                $where .= " AND maquinas.nro_egm  LIKE '%".$this->input->get('uid')."%' ";
+//            }
+//            if($this->input->get('modelo')!=''){
+//                $where .= " AND maquinas.modelo  LIKE '%".$this->input->get('modelo')."%' ";                
+//            }
+//            if($this->input->get('fabricante')!=''){
+//                $where .= " AND maquinas.fabricante LIKE '%".$this->input->get('fabricante')."%' ";
+//            }
+//            if($this->input->get('estado')!=''){
+//                $where .= " AND maquinas.estado = ".$this->input->get('estado');
+//            }
+        
+        
+        $this->load->library('pagination');
+        
+            $config['base_url'] = base_url().'index.php/reportes/persona/';
+            $config['total_rows'] = count($this->persona_model->count_persona($where));
+            $config['per_page'] = 25;
+            $config['next_link'] = 'Próxima';
+            $config['prev_link'] = 'Anterior';
+            $config['full_tag_open'] = '<div class="pagination alternate"><ul>';
+            $config['full_tag_close'] = '</ul></div>';
+            $config['num_tag_open'] = '<li>';
+            $config['num_tag_close'] = '</li>';
+            $config['cur_tag_open'] = '<li><a style="color: #2D335B"><b>';
+            $config['cur_tag_close'] = '</b></a></li>';
+            $config['prev_tag_open'] = '<li>';
+            $config['prev_tag_close'] = '</li>';
+            $config['next_tag_open'] = '<li>';
+            $config['next_tag_close'] = '</li>';
+            $config['first_link'] = 'Primera';
+            $config['last_link'] = 'Última';
+            $config['first_tag_open'] = '<li>';
+            $config['first_tag_close'] = '</li>';
+            $config['last_tag_open'] = '<li>';
+            $config['last_tag_close'] = '</li>';
+            $config['page_query_string'] = TRUE;
+
+            $this->pagination->initialize($config); 	
+            $this->data['results']=0;
+            
+            
+            //obtiene los datos de las personas
+            //                                     function getMaquinas_fallas($perpage=0         ,$start=0              ,,$where='')
+            $this->data['results'] = $this->persona_model->repPersona($config['per_page'],$this->input->get('per_page'),$where);
+            
+        
+            $this->data['view'] = 'reportes/rep_personas';
+            $this->load->view('tema/header',$this->data);
+    }
+    
     public function produtos(){
         if(!$this->permission->checkPermission($this->session->userdata('permissao'),'rProduto')){
            $this->session->set_flashdata('error','Você não tem permissão para gerar relatórios de produtos.');
