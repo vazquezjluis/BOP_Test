@@ -61,7 +61,7 @@ if(!$results){?>
             
             echo '<tr>';
             echo '<td>'.$r->idCapacitacion.'</td>';
-            echo '<td>'.$r->tema.'</td>';
+            echo '<td>'.$r->temaNombre.'</td>';
             echo '<td>'.$r->descripcion.'</td>';
             echo '<td>'.$r->modalidad.'</td>';
             

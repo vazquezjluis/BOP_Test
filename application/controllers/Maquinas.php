@@ -324,6 +324,7 @@ class Maquinas extends CI_Controller {
                 //Si la referencia es hacia una maquina entonces
                 //Obtengo los articulos asociados al modelo de la maquina
                 $this->data['articulos'] = $this->articulo_model->list_articulo_generico(' having tipo_modelo LIKE "%'.$this->data['result'][0]->modelo.'%" AND stock >0 ');
+                
                 //$this->data['articulos'] = array();
 				//Obtiene el articulo que se encuantra en la maquina
 //                $this->data['articulos_maquinas'] = $this->articulos_maquinas_model->get("articulos_maquinas","articulos_maquinas.*,articulo_str(articulos_maquinas.articulo) as articulo_str"," maquina=".$this->data['result'][0]->nro_egm." AND cantidad > 0");

@@ -54,12 +54,13 @@ if (isset($_GET['persona'])){
                                 <option value="">Seleccione</option>
                                 
                                 <?php
+                                                
                                  foreach ($capacitacion as $cap){
                                      echo "<option value='".$cap->idCapacitacion."'  ";
                                      if (set_value('capacitacion')==$cap->idCapacitacion){
                                          echo " selected ";
                                      }
-                                     echo ">".$cap->tema."</option>";
+                                     echo ">".$cap->temaNombre."</option>";
                                  }
                                 ?>
                             </select>
@@ -75,7 +76,20 @@ if (isset($_GET['persona'])){
                         <div class="span12">
                             <div class="span6 offset3">
                                 <button type="submit" class="btn btn-success"><i class="icon-plus icon-white"></i> Agregar</button>
-                                <a href="<?php echo base_url() ?>index.php/capacitacion" id="" class="btn"><i class="icon-arrow-left"></i> Volver</a>
+                                <?php 
+                                    if (isset($_GET['persona'])){
+                                        ?>
+                                        <a href="javascript:history.back()" id="" class="btn"><i class="icon-arrow-left"></i> Volver</a>
+                                    <?php
+                                    }else{
+                                        ?>
+                                        <a href="<?php echo base_url() ?>index.php/capacitacion/listadoVinculo" id="" class="btn"><i class="icon-arrow-left"></i> Volver</a>
+                                        <?php
+                                    }
+
+                                    ?>
+                                
+                                
                             </div>
                         </div>
                     </div>

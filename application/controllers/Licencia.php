@@ -25,6 +25,7 @@ class Licencia extends CI_Controller {
         $this->load->model('consola_model', '', TRUE);
         $this->load->model('persona_model', '', TRUE);
         $this->load->model('archivos_model', '', TRUE);
+        $this->load->model('sector_model', '', TRUE);
         
     }
 
@@ -324,7 +325,17 @@ class Licencia extends CI_Controller {
         if (isset($_GET['term'])){
             $q = strtolower($_GET['term']);
             
-            $this->persona_model->autoCompletePersona($q);
+            $sectores_del_usuario='';
+            $sectores = $this->sector_model->get_sector();
+            foreach ($sectores as $sector){
+                 if(!$this->permission->checkPermission($this->session->userdata('permiso'),(string)str_replace(" ","",str_replace(".","",$sector->descripcion)))){
+                    //el usuario o tiene permiso en ese sector
+                 }else{
+                     $sectores_del_usuario.="OR SECTORES.descripcion = '".$sector->descripcion."' ";
+                 }
+            }
+            
+            $this->persona_model->autoCompletePersona($q,$sectores_del_usuario);
         }
 
     }

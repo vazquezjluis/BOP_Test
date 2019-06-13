@@ -32,6 +32,8 @@ class BingoOasis extends CI_Controller {
         $this->count_maquinas(0);
         //cuenta los laboratorios en proceso
         $this->count_laboratorio(1);
+        //obtiene los tivekt abiertos y cerrados
+        $this->reporte_ticket("abierto_cerrado");
         
         //Maquinas fuera de servicio
         $this->data['menuPanel'] = 'Panel';
@@ -160,7 +162,7 @@ class BingoOasis extends CI_Controller {
         force_download('backup'.date('d-m-Y H:m:s').'.zip', $backup);
     }
     
-     function count_ticket ($estado = 0){
+    function count_ticket ($estado = 0){
         $where = ' estado = '.$estado;
         $this->data['count_ticket'] = count($this->ticket_model->get('ticket','idTicket',$where));
         
@@ -175,5 +177,18 @@ class BingoOasis extends CI_Controller {
         $this->data['count_laboratorio'] = count($this->laboratorio_model->get('articulos_laboratorio','idArticuloLaboratorio',$where));
         
     } 
-    
+    function reporte_ticket($ref){
+        switch ($ref){
+            case "abierto_cerrado":
+                $sql = 'SELECT count(estado) AS "estado","abierto" AS estado_str
+                        FROM ticket WHERE MONTH (date(f_solicitud)) = MONTH (DATE(now())) AND estado = 1
+                        UNION
+                        SELECT count(estado) AS "estado","cerrado" AS estado_str 
+                        FROM ticket WHERE MONTH (date(f_solicitud)) = MONTH (DATE(now())) AND estado = 2';
+                
+                $data = $this->ticket_model->indicador($sql);
+                break;
+        }
+        $this->data[$ref] = $data;
+    }
 }

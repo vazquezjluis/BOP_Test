@@ -11,77 +11,108 @@
             <div class="widget-content nopadding">
                 <?php if ($custom_error != '') {
                     echo '<div class="alert alert-danger">'.$custom_error.'</div>';
-                } ?>
-                <form action="<?php echo current_url(); ?>" id="formUsuario" method="post"  >
+                } 
+                ?>
+                <form action="<?php echo current_url(); ?>" id="formCapacitacion" method="post"  >
                      <!--Tema , capacitador, institucion-->
                     <div class="span12" style="padding: 1%">
-                        <div class="span3">
-                            <label for="titulo" >Tema<span class="required">*</span></label>
-                            <input id="tema" type="text" name="tema" value="<?php echo set_value('tema'); ?>" required="required"  />
+                        <div class="span3 control-group">
+                            <label for="tema" >Tema<span class="required">*</span></label>
+                            <select id="tema" name="tema" required="required" >
+                                <option value="">Seleccione</option>
+                                <?php
+                                if (isset($tema)){
+                                    foreach ($tema as $t){
+                                        echo "<option value='".$t->idTema."'>".$t->nombre."</option>";
+                                    }
+                                }
+                                ?>                                
+                            </select>
+                            <a href="<?php echo base_url()?>index.php/tema/agregar" class="btn btn-default btn-mini"><i class="icon-plus icon-white"></i> Agregar nueva Tema</a>
                         </div>
                         
-                        <div class="span2">
+                        <div class="span2 control-group">
                             <label for="modalidad" class="control-label">Modalidad<span class="required">*</span></label>
                             <label ><input style="margin-left: 10px;margin-top: 0px;" type="radio"  name="modalidad" value="taller"> Taller</label>
                             <label ><input style="margin-left: 10px;margin-top: 0px;" type="radio"  name="modalidad" value="seminario"> Seminario</label>
-                            <label ><input style="margin-left: 10px;margin-top: 0px;" type="radio"  name="modalidad" value="curso" checked="true"> Curso</label>
+                            <label ><input style="margin-left: 10px;margin-top: 0px;" type="radio"  name="modalidad" value="curso" > Curso</label>
                         </div>
-                        <div class="span2">
+                        <div class="span2 control-group">
                             <label for="evaluacion" class="control-label">Evaluacion<span class="required">*</span></label>
                             <label ><input style="margin-left: 10px;margin-top: 0px;" type="radio"  name="evaluacion" value="no"> No</label>
-                            <label ><input style="margin-left: 10px;margin-top: 0px;" type="radio"  name="evaluacion" checked="true" value="si"> Si</label>
+                            <label ><input style="margin-left: 10px;margin-top: 0px;" type="radio"  name="evaluacion"  value="si"> Si</label>
                         </div>
-                        <div class="span2">
+                        <div class="span2 control-group">
                             <label for="tipo" class="control-label">Tipo<span class="required">*</span></label>
                             <label ><input style="margin-left: 10px;margin-top: 0px;" type="radio"  name="tipo" value="interno"> Interno</label>
-                            <label ><input style="margin-left: 10px;margin-top: 0px;" type="radio"  name="tipo" value="externo" checked="true"> Externo</label>
+                            <label ><input style="margin-left: 10px;margin-top: 0px;" type="radio"  name="tipo" value="externo" > Externo</label>
+                        </div>
+                        <div class="span2 control-group">
+                            <label for="obligatorio" class="control-label">Obligatorio<span class="required">*</span></label>
+                            <label ><input style="margin-left: 10px;margin-top: 0px;" type="radio"  name="obligatorio" value="si"> Si</label>
+                            <label ><input style="margin-left: 10px;margin-top: 0px;" type="radio"  name="obligatorio" value="no"> No</label>
                         </div>
                     </div>
                     
                     <div class="span12" style="padding: 1%; margin-left: 0px;">
-                        <div class="span6">
+                        <div class="span6 control-group">
                             <label for="descripcion" class="control-label">Descripcion<span class="required">*</span></label>
                             <textarea id="descripcion" class="span12" rows="5"  type="text" name="descripcion" value="<?php echo set_value('descripcion'); ?>"  ></textarea>
                         </div>
-                        <div class="span3">
-                            <label for="institucion" >Institucion<span class="required">*</span></label>
-                            <input id="institucion" type="text" placeholder="Area o establecimiento" name="institucion" value="<?php echo set_value('institucion'); ?>"  />
+                        <div class="span3 control-group">
+                            <label for="institucion" >Institucion<span class="required">*</span></label>                            
+                            <select id="institucion" name="institucion" required="required" >
+                                <option value="">Seleccione</option>
+                                <?php
+                                if (isset($institucion)){
+                                    foreach ($institucion as $i){
+                                        echo "<option value='".$i->idInstitucion."'>".$i->nombre."</option>";
+                                    }
+                                }
+                                ?>                                
+                            </select>
+                            <a href="<?php echo base_url()?>index.php/institucion/agregar" class="btn btn-default btn-mini"><i class="icon-plus icon-white"></i> Agregar nueva institucion</a>
+                        </div>
+                        <div class="span3 control-group">
+                            <label for="sector" >Sector<span class="required">*</span></label>                            
+                            <select id="sector" name="sector" required="required" >
+                                <option value="t">Todos</option>
+                                <?php
+                                if (isset($sector)){
+                                    foreach ($sector as $s){
+                                        echo "<option value='".$s->id."'>".$s->descripcion."</option>";
+                                    }
+                                }
+                                ?>                                
+                            </select>
                         </div>
                     </div> 
                     
                      <!--inicio, fin, cupo, capacitador-->
                     <div class="span12" style="padding: 1%; margin-left: 0px;">
-                        <div class="span3">
+                        <div class="span3 control-group ">
                             <label for="f_inicio" class="control-label">Fecha Inicio<span class="required">*</span></label>
-                            <input id="f_inicio" type="date" name="f_inicio" value="<?php echo set_value('f_inicio'); ?>" required="required" />
+                            <input id="f_inicio" type="date" name="f_inicio"  required="required" />
                         </div>
-                        <div class="span3">
+                        <div class="span3 control-group">
                             <label for="f_fin" class="control-label">Fecha Finalizacion<span class="required">*</span></label>
-                            <input id="f_fin" type="date" name="f_fin" value="<?php echo set_value('f_fin'); ?>" required="required" />
+                            <input id="f_fin" type="date" name="f_fin"  required="required" />
                         </div>
-                        <div class="span1">
+                        <div class="span1 control-group">
                             <label for="cupo" >Cupo<span class="required">*</span></label>
-                            <input id="cupo" type="number" style="width: 80%"  name="cupo" value="<?php echo set_value('cupo'); ?>" required="required" />
+                            <input id="cupo" type="number" style="width: 80%"  name="cupo"  required="required" />
                         </div>
-                        <div class="span4">
+                        <div class="span4 control-group">
                             <label for="capacitador" >Capacitador/es<span class="required">*</span></label>
-                            <input id="capacitador" type="text" style="width: 80%" placeholder="Nombre y Apellido" name="capacitador" value="<?php echo set_value('capacitador'); ?>"  />
+                            <input id="capacitador" type="text" style="width: 80%" placeholder="Nombre y Apellido" name="capacitador"  />
                             
                         </div>
-                        <div class="span1">
+<!--                        <div class="span1">
                             <label>&nbsp;</label>
                             <button id="agregar_fecha" style="margin-bottom: 10px;" class="btn btn-primary"><b>+</b></button>
-                        </div>
+                        </div>-->
                     </div>
-                     
-                     
-                    
-                     
-                    
-                    
-                               
-
-                    
+                                         
                     <div class="form-actions">
                         <div class="span12">
                             <div class="span6 offset3">
@@ -158,13 +189,32 @@
               }
           }  
 
-           $('#formUsuario').validate({
+           $('#formCapacitacion').validate({
             rules : {
-                  titulo:{ required: true}
+                  tema:{ required: true},
+                  institucion:{required:true},
+                  obligatorio:{required:true},
+                  evaluacion:{required:true},
+                  modalidad:{required:true},
+                  tipo:{required:true},
+                  descripcion:{required:true},
+                  capacitador:{required:true},
+                  f_inicio:{required:true},
+                  f_fin:{required:true},
+                  cupo:{requerido:true}
             },
             messages: {
-                  titulo :{ required: 'Campo Requerido.'}
-                  
+                  tema :{ required: 'Campo Requerido.'},
+                  institucion:{required:'Campo Requerido.'},
+                  obligatorio:{required:''},
+                  evaluacion:{required:''},
+                  modalidad:{required:''},
+                  tipo:{required:''},
+                  descripcion:{required:'Campo Requerido.'},
+                  capacitador:{required:'Campo Requerido.'},
+                  f_inicio:{required:'Fecha Requerida.'},
+                  f_fin:{required:'Fecha Requerida.'},
+                  cupo:{required:'Campo Requerido.'}
             },
 
             errorClass: "help-inline",

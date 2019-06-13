@@ -33,7 +33,7 @@ if (isset($_GET['persona'])){
                         <label  class="control-label">Persona <span class="required">*</span></label>
                         <div class="controls" id="persona_select">
                             <div class="input-append span6">
-                                <input name="persona" placeholder="Escribe aquí el apellido o nombre del empleado" class="input-block-level" id="persona" value="" type="text" required="required">
+                                <input name="persona" placeholder="Escribe aqu� el apellido o nombre del empleado" class="input-block-level" id="persona" value="" type="text" required="required">
                                 <button id="cancel" type="button" class="btn btn-success" >Limpiar</button>
                             </div>
                         </div>
@@ -102,7 +102,16 @@ if (isset($_GET['persona'])){
                         <div class="span12">
                             <div class="span6 offset3">
                                 <button type="submit" class="btn btn-success"><i class="icon-plus icon-white"></i> Agregar</button>
-                                <a href="<?php echo base_url() ?>index.php/licencia/listadoVinculo" id="" class="btn"><i class="icon-arrow-left"></i> Volver</a>
+                                <?php 
+                                if (isset($_GET['persona'])){?>
+                                    <a href="javascript:history.back()" id="" class="btn"><i class="icon-arrow-left"></i> Volver</a>
+                                <?php }else{?>
+                                    <a href="<?php echo base_url() ?>index.php/licencia/listadoVinculo" id="" class="btn"><i class="icon-arrow-left"></i> Volver</a>
+                                <?php
+                                
+                                }
+                                ?>
+                                
                             </div>
                         </div>
                     </div>

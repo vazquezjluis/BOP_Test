@@ -12,10 +12,15 @@ class Lenox_model extends CI_Model {
     function __construct() {
         parent::__construct();
     }
-    function get_all(){
+    function get_persona($sql=''){
         $bd_lenox =  $this->load->database('lenox',TRUE);
         
-        $query = $bd_lenox->query(' SELECT * FROM control_fichadas where nombre like "%chris%" and apellido like "%garcia%" order by fichada desc');
+        if ($sql !=''){
+            $query = $bd_lenox->query(' SELECT * FROM [dbo].[CLIENTES] '.$sql);
+        }else{
+            $query = $bd_lenox->query(' SELECT * FROM [dbo].[CLIENTES]');
+        }
+        
         $persona_info =  $query->result();
         
         return $persona_info;

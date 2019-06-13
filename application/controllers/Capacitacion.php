@@ -22,6 +22,9 @@ class Capacitacion extends CI_Controller {
 
         
         $this->load->model('capacitacion_model', '', TRUE);
+        $this->load->model('tema_model', '', TRUE);
+        $this->load->model('institucion_model', '', TRUE);
+        $this->load->model('sector_model','',TRUE);
         $this->load->model('consola_model', '', TRUE);
         
     }
@@ -35,7 +38,7 @@ class Capacitacion extends CI_Controller {
         
         $this->load->library('pagination');
     
-        $config['base_url'] = base_url().'index.php/capacitacion/listarCapacitacion/';
+        $config['base_url'] = base_url().'index.php/capacitacion/listadoCapacitacion/';
         $config['total_rows'] = $this->capacitacion_model->count('capacitacion');
         $config['per_page'] = 10;
         $config['next_link'] = 'Próxima';
@@ -131,7 +134,9 @@ class Capacitacion extends CI_Controller {
                     'cupo' => $this->input->post('cupo'),
                     'capacitador' => $this->input->post('capacitador'),
                     'tipo' => $this->input->post('tipo'),
-                    'evaluacion' => $this->input->post('evaluacion')
+                    'obligatorio' => $this->input->post('obligatorio'),
+                    'evaluacion' => $this->input->post('evaluacion'),
+                    'sector'=> (string)$this->input->post('sector')
             );
             
             if ($this->capacitacion_model->add('capacitacion',$data) == TRUE)
@@ -145,8 +150,8 @@ class Capacitacion extends CI_Controller {
                     );
                     if ($this->consola_model->add('consola',$acciones) == TRUE){
                                 
-                        $this->session->set_flashdata('success','Usuario registrado con éxito!');
-//                            redirect(base_url().'index.php/usuarios/agregar/');
+                        $this->session->set_flashdata('success','Capacitacion registrado con éxito!');
+                            redirect(base_url().'index.php/capacitacion/listadoCapacitacion/');
                         }
                     }
             else
@@ -154,6 +159,9 @@ class Capacitacion extends CI_Controller {
                 $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error al guardar la consola de la capacitacion.</p></div>';
             }
         }
+        $this->data['tema'] = $this->tema_model->getActive('tema','*');
+        $this->data['institucion'] = $this->institucion_model->getActive('institucion','*');
+        $this->data['sector']= $this->sector_model->get_sector('WHERE eliminado=0 ');
         $this->load->model('persona_model');  
         $this->data['view'] = 'rrhh/capacitacion/agregarCapacitacion';
         $this->load->view('tema/header',$this->data);
@@ -191,7 +199,9 @@ class Capacitacion extends CI_Controller {
                     'cupo' => $this->input->post('cupo'),
                     'capacitador' => $this->input->post('capacitador'),
                     'tipo' => $this->input->post('tipo'),
-                    'evaluacion' => $this->input->post('evaluacion')
+                    'obligatorio' => $this->input->post('obligatorio'),
+                    'evaluacion' => $this->input->post('evaluacion'),
+                    'sector'=> (string)$this->input->post('sector')
             );
             
             if ($this->capacitacion_model->edit('capacitacion',$data,'idCapacitacion',$this->input->post('idCapacitacion')) == TRUE)
@@ -215,7 +225,9 @@ class Capacitacion extends CI_Controller {
         }
 
         $this->data['result'] = $this->capacitacion_model->getById($this->uri->segment(3));
-        
+        $this->data['tema'] = $this->tema_model->getActive('tema','*');
+        $this->data['institucion'] = $this->institucion_model->getActive('institucion','*');
+        $this->data['sector']= $this->sector_model->get_sector('WHERE eliminado=0 ');
         $this->data['view'] = 'rrhh/capacitacion/editarCapacitacion';
         $this->load->view('tema/header',$this->data);
 			

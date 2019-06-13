@@ -1,5 +1,7 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
-
+  /** archivos necesarios */
+require_once APPPATH . 'libraries/Classes/PHPExcel.php';
+require_once APPPATH . 'libraries/Classes/PHPExcel/Reader/Excel2007.php';
 class Reportes extends CI_Controller{
 
 
@@ -16,6 +18,8 @@ class Reportes extends CI_Controller{
         
         $this->load->model('maquinas_model', '', TRUE);
         $this->load->model('fallas_model', '', TRUE);
+        $this->load->model('ticket_model', '', TRUE);
+        $this->load->model('usuarios_model', '', TRUE);
 
     }
 
@@ -78,6 +82,116 @@ class Reportes extends CI_Controller{
         
             $this->data['view'] = 'reportes/rep_maquinas';
             $this->load->view('tema/header',$this->data);
+    }
+    
+    public function tickets(){
+        //filtros de busqueda
+        $where = ' 1 = 1';
+        
+        if ($this->input->get('descripcion')!=''){//descripcion
+             $where.= ' AND ticket.descripcion LIKE "%'.$this->input->get('descripcion').'%" ';
+        }
+        if ($this->input->get('referencia')!=''){//descripcion
+             $where.= ' AND referencia_str(ticket.sector,ticket.referencia) LIKE "%'.$this->input->get('referencia').'%" ';
+        }
+        if ($this->input->get('estado')!=''){//estado
+             $where.= ' AND ticket.estado = '.$this->input->get('estado');
+        }else{
+            //
+            //$where.= ' AND ticket.estado = 1';//por defecto se trae los tickets abiertos
+        }
+        if ($this->input->get('emisor')!=''){//solicita
+             $where.= ' AND ticket.solicita = '.$this->input->get('emisor');
+        }
+        if ($this->input->get('desde')!='' and $this->input->get('hasta')!=''){
+            $where.=' AND date(ticket.f_solicitud) BETWEEN "'.$this->input->get('desde').'" AND "'.$this->input->get('hasta').'"';
+        }else{
+            if ($this->input->get('desde')!=''){//solicita
+             $where.= ' AND date(ticket.f_solicitud) >= "'.$this->input->get('desde').'" ';
+            }
+            if ($this->input->get('hasta')!=''){//solicita
+                 $where.= ' AND date(ticket.f_solicitud) <= "'.$this->input->get('hasta').'" ';
+            }
+        }
+        
+        
+        $this->load->library('pagination');
+        
+            $config['base_url'] = base_url().'index.php/reportes/tickets/';
+            $config['total_rows'] = count($this->ticket_model->get(
+                'ticket',
+                  'ticket.idTicket,'
+                . 'ticket.f_solicitud,'
+                . 'ticket.descripcion,'
+                . 'usuario_str(ticket.solicita) as solicita,'
+                . 'ticket.prioridad,'
+                . 'ticket.sector,'
+                . 'usuario_str(ticket.idAsignado) as asignado ,'
+                . 'referencia_str(ticket.sector,ticket.referencia) as referencia ,'
+                . 'ticket.estado',$where));
+            $config['per_page'] = 10;
+            $config['next_link'] = 'Próxima';
+            $config['prev_link'] = 'Anterior';
+            $config['full_tag_open'] = '<div class="pagination alternate"><ul>';
+            $config['full_tag_close'] = '</ul></div>';
+            $config['num_tag_open'] = '<li>';
+            $config['num_tag_close'] = '</li>';
+            $config['cur_tag_open'] = '<li><a style="color: #2D335B"><b>';
+            $config['cur_tag_close'] = '</b></a></li>';
+            $config['prev_tag_open'] = '<li>';
+            $config['prev_tag_close'] = '</li>';
+            $config['next_tag_open'] = '<li>';
+            $config['next_tag_close'] = '</li>';
+            $config['first_link'] = 'Primera';
+            $config['last_link'] = 'Última';
+            $config['first_tag_open'] = '<li>';
+            $config['first_tag_close'] = '</li>';
+            $config['last_tag_open'] = '<li>';
+            $config['last_tag_close'] = '</li>';
+//            $config['page_query_string'] = TRUE;
+
+            	
+            
+            //Obtiene los tickets
+            $this->data['results'] = $this->ticket_model->get(
+                'ticket',
+                  'ticket.idTicket,'
+                . 'ticket.f_solicitud,'
+                . 'ticket.descripcion,'
+                . 'usuario_str(ticket.solicita) as solicita,'
+                . 'ticket.prioridad,'
+                . 'ticket.sector,'
+                . 'usuario_str(ticket.idAsignado) as asignado ,'
+                . 'referencia_str(ticket.sector,ticket.referencia) as referencia ,'
+                . 'ticket.estado',$where,$config['per_page'],$this->uri->segment(3));
+            
+            $_SESSION['excel_ticket'] = $this->ticket_model->get(
+                'ticket',
+                  'ticket.idTicket,'
+                . 'ticket.f_solicitud,'
+                . 'ticket.descripcion,'
+                . 'usuario_str(ticket.solicita) as solicita,'
+                . 'ticket.prioridad,'
+                . 'ticket.sector,'
+                . 'usuario_str(ticket.idAsignado) as asignado ,'
+                . 'referencia_str(ticket.sector,ticket.referencia) as referencia ,'
+                . 'ticket.estado',$where);
+            
+            //Obtiene el listado de usuarios
+            $this->data['results_usuario'] = $this->usuarios_model->get(
+                'usuarios','usuarios.idUsuario,usuario.nombre','',$config['per_page'],$this->uri->segment(3));
+        
+            $this->data['total'] = count($this->data['results']);
+            
+            
+            
+            $this->pagination->initialize($config); 
+        
+            $this->data['view'] = 'reportes/rep_tickets';
+            $this->load->view('tema/header',$this->data);
+    }
+    public function excel_ticket (){
+        $this->load->view('reportes/excel/ticket');
     }
 
     public function personas(){
@@ -392,4 +506,6 @@ class Reportes extends CI_Controller{
         $html = $this->load->view('relatorios/imprimir/imprimirVendas', $data, true);
         pdf_create($html, 'relatorio_vendas' . date('d/m/y'), TRUE);
     }
+    
+    
 }

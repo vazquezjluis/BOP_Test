@@ -26,7 +26,23 @@
                             <input id="descripcion" type="text" name="descripcion" value="<?php echo $result->descripcion; ?>"  />
                         </div>
                     </div>
-
+                     
+                    <div class="control-group">
+                        <label  class="control-label">Tipo <span class="required">*</span></label>
+                        <div class="controls">
+                            <label class="label label-default"><input style="margin-left: 10px;" type="radio" name="tipo" value="Mensual" <?php if($result->tipo == 'Mensual'){?>checked="true"<?php }?> >Mensual</label>
+                            <label class="label label-default"><input style="margin-left: 10px;" type="radio" name="tipo" value="Anual" <?php if($result->tipo == 'Anual'){?>checked="true"<?php }?> >Anual</label>
+                            <label class="label label-default"><input style="margin-left: 10px;" type="radio" name="tipo" value="Otro" <?php if($result->tipo == 'Otro'){?>checked="true"<?php }?> >Otro</label>
+                        </div>
+                        
+                    </div>
+                    
+                    <div class="control-group">
+                        <label  class="control-label">Meses cumplidos <span class="required">*</span></label>
+                        <div class="controls">
+                            <input id="mes_cumplido" type="number" style="width: 40px;"  name="mes_cumplido" value="<?php echo $result->mes_cumplido; ?>" />
+                        </div>
+                    </div>
                     
                     <div class="form-actions">
                         <div class="span12">

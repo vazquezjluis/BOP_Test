@@ -59,7 +59,7 @@ class Premio extends CI_Controller {
 
 		  $this->data['results'] = $this->premio_model->get(
                           'premio',
-                          'idPremio,nombre,descripcion',' premio.estado = 1',$config['per_page'],$this->uri->segment(3));
+                          'idPremio,nombre,descripcion,tipo,mes_cumplido',' premio.estado = 1',$config['per_page'],$this->uri->segment(3));
        
 	    $this->data['view'] = 'rrhh/premio/premio';
        	$this->load->view('tema/header',$this->data);
@@ -70,9 +70,7 @@ class Premio extends CI_Controller {
 
         $this->load->library('form_validation');
         $this->data['custom_error'] = '';
-
-        $this->form_validation->set_rules('nombre', 'Nombre', 'trim|required');
-        if ($this->form_validation->run() == false) {
+        if ($this->form_validation->run('premio') == false) {
             $this->data['custom_error'] = (validation_errors() ? '<div class="form_error">' . validation_errors() . '</div>' : false);
         } else {
             
@@ -80,7 +78,10 @@ class Premio extends CI_Controller {
             $data = array(
                 'nombre' => $this->input->post('nombre'),
                 'descripcion' => $this->input->post('descripcion'),
-                'f_registro' => date('Y-m-d')
+                'tipo' => $this->input->post('tipo'),
+                'mes_cumplido' => $this->input->post('mes_cumplido'),
+                'estado'=>1,
+                'f_proceso' => date('Y-m-d')
             );
 
             if ($this->premio_model->add('premio', $data) == TRUE) {
@@ -112,16 +113,16 @@ class Premio extends CI_Controller {
         
         $this->load->library('form_validation');
         $this->data['custom_error'] = '';
-
-        $this->form_validation->set_rules('nombre', 'nombre', 'trim|required');
-        if ($this->form_validation->run() == false) {
+        if ($this->form_validation->run('premio') == false) {
             $this->data['custom_error'] = (validation_errors() ? '<div class="form_error">' . validation_errors() . '</div>' : false);
         } else {
             
             $data = array(
                 'nombre' => $this->input->post('nombre'),
                 'descripcion' => $this->input->post('descripcion'),
-                
+                'tipo' => $this->input->post('tipo'),
+//                'estado'=> $this->input->post('estado'),
+                'mes_cumplido' => $this->input->post('mes_cumplido')
             );
 
             if ($this->premio_model->edit('premio', $data, 'idPremio', $this->input->post('idPremio')) == TRUE) {
@@ -186,7 +187,7 @@ class Premio extends CI_Controller {
                 'idPremio' => $this->input->post('premio'),
                 'idPersona' => $this->input->post('persona_id'),
                 'descripcion' => $this->input->post('descripcion'),
-                'tipo' => $this->input->post('tipo'),
+//                'tipo' => $this->input->post('tipo'),
                 'fecha_registro' => date('Y-m-d'),
                 'fecha_entrega' => $this->input->post('f_entrega'),                
                 'usuario' => $this->session->userdata('id')

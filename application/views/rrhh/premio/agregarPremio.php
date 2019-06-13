@@ -31,7 +31,22 @@
                         </div>
                     </div>
                     
+                    <div class="control-group">
+                        <label  class="control-label">Tipo <span class="required">*</span></label>
+                        <div class="controls">
+                            <label class="label label-default"><input style="margin-left: 10px;" type="radio" name="tipo" value="Mensual">Mensual</label>
+                            <label class="label label-default"><input style="margin-left: 10px;" type="radio" name="tipo" value="Anual">Anual</label>
+                            <label class="label label-default"><input style="margin-left: 10px;" type="radio" name="tipo" value="Otro">Otro</label>
+                        </div>
+                        
+                    </div>
                     
+                    <div class="control-group">
+                        <label  class="control-label">Meses cumplidos <span class="required">*</span></label>
+                        <div class="controls">
+                            <input id="mes_cumplido" type="number" style="width: 40px;"  name="mes_cumplido" value="<?php echo set_value('mes_cumplido'); ?>" />
+                        </div>
+                    </div>
                     
                     <div class="form-actions">
                         <div class="span12">
@@ -115,12 +130,14 @@
            $('#formPremio').validate({
             rules : {
                   nombre:{ required: true},
+                  tipo:{required:true}
 //                  descripcion:{ required: true},
                   
             },
             messages: {
 //                  descripcion :{ required: 'Campo Requerido.'},
-                  nombre :{ required: 'Campo Requerido'}
+                  nombre :{ required: 'Campo Requerido'},
+                  tipo:{required:''}
                   
             },
 

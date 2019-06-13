@@ -81,6 +81,14 @@ $config =
                                 )
                     )
                 ,
+                'menu' => array(
+                                array(
+                                    'field'=>'descripcion',
+                                    'label'=>'descripcion',
+                                    'rules'=>'required|trim'
+                                )
+                    )
+                ,
                 'maquinas' => array(
                                 array(
                                     'field'=>'nro_egm',
@@ -232,11 +240,49 @@ $config =
                                 ))
 
                 ,
-				'capacitacion' => array(array(
+				'capacitacion' => array(
+                                    array(
                                 	'field'=>'tema',
                                 	'label'=>'tema',
                                 	'rules'=>'required|trim'
-                                ))
+                                    ),
+                                    array(
+                                	'field'=>'modalidad',
+                                	'label'=>'modalidad',
+                                	'rules'=>'required|trim'
+                                    ),
+                                    array(
+                                	'field'=>'evaluacion',
+                                	'label'=>'evaluacion',
+                                	'rules'=>'required|trim'
+                                    ),
+                                    array(
+                                	'field'=>'tipo',
+                                	'label'=>'tipo',
+                                	'rules'=>'required|trim'
+                                    ),
+                                    array(
+                                	'field'=>'obligatorio',
+                                	'label'=>'obligatorio',
+                                	'rules'=>'required|trim'
+                                    ),
+                                    array(
+                                	'field'=>'f_inicio',
+                                	'label'=>'f_inicio',
+                                	'rules'=>'required|trim'
+                                    ),
+                                    array(
+                                	'field'=>'f_fin',
+                                	'label'=>'f_fin',
+                                	'rules'=>'required|trim'
+                                    ),
+                                    array(
+                                	'field'=>'cupo',
+                                	'label'=>'cupo',
+                                	'rules'=>'required|trim'
+                                    )
+                                    
+                                )
                 ,
 				'licencia' => array(array(
                                 	'field'=>'titulo',
@@ -272,17 +318,131 @@ $config =
                                 	'rules'=>'required|trim'
                                 ))
                 ,
-				'vincular_premio' => array(array(
+				'vincular_premio' => array(
+                                    array(
                                 	'field'=>'persona_id',
                                 	'label'=>'persona',
                                 	'rules'=>'required|trim'
-                                ),
-								array(
+                                        ),
+                                    array(
                                 	'field'=>'premio',
                                 	'label'=>'premio',
                                 	'rules'=>'required|trim'
-                                ))
-
+                                        )
+                                )
+                ,
+				'vincular_estudio' => array(
+                                    array(
+                                	'field'=>'persona_id',
+                                	'label'=>'persona',
+                                	'rules'=>'required|trim'
+                                        ),
+                                    array(
+                                	'field'=>'estudio',
+                                	'label'=>'estudio',
+                                	'rules'=>'required|trim'
+                                        )
+                                )
+                ,
+				'vincular_uniforme' => array(
+                                    array(
+                                	'field'=>'uniforme_id',
+                                	'label'=>'uniforme_id',
+                                	'rules'=>'required|trim'
+                                        ),
+                                    array(
+                                	'field'=>'persona_id',
+                                	'label'=>'persona_id',
+                                	'rules'=>'required|trim'
+                                        )
+                                )
+                ,
+				'desempeno' => array(
+                                    array(
+                                	'field'=>'idPersona',
+                                	'label'=>'persona',
+                                	'rules'=>'required|trim'
+                                        )
+                                )
+                ,
+                                'premio' => array(
+                                    array(
+                                	'field'=>'nombre',
+                                	'label'=>'nombre',
+                                	'rules'=>'required|trim'
+                                        ),
+                                    array(
+                                	'field'=>'tipo',
+                                	'label'=>'tipo',
+                                	'rules'=>'required|trim'
+                                        )
+                                    
+                                )
+                ,
+                                'estudio' => array(
+                                    array(
+                                	'field'=>'titulo',
+                                	'label'=>'titulo',
+                                	'rules'=>'required|trim'
+                                        )
+                                    ,
+                                    array(
+                                	'field'=>'tipo',
+                                	'label'=>'tipo',
+                                	'rules'=>'required|trim'
+                                        )
+                                    ,
+                                    array(
+                                	'field'=>'institucion',
+                                	'label'=>'institucion',
+                                	'rules'=>'required|trim'
+                                        )
+                                    ,
+                                    array(
+                                	'field'=>'fecha',
+                                	'label'=>'fecha',
+                                	'rules'=>'required|trim'
+                                        )
+                                    
+                                )
+                ,
+                                'seleccion_personal' => array(
+                                    array(
+                                	'field'=>'nombre',
+                                	'label'=>'nombre',
+                                	'rules'=>'required|trim'
+                                        ),
+                                    array(
+                                	'field'=>'apellido',
+                                	'label'=>'apellido',
+                                	'rules'=>'required|trim'
+                                        ),
+                                    array(
+                                	'field'=>'contacto',
+                                	'label'=>'contacto',
+                                	'rules'=>'required|trim'
+                                        )
+                                    
+                                )
+            ,
+                                'uniforme' => array(
+                                    array(
+                                	'field'=>'prenda',
+                                	'label'=>'prenda',
+                                	'rules'=>'required|trim'
+                                        ),
+                                    array(
+                                	'field'=>'tipo_prenda',
+                                	'label'=>'tipo_prenda',
+                                	'rules'=>'required|trim'
+                                        ),
+                                    array(
+                                	'field'=>'talle',
+                                	'label'=>'talle',
+                                	'rules'=>'required|trim'
+                                        )
+                                    
+                                )
                 ,
                 'receita' => array(array(
                                     'field'=>'descricao',

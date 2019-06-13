@@ -15,21 +15,29 @@ class Persona extends CI_Controller {
           redirect('bingoOasis/login');
         }
 //
-//        if(!$this->permission->checkPermission($this->session->userdata('permiso'),'cPermiso')){
-//          $this->session->set_flashdata('error','Usted no tiene permisos para configurar el inventario del sistema.');
-//          redirect(base_url());
-//        }
+        if(!$this->permission->checkPermission($this->session->userdata('permiso'),'vPersonas')){
+          $this->session->set_flashdata('error','Usted no tiene permisos para ver las personas del sistema.');
+          redirect(base_url());
+        }
 
         $this->load->model('persona_model', '', TRUE);
+        $this->load->model('pedido_model', '', TRUE);
         $this->load->model('archivos_model', '', TRUE);
         $this->load->model('capacitacion_model', '', TRUE);
         $this->load->model('licencia_model', '', TRUE);
         $this->load->model('premio_model', '', TRUE);
+        $this->load->model('desempeno_model', '', TRUE);
         $this->load->model('lenox_model', '', TRUE);
+        $this->load->model('familiar_model', '', TRUE);
+        $this->load->model('sector_model', '', TRUE);
+        $this->load->model('permisos_model', '', TRUE);
+        $this->load->model('uniforme_model', '', TRUE);
+        $this->load->model('estudio_model', '', TRUE);
     }
 	
     function index(){
         $this->visualizar();
+       
     }
 
     function gestionar(){
@@ -245,22 +253,38 @@ class Persona extends CI_Controller {
             
         }else{
 
-//        if(!$this->permission->checkPermission($this->session->userdata('permissao'),'vCliente')){
-//           $this->session->set_flashdata('error','Você não tem permissão para visualizar clientes.');
-//           redirect(base_url());
-//        }
+//            if(!$this->permission->checkPermission($this->session->userdata('permissao'),'vCliente')){
+//               $this->session->set_flashdata('error','Usted no tiene permiso para ver este empleado.');
+//               redirect(base_url());
+//            }
 
             $this->data['custom_error'] = '';
-            
-            $this->data['result'] = $this->persona_model->get('persona','*','id = '.$this->input->get('buscar'));
+
+            $this->data['result'] = $this->persona_model->get_persona(' where id = '.$this->input->get('buscar'));
             
             if (count($this->data['result'])){
+                /* Valida que el usuario tenga permisos del sector*/
+                $this->data['sector_por_empresa'] = $this->sector_model->get_sector_por_empresa(' where id = '.$this->data['result'][0]->id_sector_por_empresa);
+                $this->data['sector'] = $this->sector_model->get_sector(' where id = '.$this->data['sector_por_empresa'][0]->id_sector);
+                
+                if(!$this->permission->checkPermission($this->session->userdata('permiso'),str_replace(" ","",str_replace(".","",(string) $this->data['sector'][0]->descripcion)))){
+                    $this->session->set_flashdata('error','Usted no tiene permiso para ver este empleado.');
+                    redirect(base_url());
+                }
                 //obtiene la imagen del empleado
                 $this->data['url_img'] = $this->archivos_model->get('documentos','url',' funcionalidad = "persona" AND sector = 2 AND referencia = '.$this->data['result'][0]->id);
                 //obtengo las capacitaciones del empleado
                 $this->data['capacitacion'] = $this->capacitacion_model->getPersonaCapacitacion(0,0,' capacitacion_persona.idPersona = '.$this->data['result'][0]->id);
                 $this->data['licencia'] = $this->licencia_model->getPersonaLicencia(' licencia_persona.idPersona = '.$this->data['result'][0]->id);
                 $this->data['premio'] = $this->premio_model->getPremioPersona('premio_persona.estado = 1 AND premio_persona.idPersona = '.$this->data['result'][0]->id);
+                $this->data['familiar'] = $this->familiar_model->getFamiliarPersona('familiar.estado = 1 AND familiar.idPersona = '.$this->data['result'][0]->id);
+                $this->data['desempeno'] = $this->desempeno_model->getDesempenoPersona('desempeno.estado = 1 AND desempeno.idPersona = '.$this->data['result'][0]->id);
+                $this->data['sansion'] = $this->persona_model->get_sanciones($this->input->get('buscar'));
+                $this->data['ausencia'] = $this->persona_model->get_ausencia($this->input->get('buscar'));
+                $this->data['uniforme'] = $this->persona_model->get_uniforme(' uniforme_has_persona.idPersona = '.$this->input->get('buscar'));
+               
+                $this->data['estudios'] = $this->estudio_model->getEstudioPersona(' estudio_persona.idPersona = '.$this->input->get('buscar').' AND estudio_persona.estado = 1');
+                
                 
             }
             else{
@@ -269,13 +293,63 @@ class Persona extends CI_Controller {
             }
         }
         
-        //$this->data['lenox_persona'] = $this->lenox_model->get_all();
-        //echo "<pre>";
-        //var_dump($this->data['lenox_persona']);
-        //echo "</pre>";
+//        $this->data['lenox_persona'] = $this->lenox_model->get_persona();
+//        echo "<pre>";
+//        var_dump($this->data['lenox_persona']);
+//        echo "</pre>";
         $this->data['view'] = 'rrhh/persona/visualizar';
         $this->load->view('tema/header', $this->data);
     }
+    function imagen(){
+        
+        $this->data['imagen'] = $this->persona_model->get_imagen($_GET['id']);
+        $this->data['view'] = 'rrhh/persona/imagen';
+//        $this->load->view('tema/header', $this->data);
+    }
+    
+    public function autoCompletePersona(){
+        
+        if (isset($_GET['term'])){
+            $q = strtolower($_GET['term']);
+            $sectores_del_usuario='';
+            $sectores = $this->sector_model->get_sector();
+            foreach ($sectores as $sector){
+                 if(!$this->permission->checkPermission($this->session->userdata('permiso'),(string)str_replace(" ","",str_replace(".","",$sector->descripcion)))){
+                    //el usuario o tiene permiso en ese sector
+                 }else{
+                     $sectores_del_usuario.="OR SECTORES.descripcion = '".$sector->descripcion."' ";
+                 }
+            }
+//            $permisos = $this->permisos_model->get('permiso','permisos','idPermiso ='.$this->session->userdata('permisos_id'));
+            $this->persona_model->autoCompletePersona($q,$sectores_del_usuario);
+        }
+
+    }
+    
+    public function verificarLegajo(){
+        
+        header('Access-Control-Allow-Origin: '.base_url());
+        header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+        header('Access-Control-Max-Age: 1000');
+        header('Access-Control-Allow-Headers: Content-Type');
+        
+        $persona = $this->persona_model->get_persona(" WHERE legajo = ".$this->input->get('leg'));
+        $this->data['pendiente'] = $this->pedido_model->get('pedido','pedido.*,persona_str(pedido.persona) as persona, menu_str(pedido.idMenu) as menu',' pedido.estado = 1 and pedido.legajo = '.$this->input->get('leg'));
+        if (count($this->data['pendiente'])){
+            $pedido = "pendiente";
+        }else{
+            $pedido = '';
+        }
+        if (count($persona)){
+            $json = array('persona' => $persona[0]->id, 'nombre' => $persona[0]->apellido.' '.$persona[0]->nombre, 'pedido'=>$pedido);
+            echo json_encode($json);
+        }else{
+            $json = array('persona' => 'error', 'nombre' => 'Ingrese su legajo para realizar el pedido.');
+            echo json_encode($json);
+        }    
+        
+    }
+
 }
 
 

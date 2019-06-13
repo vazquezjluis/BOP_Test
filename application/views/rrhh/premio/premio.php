@@ -46,6 +46,8 @@ if(!$results){?>
         <th>#</th>
         <th>Nombre</th>
         <th>Descripcion</th>
+        <th>Tipo</th>
+        <th>Meses Cumplidos</th>
         <th></th>
     </tr>
         <?php 
@@ -56,6 +58,8 @@ if(!$results){?>
                 echo '<td>'.$r->idPremio.'</td>';
                 echo '<td>'.$r->nombre.'</td>';
                 echo '<td>'.$r->descripcion.'</td>';
+                echo '<td>'.$r->tipo.'</td>';
+                echo '<td>'.$r->mes_cumplido.'</td>';
                 
                 echo '<td> ';
 //                 echo '<a href="'.base_url().'index.php/persona/visualizar/'.$r->id.'"  class="btn tip-top" title="Ver detalle"><i class="icon-eye-open"></i></a>'; 

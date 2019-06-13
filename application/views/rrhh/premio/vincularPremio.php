@@ -18,7 +18,7 @@ if (isset($_GET['persona'])){
                 <span class="icon">
                     <i class="icon-user"></i>
                 </span>
-                <h5>Vincular premioa <?php if (isset($_GET['persona'])){  echo "a ".strtoupper($_GET['persona_str']);} ?> </h5>
+                <h5>Vincular premio a <?php if (isset($_GET['persona'])){  echo "a ".strtoupper($_GET['persona_str']);} ?> </h5>
             </div>
             <div class="widget-content nopadding">
                 <?php if ($custom_error != '') {
@@ -76,13 +76,13 @@ if (isset($_GET['persona'])){
                         </div>
                     </div>
                     
-                    <div class="control-group">
+<!--                    <div class="control-group">
                         <label for="f_entrega" class="control-label">Tipo</label>
                         <div class="controls">
                             <label class="label label-default"><input style="margin-left: 10px;" type="radio" name="tipo" value="mensual" checked="checked"> Mensual</label>
                             <label class="label label-success"><input style="margin-left: 10px;" type="radio"  name="tipo" value="anual"> Anual</label>
                         </div>
-                    </div>
+                    </div>-->
                     
                     <div class="form-actions">
                         <div class="span12">

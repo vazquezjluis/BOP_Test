@@ -34,6 +34,7 @@ class Permission{
         if($idPermiso == null || $atividade == null){
             return false;
         }
+        
         // Si los permisos no se cargan , solicita la carga
         if($this->Permission == null){
             // Si no carga devuelve falso

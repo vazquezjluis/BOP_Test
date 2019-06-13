@@ -24,7 +24,6 @@ class Ticket_model extends CI_Model {
         }
         
         $query = $this->db->get();
-        
         $result =  !$one  ? $query->result() : $query->row();
         return $result;
     }
@@ -95,17 +94,21 @@ class Ticket_model extends CI_Model {
 		return FALSE;        
     }   
 	
-	function count($table){
-		return $this->db->count_all($table);
-	}
-	function count_activos($table){
-            $this->db->select("*");
-            $this->db->from($table);
-            $this->db->where('estado',1);
-            $query = $this->db->get();
-            return count($query->result());
-		//return $this->db->count_all($table);
-	}
+    function count($table){
+            return $this->db->count_all($table);
+    }
+    function count_activos($table){
+        $this->db->select("*");
+        $this->db->from($table);
+        $this->db->where('estado',1);
+        $query = $this->db->get();
+        return count($query->result());
+            //return $this->db->count_all($table);
+    }
+    function indicador($sql){
+        $query = $this->db->query($sql);
+        return $query->result();
+    }
 }
 
 /* End of file permisos_model.php */

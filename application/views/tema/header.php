@@ -10,12 +10,16 @@
 <link rel="stylesheet" href="<?php echo base_url();?>assets/css/bootstrap-responsive.min.css" />
 <link rel="stylesheet" href="<?php echo base_url();?>assets/css/matrix-style.css" />
 <link rel="stylesheet" href="<?php echo base_url();?>assets/css/matrix-media.css" />
+
 <link href="<?php echo base_url();?>assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+
 <!--link rel="stylesheet" href="<?php //echo base_url();?>assets/css/fullcalendar.css" /--> 
 <?php header('Content-Type: text/html; charset=UTF-8'); ?>
 <!--<link href="<?php //   echo base_url();?>assets/css/css.css" rel="stylesheet" type="text/css"/>-->
 <!--<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css'>-->
 <script type="text/javascript"  src="<?php echo base_url();?>assets/js/jquery-1.10.2.min.js"></script>
+
+
 
 </head>
 <body>
@@ -75,10 +79,43 @@
               <?php if($this->permission->checkPermission($this->session->userdata('permiso'),'vPremios')){ ?>
                 <li><a href="<?php echo base_url()?>index.php/premio">Premios</a></li>
               <?php } ?>
+              <?php // if($this->permission->checkPermission($this->session->userdata('seleccion_personal'),'vSeleccion_personal')){ ?>
+                <li><a href="<?php echo base_url()?>index.php/seleccion_personal">Seleccion de Personal</a></li>
+              <?php // } ?>
+              <?php // if($this->permission->checkPermission($this->session->userdata('seleccion_personal'),'vSeleccion_personal')){ ?>
+                <li><a href="<?php echo base_url()?>index.php/uniforme">Uniformes</a></li>
+              <?php // } ?>
+              <?php // if($this->permission->checkPermission($this->session->userdata('seleccion_personal'),'vSeleccion_personal')){ ?>
+                <li><a href="<?php echo base_url()?>index.php/estudio">Estudios</a></li>
+              <?php // } ?>
                 <!--<li><a href="#">Fallas (en construccion)</a></li>-->
           </ul>
         </li>
     <?php } ?>
+    
+    
+    <!--GASTRONOMIA-->
+    <?php // if($this->permission->checkPermission($this->session->userdata('permiso'),'vMenuPersonal')){ ?>
+        <li class="submenu <?php if(isset($menuClientes)){echo 'active open';};?>">
+            <?php  if($this->permission->checkPermission($this->session->userdata('permiso'),'vMenu') || 
+                        $this->permission->checkPermission($this->session->userdata('permiso'),'vPedido') ||
+                        $this->permission->checkPermission($this->session->userdata('permiso'),'cMenu')
+                    ){ ?>
+            <a href="#"><i class="icon  icon-glass"></i> <span>Gastronomia</span><span class="label"><i class="icon-chevron-down"></i></a>
+            <?php } ?>
+            <ul>
+              <?php  if($this->permission->checkPermission($this->session->userdata('permiso'),'vMenu')){ ?>
+                <li><a href="<?php echo base_url()?>index.php/menuPersonal">ABM Menu</a></li>
+              <?php  } 
+                    if($this->permission->checkPermission($this->session->userdata('permiso'),'vPedido')){ ?>
+                <li><a   href="javascript:void(0);" onclick="FullScreen('<?php echo base_url().'index.php/pedido/monitor'?>');">Monitor</a></li>
+                <?php }
+                if($this->permission->checkPermission($this->session->userdata('permiso'),'cPedido')){ ?>
+                <li><a   href="javascript:void(0);" onclick="FullScreen('<?php echo base_url().'index.php/pedido/pedidos'?>');">Pedidos</a></li>
+                <?php } ?>
+          </ul>    
+        </li>
+    <?php // } ?>  
     
     
     <!--MAQUINAS-->
@@ -111,6 +148,9 @@
           <ul>
               <?php if($this->permission->checkPermission($this->session->userdata('permiso'),'vRep_maquinas')){ ?>
                 <li><a href="<?php echo base_url()?>index.php/Reportes/maquinas">Maquinas</a></li>
+              <?php } ?>
+              <?php if($this->permission->checkPermission($this->session->userdata('permiso'),'vRep_ticket')){ ?>
+                <li><a href="<?php echo base_url()?>index.php/Reportes/tickets">Tickets</a></li>
               <?php } ?>
               <?php if($this->permission->checkPermission($this->session->userdata('permiso'),'vPersonas')){ ?>
                 <li><a href="<?php echo base_url()?>index.php/Reportes/personas">Personas</a></li>
@@ -254,6 +294,20 @@
 
 <script src="<?php echo base_url();?>assets/js/bootstrap.min.js"></script> 
 <script src="<?php echo base_url();?>assets/js/matrix.js"></script> 
+
+<script language="JavaScript">
+	function FullScreen(theURL)
+	{
+//            alert("Para cerrar la ventana pulsa en tu teclado: ALT+F4") ;
+            var params  = 'width='+screen.width;
+            params += ', height='+screen.height;
+            params += ', top=0, left=0'
+            params += ', fullscreen=yes';
+		window.open(theURL, '', params);
+	}
+        
+</Script>
+ 
 
 
 </body>

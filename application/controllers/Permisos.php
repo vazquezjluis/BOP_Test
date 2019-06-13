@@ -22,6 +22,7 @@ class Permisos extends CI_Controller {
 
         $this->load->helper(array('form', 'codegen_helper'));
         $this->load->model('permisos_model', '', TRUE);
+        $this->load->model('sector_model', '', TRUE);
         $this->load->model('consola_model', '', TRUE);
         $this->data['menuConfiguraciones'] = 'Permisos';
     }
@@ -60,7 +61,7 @@ class Permisos extends CI_Controller {
 
 		  $this->data['results'] = $this->permisos_model->get(
                           'permisos',
-                          'idPermiso,nombre,fecha_registro,estado','',$config['per_page'],$this->uri->segment(3));
+                          'idPermiso,nombre,fecha_registro,estado',' estado = 1',$config['per_page'],$this->uri->segment(3));
        
 	    $this->data['view'] = 'permisos/permisos';
        	$this->load->view('tema/header',$this->data);
@@ -107,6 +108,21 @@ class Permisos extends CI_Controller {
                   'dFallas' => $this->input->post('dFallas'),
                   'cFallas' => $this->input->post('cFallas'),  
                 
+                  'vDesempeno' => $this->input->post('vDesempeno'),
+                  'eDesempeno' => $this->input->post('eDesempeno'),
+                  'dDesempeno' => $this->input->post('dDesempeno'),
+                  'cDesempeno' => $this->input->post('cDesempeno'),  
+                
+                  'vMenu' => $this->input->post('vMenu'),
+                  'eMenu' => $this->input->post('eMenu'),
+                  'dMenu' => $this->input->post('dMenu'),
+                  'cMenu' => $this->input->post('cMenu'),  
+                
+                  'vPedido' => $this->input->post('vPedido'),
+                  'ePedido' => $this->input->post('ePedido'),
+                  'dPedido' => $this->input->post('dPedido'),
+                  'cPedido' => $this->input->post('cPedido'),  
+                
                   'vTicket' => $this->input->post('vTicket'),
                   'cTicket' => $this->input->post('cTicket'),
                 
@@ -124,9 +140,16 @@ class Permisos extends CI_Controller {
                   'vCapacitacion' => $this->input->post('vCapacitacion'),  
                   'vPremios' => $this->input->post('vPremios'),  
                 
-                  'vRep_maquinas' => $this->input->post('vRep_maquinas')  
+                  'vRep_maquinas' => $this->input->post('vRep_maquinas'),  
+                  'vRep_ticket' => $this->input->post('vRep_ticket')  
                     
             );
+            $sectores = $this->sector_model->get_sector();
+            
+            foreach ($sectores as $sector){
+                
+                $permisos[str_replace(" ","",str_replace(".","",$sector->descripcion))]=$this->input->post(str_replace(" ","",str_replace(".","",$sector->descripcion)));
+            }
             
             $permisos = serialize($permisos);
 
@@ -154,7 +177,7 @@ class Permisos extends CI_Controller {
                 $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error.</p></div>';
             }
         }
-
+        $this->data['sectores'] = $this->sector_model->get_sector();
         $this->data['view'] = 'permisos/agregarPermiso';
         $this->load->view('tema/header', $this->data);
 
@@ -184,7 +207,7 @@ class Permisos extends CI_Controller {
                   'cUsuario' => $this->input->post('cUsuario'),
                   'cPermiso' => $this->input->post('cPermiso'),
                   'cConsola' => $this->input->post('cConsola'),
-                  'cBackup' => $this->input->post('cBackup'),
+                  'cBackup'  => $this->input->post('cBackup'),
                 
                   'vMaquina' => $this->input->post('vMaquina'),
                   'eMaquina' => $this->input->post('eMaquina'),
@@ -195,6 +218,21 @@ class Permisos extends CI_Controller {
                   'eFallas' => $this->input->post('eFallas'),
                   'dFallas' => $this->input->post('dFallas'),
                   'cFallas' => $this->input->post('cFallas'),
+                
+                  'vDesempeno' => $this->input->post('vDesempeno'),
+                  'eDesempeno' => $this->input->post('eDesempeno'),
+                  'dDesempeno' => $this->input->post('dDesempeno'),
+                  'cDesempeno' => $this->input->post('cDesempeno'),
+                
+                  'vMenu' => $this->input->post('vMenu'),
+                  'eMenu' => $this->input->post('eMenu'),
+                  'dMenu' => $this->input->post('dMenu'),
+                  'cMenu' => $this->input->post('cMenu'),
+                
+                  'vPedido' => $this->input->post('vPedido'),
+                  'ePedido' => $this->input->post('ePedido'),
+                  'dPedido' => $this->input->post('dPedido'),
+                  'cPedido' => $this->input->post('cPedido'),
                 
                   'vArticulos' => $this->input->post('vArticulos'),
                   'eArticulos' => $this->input->post('eArticulos'),
@@ -223,9 +261,18 @@ class Permisos extends CI_Controller {
                   'vCapacitacion' => $this->input->post('vCapacitacion'),
                   'vPremios' => $this->input->post('vPremios'),
                 
-                  'vRep_maquinas' => $this->input->post('vRep_maquinas')
+                  'vRep_maquinas' => $this->input->post('vRep_maquinas'),
+                  'vRep_ticket' => $this->input->post('vRep_ticket')
 
             );
+            
+            $sectores = $this->sector_model->get_sector();
+            
+            foreach ($sectores as $sector){
+                
+                $permisos[str_replace(" ","",str_replace(".","",$sector->descripcion))]=$this->input->post(str_replace(" ","",str_replace(".","",$sector->descripcion)));
+            }
+            
             $permisos = serialize($permisos);
 
             $data = array(
@@ -252,6 +299,7 @@ class Permisos extends CI_Controller {
         }
 
         $this->data['result'] = $this->permisos_model->getById($this->uri->segment(3));
+        $this->data['sectores'] = $this->sector_model->get_sector();
         $this->data['view'] = 'permisos/editarPermiso';
         $this->load->view('tema/header', $this->data);
 

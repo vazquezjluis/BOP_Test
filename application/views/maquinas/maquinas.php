@@ -402,18 +402,18 @@ $(document).ready(function(){
                 var habilitado = 1;
             }
             $.ajax({
-            url: '<?php echo site_url() ?>/maquinas/habilitar/',
-            data: "habilitado="+habilitado+"&maquina="+id_maquina,
-            type: 'GET',
-            async:false
-        })
-        .done(function(data) {
-            if(data.result == true){
-//                       alert('Falla agregada');
-            }else{
-//                       alert('Ocurrio un error al cargar la falla.');
-            }   
-        }); 
+                url: '<?php echo site_url() ?>/maquinas/habilitar/',
+                data: "habilitado="+habilitado+"&maquina="+id_maquina,
+                type: 'GET',
+                async:false
+            })
+            .done(function(data) {
+                if(data.result == true){
+    //                       alert('Falla agregada');
+                }else{
+    //                       alert('Ocurrio un error al cargar la falla.');
+                }   
+            }); 
     }); 
     
     $('#formTicket').validate({

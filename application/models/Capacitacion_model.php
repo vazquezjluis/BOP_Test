@@ -17,11 +17,12 @@ class Capacitacion_model extends CI_Model {
     function get($perpage=0,$start=0,$one=false){
         
         $this->db->from('capacitacion');
-        $this->db->select('*');
-        $this->db->where('estado',1);
+        $this->db->select('capacitacion.idCapacitacion,tema_str(capacitacion.tema) as temaNombre,capacitacion.modalidad,capacitacion.descripcion');
+        $this->db->where('capacitacion.estado',1);
         $this->db->limit($perpage,$start);
         $this->db->order_by(" idCapacitacion ","  ASC ");
-        //$this->db->join('capacitacion', 'usuarios.permisos_id = permisos.idPermiso', 'left');
+//        $this->db->join('institucion', 'institucion.idInstitucion = capacitacion.institucion', 'inner');
+//        $this->db->join('tema', 'tema.idTema = capacitacion.tema', 'inner');
   
         $query = $this->db->get();
         
@@ -33,7 +34,7 @@ class Capacitacion_model extends CI_Model {
         $this->db->from('capacitacion_persona');
         $this->db->select('capacitacion_persona.*, '
                 . ' persona_str(capacitacion_persona.idPersona) as persona, '
-                . ' capacitacion.tema, capacitacion.f_inicio, '
+                . ' capacitacion.tema, capacitacion.f_inicio,tema.nombre,institucion.nombre as institucionStr, '
                 . ' capacitacion.f_fin, capacitacion.capacitador, capacitacion.modalidad, capacitacion.institucion  ');
         if ($where !=''){
             $this->db->where('capacitacion_persona.estado = 1 AND '.$where);
@@ -42,6 +43,8 @@ class Capacitacion_model extends CI_Model {
         }
         
        $this->db->join('capacitacion',' capacitacion.idCapacitacion = capacitacion_persona.idCapacitacion ');
+       $this->db->join('tema', 'tema.idTema = capacitacion.tema', 'inner');
+       $this->db->join('institucion', 'institucion.idInstitucion = capacitacion.institucion', 'inner');
         $this->db->limit($perpage,$start);
         $this->db->order_by(" idCapacitacionPersona ","  ASC ");
         //$this->db->join('capacitacion', 'usuarios.permisos_id = permisos.idPermiso', 'left');
@@ -99,4 +102,12 @@ class Capacitacion_model extends CI_Model {
 	function count($table){
 		return $this->db->count_all($table);
 	}
+     function countActivo($table){
+        $this->db->from($table); 
+        $this->db->select('count(*)'); 
+        $this->db->where('estado',1);
+        $query = $this->db->get();
+        
+        return $query->result();
+    }
 }
