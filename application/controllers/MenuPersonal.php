@@ -106,39 +106,38 @@ class MenuPersonal extends CI_Controller {
             
             $data = array(
                 'descripcion' => $this->input->post('descripcion'),
+                'fecha_menu' => $this->input->post('fecha_menu'),
                 'estado'=>1,
                 'f_proceso' => date('Y-m-d h:i:s'),
                 'usuario_carga'=>$this->session->userdata('id')
             );
 
-            if ($this->menuPersonal_model->add('menu_personal', $data) == TRUE) {
-                $id_nuevo = $this->db->insert_id();
-                $activos = $this->menuPersonal_model->get('menu_personal', '*', ' menu_personal.estado =1 ');
-                if (count($activos)){
-                    foreach($activos as $a){
-                        $data_edit = array('estado'=>'2');
-                        if ($id_nuevo != $a->idMenuPersonal){
-                            $this->menuPersonal_model->edit('menu_personal', $data_edit,'idMenuPersonal',$a->idMenuPersonal); 
-                        }
-                        
+            
+            $existe = $this->menuPersonal_model->get('menu_personal', '*', ' menu_personal.estado =1 AND menu_personal.fecha_menu = "'.$this->input->post('fecha_menu').'"');
+            
+            if (count($existe)==0){
+                if ($this->menuPersonal_model->add('menu_personal', $data) == TRUE) {
+                    $id_nuevo = $this->db->insert_id();
+                    $acciones = array(
+                        'usuario' => $this->session->userdata('id'),
+                        'accion_id' => 1,
+                        'accion' => 'Agrega el menu : '.$this->input->post('descripcion'),
+                        'modulo' => 2,
+                        'fecha_registro' => date('Y-m-d h:i:s')
+                    );
+                    
+                    if ($this->consola_model->add('consola',$acciones) == TRUE){
+                        $this->session->set_flashdata('success', 'menu agregados con exito!');
+                        //redirect(base_url() . 'index.php/permisos/agregar/');
                     }
-                }
-                
-                $acciones = array(
-                    'usuario' => $this->session->userdata('id'),
-                    'accion_id' => 1,
-                    'accion' => 'Agrega el menu : '.$this->input->post('descripcion'),
-                    'modulo' => 2,
-                    'fecha_registro' => date('Y-m-d h:i:s')
-                );
-                
-                if ($this->consola_model->add('consola',$acciones) == TRUE){
-                    $this->session->set_flashdata('success', 'menu agregados con exito!');
-                    //redirect(base_url() . 'index.php/permisos/agregar/');
-                }
-            } else {
-                $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error.</p></div>';
+                } else {
+                    $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error al cargar un menu.</p></div>';
+                }    
+            }else{
+                $this->data['custom_error'] = '<div class="form_error"><p>Ya existe un menu para el '.date('d/m/Y',  strtotime($this->input->post('fecha_menu'))).'.</p></div>';
             }
+            
+            
         }
         
         $this->data['view'] = 'gastronomia/menuPersonal/agregarMenuPersonal';
@@ -156,7 +155,8 @@ class MenuPersonal extends CI_Controller {
         } else {
             
             $data = array(                    
-                'descripcion' => $this->input->post('descripcion')
+                'descripcion' => $this->input->post('descripcion'),
+                'fecha_menu' => $this->input->post('fecha_menu')
             );
 
             if ($this->menuPersonal_model->edit('menu_personal', $data, 'idMenuPersonal', $this->input->post('idMenuPersonal')) == TRUE) {

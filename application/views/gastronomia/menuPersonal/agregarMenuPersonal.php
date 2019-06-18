@@ -1,42 +1,51 @@
-<div class="span12" style="margin-left: 0">
-    <form action="<?php echo base_url();?>index.php/menuPersonal/agregar" id="formMenu" method="post">
-
-    <div class="span12" style="margin-left: 0">
-        
+    
+<div class="row-fluid" style="margin-top:0">
+    <div class="span12">
         <div class="widget-box">
             <div class="widget-title">
                 <span class="icon">
-                    <i class="icon-lock"></i>
+                    <i class="icon-user"></i>
                 </span>
                 <h5>Datos del Menu</h5>
             </div>
-            <div class="widget-content">
-                
-                <div class="span6">
-                    <label>Descripcion</label>
-                    <input name="descripcion" type="text" id="descripcion" class="span12"  required="required"/>
-
-                </div>
-
-    
-            <div class="form-actions">
-                <div class="span12">
-                    <div class="span6 offset3">
-                        <button type="submit" class="btn btn-success"><i class="icon-plus icon-white"></i> Agregar</button>
-                        <a href="<?php echo base_url() ?>index.php/menuPersonal" id="" class="btn"><i class="icon-arrow-left"></i> Volver</a>
+            <div class="widget-content nopadding">
+                <?php if ($custom_error != '') {
+                    echo '<div class="alert alert-danger">'.$custom_error.'</div>';
+                } ?>
+                <form action="<?php echo base_url();?>index.php/menuPersonal/agregar" id="formMenu" method="post" class="form-horizontal" >
+                    
+                    
+                    <div class="control-group">
+                        <label for="descripcion" class="control-label">Descripcion <span class="required">*</span></label>
+                        <div class="controls">
+                            <input id="descripcion" type="text" name="descripcion" value="<?php echo set_value('descripcion'); ?>" required="required" />
+                        </div>
                     </div>
-                </div>
-            </div>
-           
+
+                    <div class="control-group">
+                        <label  class="control-label">Fecha del Menu<span class="required">*</span></label>
+                        <div class="controls">
+                            <input name="fecha_menu" type="date" id="fecha_menu"   required="required">
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <div class="span12">
+                            <div class="span6 offset3">
+                                <button type="submit" class="btn btn-success"><i class="icon-plus icon-white"></i> Agregar</button>
+                                <a href="<?php echo base_url() ?>index.php/menuPersonal" id="" class="btn"><i class="icon-arrow-left"></i> Volver</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
-
-                   
     </div>
-
-</form>
-
 </div>
+
+
+
+
 
 
 <script type="text/javascript" src="<?php echo base_url()?>assets/js/validate.js"></script>

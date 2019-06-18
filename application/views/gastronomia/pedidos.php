@@ -6,18 +6,19 @@
                 echo '<div class="pendiente">'.$custom_error.'</div>';
             } 
             
-            if (isset($menu)){
+            if (isset($menu) and count($menu)!=0 ){
+                
                 foreach ($menu as $m){ ?>
                     <form action="<?php echo base_url();?>index.php/pedido/agregar" id="formPedido" method="post">
                     <div class="span12">
-                        <?php echo "<h2>Menu del día </h2><h3>".$m->descripcion.'  modificado ';
+                        <?php echo "<h2>Menu del día </h2><h3>".$m->descripcion;
                         
-                        if (substr($m->f_proceso,0,10) == date('Y-m-d')){
-                            
-                            echo 'Hoy '.date('H:m:s',  strtotime($m->f_proceso));
-                        }else{
-                            echo date('d/m/Y H:m:s',  strtotime($m->f_proceso)).'</h3>';
-                        }
+//                        if (substr($m->f_proceso,0,10) == date('Y-m-d')){
+//                            
+//                            echo 'Hoy '.date('H:m:s',  strtotime($m->f_proceso));
+//                        }else{
+//                            echo date('d/m/Y H:m:s',  strtotime($m->f_proceso)).'</h3>';
+//                        }
                         ?>
                     </div>
                     <div class="span12">
@@ -32,24 +33,6 @@
                     </div>
                     <div class="span12" id="empleado">Ingrese su legajo para realizar el pedido.</div>
                     <div class="span12" style="margin-left: 0px;">
-<!--                        <div class="span12">
-                            <input type="button" class="btn btn-large" value="1">
-                            <input type="button" class="btn btn-large" value="2">
-                            <input type="button" class="btn btn-large" value="3">
-                        </div>
-                        <div class="span12">
-                            <input type="button" class="btn btn-large" value="4">
-                            <input type="button" class="btn btn-large" value="5">
-                            <input type="button" class="btn btn-large" value="6">
-                        </div>
-                        <div class="span12">
-                            <input type="button" class="btn btn-large" value="7">
-                            <input type="button" class="btn btn-large" value="8">
-                            <input type="button" class="btn btn-large" value="9">
-                        </div>
-                        <div class="span12">
-                            <input type="button" class="btn btn-large" value="0">    
-                        </div>-->
                 <div class="span12"><hr></div>
                         <div class="span12">
                             <input type="button" name="borrar" onclick="limpiar()" id="borrar" class="btn btn-large btn-danger" disabled="disabled" value="Borrar">

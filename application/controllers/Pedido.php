@@ -39,7 +39,7 @@ class Pedido extends CI_Controller {
     }
     function pedidos(){
          $this->data['custom_error'] = '';
-        $this->data['menu'] = $this->menuPersonal_model->get('menu_personal','menu_personal.*',' menu_personal.estado = 1');
+        $this->data['menu'] = $this->menuPersonal_model->get('menu_personal','menu_personal.*',' menu_personal.fecha_menu = "'.date('Y-m-d').'" AND menu_personal.estado = 1 ');
         
        
 	$this->data['view'] = 'gastronomia/pedidos';
@@ -135,18 +135,7 @@ class Pedido extends CI_Controller {
                 unset($_POST['idMenu']);
                 $id_estudio = $this->db->insert_id();
                 $this->data['custom_success'] = 'Pedido realizado!';
-//                $acciones = array(
-//                    'usuario' => $this->session->userdata('id'),
-//                    'accion_id' => 1,
-//                    'accion' => 'Agrega el pedido : '.$this->input->post('titulo').' '.$this->input->post('tipo'),
-//                    'modulo' => 2,
-//                    'fecha_registro' => date('Y-m-d h:i:s')
-//                );
-//                
-//                if ($this->consola_model->add('consola',$acciones) == TRUE){
-                    $this->session->set_flashdata('success', 'pedido realizado!');
-                    //redirect(base_url() . 'index.php/permisos/agregar/');
-//                }
+                //redirect(base_url() . 'index.php/pedidos/pedidos/');
             } else {
                 $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error.</p></div>';
             }
@@ -154,7 +143,7 @@ class Pedido extends CI_Controller {
             $this->data['custom_error'] = '<div class="form_error"><p>Ya tiene un pedido pendiente.</p></div>';
         }
 //        }
-       $this->data['menu'] = $this->menuPersonal_model->get('menu_personal','menu_personal.*',' menu_personal.estado = 1');
+       $this->data['menu'] = $this->menuPersonal_model->get('menu_personal','menu_personal.*',' menu_personal.estado = 1 AND menu_personal.fecha_menu = "'.date('Y-m-d').'"');
         
 	$this->data['view'] = 'gastronomia/pedidos';
        	$this->load->view('tema/monitor',$this->data);
@@ -411,6 +400,23 @@ class Pedido extends CI_Controller {
         $id_pedido = $_GET['val'];
         $data = array(
           'estado' => 3,
+          'f_listo' =>  date('Y-m-d h:i:s')
+        );
+        if($this->pedido_model->edit('pedido',$data,'idPedido',$id_pedido)){
+            $data = $this->pedido_model->get('pedido','pedido.*,usuario_str(pedido.usuario) as usr, menu_str(pedido.idMenu) as menu',' pedido.idPedido = '.$id_pedido); 
+            
+            echo $data[0]->persona_str.' '.$data[0]->menu.' '.date('d/m/Y H:m:s',  strtotime($data[0]->f_listo));
+            //$this->session->set_flashdata('success','Estudio eliminado!');  
+        }else{
+            echo "Error ##RRE44565 consulte con el administrador.";
+        }
+    }
+    public  function pedido_devuelto(){
+        $id_pedido = $_GET['val'];
+        $descripcion = $_GET['desc'];
+        $data = array(
+          'estado' => 4,
+          'descripcion' => $descripcion,
           'f_listo' =>  date('Y-m-d h:i:s')
         );
         if($this->pedido_model->edit('pedido',$data,'idPedido',$id_pedido)){

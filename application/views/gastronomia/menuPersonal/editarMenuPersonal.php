@@ -18,6 +18,12 @@
                 <input name="descripcion" type="text" id="descripcion" class="span12" value="<?php echo $result->descripcion; ?>" />
                 <input type="hidden" name="idMenuPersonal" value="<?php echo $result->idMenuPersonal; ?>">
             </div>
+                
+            <div class="span4">
+                <label>Fecha del menu</label>
+                <input name="fecha_menu" type="text" id="fecha_menu" class="span12" value="<?php echo $result->fecha_menu; ?>" />
+            </div>    
+                
 
 
     

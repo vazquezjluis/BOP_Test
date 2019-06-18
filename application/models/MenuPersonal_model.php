@@ -17,7 +17,7 @@ class MenuPersonal_model extends CI_Model {
         
         $this->db->select($fields);
         $this->db->from($table);
-        $this->db->order_by('f_proceso','desc');
+        $this->db->order_by('fecha_menu','desc');
         $this->db->limit($perpage,$start);
         if($where){
             $this->db->where($where);

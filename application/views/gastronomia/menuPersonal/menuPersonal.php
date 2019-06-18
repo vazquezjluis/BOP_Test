@@ -19,7 +19,7 @@ if(!$results){?>
                     <tr>
                         <th>#</th>
                         <th>Menu</th>
-                        <!--<th>Fecha de creación</th>-->
+                        <th>Fecha del menu</th>
                         <th>Estado</th>
                         <th></th>
                     </tr>
@@ -54,31 +54,33 @@ if(!$results){?>
         <tr>
             <th>#</th>
             <th>Menu</th>
-            <!--<th>Fecha de creación</th>-->
+            <th>Fecha del menu</th>
             <th>Estado</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
         <?php foreach ($results as $r) {
-            if($r->estado == 1){$estado = '<div class="alert alert-success">Activo</div>';}else{$estado = '<div class="alert alert-danger">Inactivo</div>';}
+     
+            
+            if($r->fecha_menu == date('Y-m-d')){$estado = '<div class="alert alert-success">Activo</div>';}else{$estado = '<div class="alert alert-danger">Inactivo</div>';}
             echo '<tr>';
             echo '<td>'.$r->idMenuPersonal.'</td>';
             echo '<td>'.$r->descripcion.'</td>';
-//            echo '<td>'.date('d/m/Y',strtotime($r->f_proceso)).'</td>';
+            echo '<td>'.date('d/m/Y',strtotime($r->fecha_menu)).'</td>';
             echo '<td>'.$estado.'</td>';
             echo '<td>';
-            if ($this->permission->checkPermission($this->session->userdata('permiso'),'eMenu')){
-                if ($r->estado == 1){
-                    echo '<a href="#modal-excluir" role="button" data-toggle="modal" menu="'.$r->idMenuPersonal.'" class="btn btn-danger tip-top" title="desactivar Menu"><i class="icon-remove icon-white"></i></a>';
-                }else{
-                    echo '<a href="#modal-activar"role="button" data-toggle="modal" menu="'.$r->idMenuPersonal.'"  class="btn tip-top" title="Activar"><i class="icon-ok icon-white"></i></a>';
-                }
-            }    
+            //if ($this->permission->checkPermission($this->session->userdata('permiso'),'eMenu')){
+              //  if ($r->estado == 1){
+                //    echo '<a href="#modal-excluir" role="button" data-toggle="modal" menu="'.$r->idMenuPersonal.'" class="btn btn-danger tip-top" title="desactivar Menu"><i class="icon-remove icon-white"></i></a>';
+                //}else{
+                  //  echo '<a href="#modal-activar"role="button" data-toggle="modal" menu="'.$r->idMenuPersonal.'"  class="btn tip-top" title="Activar"><i class="icon-ok icon-white"></i></a>';
+               // }
+            //}    
             echo '&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;';
-            if ($this->permission->checkPermission($this->session->userdata('permiso'),'eMenu')){
-                echo '<a href="'.base_url().'index.php/menuPersonal/editar/'.$r->idMenuPersonal.'" class="btn btn-info tip-top" title="Editar Permiso"><i class="icon-pencil icon-white"></i></a>';
-            }
+            //if ($this->permission->checkPermission($this->session->userdata('permiso'),'eMenu')){
+              //  echo '<a href="'.base_url().'index.php/menuPersonal/editar/'.$r->idMenuPersonal.'" class="btn btn-info tip-top" title="Editar Permiso"><i class="icon-pencil icon-white"></i></a>';
+           // }
             if ($this->permission->checkPermission($this->session->userdata('permiso'),'dMenu')){
                 echo '<a href="#modal-eliminar" role="button" data-toggle="modal" menu="'.$r->idMenuPersonal.'" class="btn btn-danger tip-top" title="Eliminar Menu"><i class="icon-trash icon-white"></i></a>';
             }
