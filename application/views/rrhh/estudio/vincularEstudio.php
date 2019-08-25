@@ -77,7 +77,13 @@ if (isset($_GET['persona'])){
                             <label class="label label-success"><input style="margin-left: 10px;" type="radio"  name="tipo" value="anual"> Anual</label>
                         </div>
                     </div>-->
-                    
+                    <div class="control-group">
+                        <label for="documento" class="control-label">Adjuntar documento <span class="required"></span></label>
+                        <div class="controls">
+                            <input type="file" class="form-control" name="userFiles[]"  required="required"/>
+                        </div>
+                    </div>
+
                     <div class="form-actions">
                         <div class="span12">
                             <div class="span6 offset3">

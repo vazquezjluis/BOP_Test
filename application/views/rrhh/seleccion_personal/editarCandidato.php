@@ -68,7 +68,7 @@
                     <div class="control-group">
                         <label  class="control-label">Fecha<span class="required">*</span></label>
                         <div class="controls">
-                            <input id="fecha_meta_Estado" type="text" name="fecha_meta_Estado" value="<?php echo date('d/m/Y H:m:s',  strtotime($result->fecha_meta_estado)) ?>" required="required" />
+                            <input id="fecha_meta_Estado" type="datetime-local" name="fecha_meta_estado" value="<?php echo str_replace("AR","",date('Y-m-dTH:m', strtotime($result->fecha_meta_estado))); ?>" required="required" />
                         </div>
                     </div>
                     

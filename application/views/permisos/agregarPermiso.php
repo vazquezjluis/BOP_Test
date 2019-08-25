@@ -41,6 +41,7 @@
                                       <li><a data-toggle="tab" href="#tab5">Configuracion</a></li>
                                       <li><a data-toggle="tab" href="#tab6">Ayuda</a></li>
                                       <li><a data-toggle="tab" href="#tab7">Gastronomia</a></li>
+                                      <li><a data-toggle="tab" href="#tab8">Sala Reuniones</a></li>
 
                                    </ul>
                                 </div>
@@ -140,6 +141,10 @@
                                                      </label>
                                                  </td>
                                                  <td>
+                                                     <label>
+                                                         <input name="vRep_pedido" class="marcar" type="checkbox"  value="1" />
+                                                         <span class="lbl"> Ver Reporte de pedidos</span>
+                                                     </label>
                                                  </td>
                                                  <td>
                                                  </td>
@@ -202,6 +207,72 @@
                                                          <input name="dDesempeno" class="marcar" type="checkbox"  value="1" />
                                                          <span class="lbl"> eliminar Desempeño</span>
                                                      </label>
+                                                 </td>
+                                             </tr>
+                                             <tr>
+                                                 <td colspan="1">
+                                                     <label>
+                                                         <input name="vTitulo" class="marcar" type="checkbox"  value="1" />
+                                                         <span class="lbl"> Visualizar Titulo</span>
+                                                     </label>
+                                                 </td>
+                                                 <td colspan="1">
+                                                     <label>
+                                                         <input name="cTitulo" class="marcar" type="checkbox"  value="1" />
+                                                         <span class="lbl"> Agregar Titulo</span>
+                                                     </label>
+                                                 </td>
+                                                 <td colspan="1">
+                                                     <label>
+                                                         <input name="eTitulo" class="marcar" type="checkbox"  value="1" />
+                                                         <span class="lbl"> Editar Titulo</span>
+                                                     </label>
+                                                 </td>
+                                                 <td colspan="1">
+                                                     <label>
+                                                         <input name="dTitulo" class="marcar" type="checkbox"  value="1" />
+                                                         <span class="lbl"> eliminar Titulo</span>
+                                                     </label>
+                                                 </td>
+                                             </tr>
+                                             <tr>
+                                                 <td colspan="1">
+                                                     <label>
+                                                         <input name="vEstudio" class="marcar" type="checkbox"  value="1" />
+                                                         <span class="lbl"> Visualizar Estudio</span>
+                                                     </label>
+                                                 </td>
+                                                 <td colspan="1">
+                                                     <label>
+                                                         <input name="cEstudio" class="marcar" type="checkbox"  value="1" />
+                                                         <span class="lbl"> Agregar Estudio</span>
+                                                     </label>
+                                                 </td>
+                                                 <td colspan="1">
+                                                     <label>
+                                                         <input name="eEstudio" class="marcar" type="checkbox"  value="1" />
+                                                         <span class="lbl"> Editar Estudio</span>
+                                                     </label>
+                                                 </td>
+                                                 <td colspan="1">
+                                                     <label>
+                                                         <input name="dEstudio" class="marcar" type="checkbox"  value="1" />
+                                                         <span class="lbl"> eliminar Estudio</span>
+                                                     </label>
+                                                 </td>
+                                             </tr>
+                                             <tr>
+                                                 <td colspan="1">
+                                                     <label>
+                                                         <input name="vAvisoTicket" class="marcar" type="checkbox"  value="1" />
+                                                         <span class="lbl"> Notificar avisos con tickets.</span>
+                                                     </label>
+                                                 </td>
+                                                 <td colspan="1">
+                                                 </td>
+                                                 <td colspan="1">
+                                                 </td>
+                                                 <td colspan="1">
                                                  </td>
                                              </tr>
                                          </tbody>
@@ -285,8 +356,8 @@
                                                      </td>
                                                      <td>
                                                          <label>
-                                                             <input name="vImporPersona" class="marcar" type="checkbox"  value="1" />
-                                                             <span class="lbl"> Visualizar Importador/Persona</span>
+                                                             <input name="vImporMenu" class="marcar" type="checkbox"  value="1" />
+                                                             <span class="lbl"> Visualizar Importador/Menu</span>
                                                          </label>
                                                      </td>
                                                  </tr>
@@ -384,6 +455,41 @@
                                                          <label>
                                                              <input name="dMenu" class="marcar" type="checkbox" value="1" />
                                                              <span class="lbl"> Eliminar Menu</span>
+                                                         </label>
+                                                     </td>
+                                                 </tr>
+                                             </tbody>
+                                       </table>
+                                   </div>
+                                   
+                                   <!--SALA REUNIONES-->
+                                   <div id="tab8" class="tab-pane" style="min-height: 300px">
+                                       <table class="table table-bordered">
+                                             <tbody>
+                                                 <!--SALA-->
+                                                 <tr>
+                                                     <td>
+                                                         <label>
+                                                             <input name="vSala" class="marcar" type="checkbox"  value="1" />
+                                                             <span class="lbl"> Visualizar Calendario</span>
+                                                         </label>
+                                                     </td>
+                                                     <td>
+                                                         <label>
+                                                             <input name="cSala" class="marcar" type="checkbox" value="1" />
+                                                             <span class="lbl"> Agregar Evento</span>
+                                                         </label>
+                                                     </td>
+                                                     <td>
+                                                         <label>
+                                                             <input name="eSala" class="marcar" type="checkbox" value="1" />
+                                                             <span class="lbl"> Editar Evento</span>
+                                                         </label>
+                                                     </td>
+                                                     <td>
+                                                         <label>
+                                                             <input name="dSala" class="marcar" type="checkbox" value="1" />
+                                                             <span class="lbl"> Eliminar Evento</span>
                                                          </label>
                                                      </td>
                                                  </tr>

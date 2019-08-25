@@ -91,6 +91,58 @@ class Persona_model extends CI_Model {
         return $sansion_info;
     }
     
+    function get_licencias($persona,$mes_actual=false){
+        $bd_lenox =  $this->load->database('lenox',TRUE);
+            
+        $sql='
+        SELECT
+        aus.id as idBejerman,
+            aus.fecha AS fecha,
+            nov.codigo AS codigoBejerman,
+            nov.descripcion AS novedad,
+            aus.COMENTARIO
+        FROM
+            AUSENCIAS aus
+            INNER JOIN NOVEDADES nov ON aus.id_novedad = nov.id
+            INNER JOIN CLIENTES clie ON clie.id = aus.id_cliente
+        WHERE
+        aus.id_cliente = '.$persona.'
+        AND nov.id IN (10,11,12,13,14,15,16,17,19) '; 
+
+        if ($mes_actual) {
+            $sql.=' AND MONTH(aus.fecha) = MONTH(SYSDATETIME()) ';
+        }
+
+        $sql.=' ORDER BY aus.fecha DESC';
+        
+        $query = $bd_lenox->query($sql);
+        
+        $sansion_info =  $query->result();
+        
+        
+        return $sansion_info;
+    }
+    
+    
+    function get_licencia_comprobante($persona){
+        
+        $sql='SELECT documentos.url,licencia_persona.idLicencia FROM documentos
+            INNER JOIN licencia_persona ON licencia_persona.idLicenciaPersona = documentos.referencia
+            WHERE licencia_persona.idPersona = '.$persona.'
+            AND documentos.sector = 2
+            AND documentos.documento = "Vinculo licencia_persona"';
+
+        
+        $query = $this->db->query($sql);
+        
+        $info =  $query->result();
+        
+        
+        return $info;
+        
+        
+    }
+  
     
    function get_uniforme($where=''){
         $this->db->from('uniforme_has_persona');

@@ -20,6 +20,8 @@ class Reportes extends CI_Controller{
         $this->load->model('fallas_model', '', TRUE);
         $this->load->model('ticket_model', '', TRUE);
         $this->load->model('usuarios_model', '', TRUE);
+        $this->load->model('pedido_model', '', TRUE);
+        $this->load->model('calendariomenu_model', '', TRUE);
 
     }
 
@@ -192,6 +194,167 @@ class Reportes extends CI_Controller{
     }
     public function excel_ticket (){
         $this->load->view('reportes/excel/ticket');
+    }
+    public function pedidos(){
+        //filtros de busqueda
+        $where = ' WHERE 1 = 1';
+        
+        if ($this->input->get('legajo')!=''){//legajo
+             $where.= ' AND pedido.legajo = "'.trim($this->input->get('legajo')).'" ';
+        }
+        if ($this->input->get('persona')!=''){//persona
+             $where.= ' AND pedido.persona_str LIKE "%'.trim($this->input->get('persona')).'%" ';
+        }
+        if ($this->input->get('estado')!=''){//estado
+             $where.= ' AND pedido.estado = '.$this->input->get('estado');
+        }else{
+            //
+            //$where.= ' AND ticket.estado = 1';//por defecto se trae los tickets abiertos
+        }
+        if ($this->input->get('nota')!=''){//nota
+             $where.= ' AND pedido.descripcion LIKE "%'.trim($this->input->get('nota')).'%" ';
+        }
+        
+        if ($this->input->get('desde')!='' and $this->input->get('hasta')!=''){
+            $where.=' AND date(pedido.f_registro) BETWEEN "'.$this->input->get('desde').'" AND "'.$this->input->get('hasta').'"';
+        }else{
+            if ($this->input->get('desde')!=''){//solicita
+             $where.= ' AND date(pedido.f_registro) >= "'.$this->input->get('desde').'" ';
+            }
+            if ($this->input->get('hasta')!=''){//solicita
+                 $where.= ' AND date(pedido.f_registro) <= "'.$this->input->get('hasta').'" ';
+            }
+        }
+        
+        $this->load->library('pagination');
+        
+            $config['base_url'] = base_url().'index.php/reportes/pedidos/';
+            $config['total_rows'] = count($this->pedido_model->get_reporte('pedido',$where));
+            
+            
+            $config['per_page'] = 10;
+            $config['next_link'] = 'Próxima';
+            $config['prev_link'] = 'Anterior';
+            $config['full_tag_open'] = '<div class="pagination alternate"><ul>';
+            $config['full_tag_close'] = '</ul></div>';
+            $config['num_tag_open'] = '<li>';
+            $config['num_tag_close'] = '</li>';
+            $config['cur_tag_open'] = '<li><a style="color: #2D335B"><b>';
+            $config['cur_tag_close'] = '</b></a></li>';
+            $config['prev_tag_open'] = '<li>';
+            $config['prev_tag_close'] = '</li>';
+            $config['next_tag_open'] = '<li>';
+            $config['next_tag_close'] = '</li>';
+            $config['first_link'] = 'Primera';
+            $config['last_link'] = 'Última';
+            $config['first_tag_open'] = '<li>';
+            $config['first_tag_close'] = '</li>';
+            $config['last_tag_open'] = '<li>';
+            $config['last_tag_close'] = '</li>';
+//            $config['page_query_string'] = TRUE;
+
+            	
+            
+            //Obtiene los pedidos
+            $this->data['results'] = $this->pedido_model->get_reporte(
+                'pedido',$where,$config['per_page'],$this->uri->segment(3));
+            
+            $_SESSION['excel_pedido'] = $this->pedido_model->get_reporte('pedido',$where);
+            
+            
+            $this->data['total'] = count($this->data['results']);
+            
+            
+            
+            $this->pagination->initialize($config); 
+        
+            $this->data['view'] = 'reportes/rep_pedido';
+            $this->load->view('tema/header',$this->data);
+    }
+    
+    public function calendariomenu(){
+        //filtros de busqueda
+        $where = ' WHERE 1 = 1';
+        
+        if ($this->input->get('legajo')!=''){//legajo
+             $where.= ' AND calendariomenu.legajo = "'.trim($this->input->get('legajo')).'" ';
+        }
+        if ($this->input->get('persona')!=''){//persona
+             $where.= ' AND calendariomenu.persona_str LIKE "%'.trim($this->input->get('persona')).'%" ';
+        }
+//        if ($this->input->get('estado')!=''){//estado
+//             $where.= ' AND pedido.estado = '.$this->input->get('estado');
+//        }else{
+//            //
+//            //$where.= ' AND ticket.estado = 1';//por defecto se trae los tickets abiertos
+//        }
+//        if ($this->input->get('nota')!=''){//nota
+//             $where.= ' AND pedido.descripcion LIKE "%'.trim($this->input->get('nota')).'%" ';
+//        }
+        
+        if ($this->input->get('desde')!='' and $this->input->get('hasta')!=''){
+            $where.=' AND date(calendariomenu.start) BETWEEN "'.$this->input->get('desde').'" AND "'.$this->input->get('hasta').'"';
+        }else{
+            if ($this->input->get('desde')!=''){//solicita
+             $where.= ' AND date(calendariomenu.start) >= "'.$this->input->get('desde').'" ';
+            }
+            if ($this->input->get('hasta')!=''){//solicita
+                 $where.= ' AND date(calendariomenu.start) <= "'.$this->input->get('hasta').'" ';
+            }
+        }
+        
+        //$this->load->library('pagination');
+        
+//            $config['base_url'] = base_url().'index.php/reportes/calendariomenu/';
+//            $config['total_rows'] = count($this->calendariomenu_model->get_reporte('calendariomenu',$where));
+//            
+//            
+//            $config['per_page'] = 10;
+//            $config['next_link'] = 'Próxima';
+//            $config['prev_link'] = 'Anterior';
+//            $config['full_tag_open'] = '<div class="pagination alternate"><ul>';
+//            $config['full_tag_close'] = '</ul></div>';
+//            $config['num_tag_open'] = '<li>';
+//            $config['num_tag_close'] = '</li>';
+//            $config['cur_tag_open'] = '<li><a style="color: #2D335B"><b>';
+//            $config['cur_tag_close'] = '</b></a></li>';
+//            $config['prev_tag_open'] = '<li>';
+//            $config['prev_tag_close'] = '</li>';
+//            $config['next_tag_open'] = '<li>';
+//            $config['next_tag_close'] = '</li>';
+//            $config['first_link'] = 'Primera';
+//            $config['last_link'] = 'Última';
+//            $config['first_tag_open'] = '<li>';
+//            $config['first_tag_close'] = '</li>';
+//            $config['last_tag_open'] = '<li>';
+//            $config['last_tag_close'] = '</li>';
+//            $config['page_query_string'] = TRUE;
+
+            	
+            
+            //Obtiene los pedidos programados
+            $this->data['results'] = $this->calendariomenu_model->get_reporte(
+                'calendariomenu',$where);
+            
+            
+            $_SESSION['excel_calendariomenu'] = $this->calendariomenu_model->get_reporte('aclendariomenu',$where);
+            
+            
+            $this->data['total'] = count($this->data['results']);
+            
+            
+            
+            //$this->pagination->initialize($config); 
+        
+            $this->data['view'] = 'reportes/rep_menu_programados';
+            $this->load->view('tema/header',$this->data);
+    }
+    
+    public function excel_pedido (){
+        $this->load->view('reportes/excel/pedido');
+    }
+    public function excel_calendariomenu (){
+        $this->load->view('reportes/excel/calendariomenu');
     }
 
     public function personas(){

@@ -121,6 +121,7 @@ class Capacitacion extends CI_Controller {
         } else
         {     
             
+            
             $data = array(
                     'tema' => $this->input->post('tema'),
                     'descripcion' => $this->input->post('descripcion'),
@@ -136,7 +137,7 @@ class Capacitacion extends CI_Controller {
                     'tipo' => $this->input->post('tipo'),
                     'obligatorio' => $this->input->post('obligatorio'),
                     'evaluacion' => $this->input->post('evaluacion'),
-                    'sector'=> (string)$this->input->post('sector')
+                    'sector'=> implode(",",$this->input->post('sector')),
             );
             
             if ($this->capacitacion_model->add('capacitacion',$data) == TRUE)
@@ -201,7 +202,7 @@ class Capacitacion extends CI_Controller {
                     'tipo' => $this->input->post('tipo'),
                     'obligatorio' => $this->input->post('obligatorio'),
                     'evaluacion' => $this->input->post('evaluacion'),
-                    'sector'=> (string)$this->input->post('sector')
+                    'sector'=> implode(",",$this->input->post('sector'))
             );
             
             if ($this->capacitacion_model->edit('capacitacion',$data,'idCapacitacion',$this->input->post('idCapacitacion')) == TRUE)

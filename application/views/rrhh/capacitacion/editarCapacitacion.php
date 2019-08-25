@@ -1,3 +1,12 @@
+<script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery-ui/js/jquery-ui-1.9.2.custom.js"></script>
+
+<link rel="stylesheet" href="<?php  echo base_url();?>assets/js/jquery-ui/css/smoothness/jquery-ui-1.9.2.custom.css" />
+<link rel="stylesheet" href="<?php  echo base_url();?>assets/css/jquery.multiselect.css" />
+<script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery.multiselect.js"></script>
+<?php
+
+
+?>
 <div class="row-fluid" style="margin-top:0">
     <div class="span12">
         <div class="widget-box">
@@ -82,14 +91,15 @@
                             <a href="<?php echo base_url()?>index.php/institucion/agregar/<?php echo $result->idCapacitacion;?>" class="btn btn-default btn-mini"><i class="icon-plus icon-white"></i> Agregar nueva institucion</a>
                         </div>
                         <div class="span3 control-group">
-                            <label for="sector" >Sector<span class="required">*</span></label>                            
-                            <select id="sector" name="sector" required="required" >
-                                <option value="t">Todos</option>
+                            <label for="sector" >Sector / Sectores <span class="required">*</span></label>                            
+                            <select id="sector"  multiple="multiple" name="sector[]" required="required" >
+                                
                                 <?php
                                 if (isset($sector)){
+                                    $los_sectores = explode(",",$result->sector);
                                     foreach ($sector as $s){
                                         echo "<option value='".$s->id."' ";
-                                        if($s->id==$result->sector){
+                                        if(in_array($s->id,$los_sectores)){
                                             echo " selected ";                                            
                                         }        
                                         echo ">".$s->descripcion."</option>";
@@ -148,6 +158,8 @@
 <script  src="<?php echo base_url()?>assets/js/jquery.validate.js"></script>
 <script type="text/javascript">
       $(document).ready(function(){
+
+$("#sector").multiselect();
 
            $('#formUsuario').validate({
             rules : {

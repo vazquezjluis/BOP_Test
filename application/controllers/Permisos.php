@@ -107,11 +107,28 @@ class Permisos extends CI_Controller {
                   'eFallas' => $this->input->post('eFallas'),
                   'dFallas' => $this->input->post('dFallas'),
                   'cFallas' => $this->input->post('cFallas'),  
+                  
+                  'vSala' => $this->input->post('vSala'),
+                  'eSala' => $this->input->post('eSala'),
+                  'dSala' => $this->input->post('dSala'),
+                  'cSala' => $this->input->post('cSala'),  
                 
                   'vDesempeno' => $this->input->post('vDesempeno'),
                   'eDesempeno' => $this->input->post('eDesempeno'),
                   'dDesempeno' => $this->input->post('dDesempeno'),
                   'cDesempeno' => $this->input->post('cDesempeno'),  
+                
+                  'vTitulo' => $this->input->post('vTitulo'),
+                  'eTitulo' => $this->input->post('eTitulo'),
+                  'dTitulo' => $this->input->post('dTitulo'),
+                  'cTitulo' => $this->input->post('cTitulo'), 
+                
+                  'vAvisoTicket' => $this->input->post('vAvisoTicket'),  
+                
+                  'vEstudio' => $this->input->post('vEstudio'),
+                  'eEstudio' => $this->input->post('eEstudio'),
+                  'dEstudio' => $this->input->post('dEstudio'),
+                  'cEstudio' => $this->input->post('cEstudio'),  
                 
                   'vMenu' => $this->input->post('vMenu'),
                   'eMenu' => $this->input->post('eMenu'),
@@ -133,7 +150,7 @@ class Permisos extends CI_Controller {
                   'vImporMaquinas' => $this->input->post('vImporMaquinas'),  
                   'vImporArticulos' => $this->input->post('vImporArticulos'),  
                   'vImporArticulos_maq' => $this->input->post('vImporArticulos_maq'),  
-                  'vImporPersona' => $this->input->post('vImporPersona'),
+                  'vImporMenu' => $this->input->post('vImporMenu'),
                 
                   'vPersonas' => $this->input->post('vPersonas'),  
                   'vLicencia' => $this->input->post('vLicencia'),  
@@ -141,7 +158,8 @@ class Permisos extends CI_Controller {
                   'vPremios' => $this->input->post('vPremios'),  
                 
                   'vRep_maquinas' => $this->input->post('vRep_maquinas'),  
-                  'vRep_ticket' => $this->input->post('vRep_ticket')  
+                  'vRep_ticket' => $this->input->post('vRep_ticket'),  
+                  'vRep_pedido' => $this->input->post('vRep_pedido')  
                     
             );
             $sectores = $this->sector_model->get_sector();
@@ -219,10 +237,27 @@ class Permisos extends CI_Controller {
                   'dFallas' => $this->input->post('dFallas'),
                   'cFallas' => $this->input->post('cFallas'),
                 
+                  'vSala' => $this->input->post('vSala'),
+                  'eSala' => $this->input->post('eSala'),
+                  'dSala' => $this->input->post('dSala'),
+                  'cSala' => $this->input->post('cSala'),
+                
                   'vDesempeno' => $this->input->post('vDesempeno'),
                   'eDesempeno' => $this->input->post('eDesempeno'),
                   'dDesempeno' => $this->input->post('dDesempeno'),
                   'cDesempeno' => $this->input->post('cDesempeno'),
+                
+                  'vTitulo' => $this->input->post('vTitulo'),
+                  'eTitulo' => $this->input->post('eTitulo'),
+                  'dTitulo' => $this->input->post('dTitulo'),
+                  'cTitulo' => $this->input->post('cTitulo'),
+                
+                  'vAvisoTicket' => $this->input->post('vAvisoTicket'),
+                
+                  'vEstudio' => $this->input->post('vEstudio'),
+                  'eEstudio' => $this->input->post('eEstudio'),
+                  'dEstudio' => $this->input->post('dEstudio'),
+                  'cEstudio' => $this->input->post('cEstudio'),
                 
                   'vMenu' => $this->input->post('vMenu'),
                   'eMenu' => $this->input->post('eMenu'),
@@ -254,7 +289,7 @@ class Permisos extends CI_Controller {
                   'vImporMaquinas' => $this->input->post('vImporMaquinas'),
                   'vImporArticulos' => $this->input->post('vImporArticulos'),
                   'vImporArticulos_maq' => $this->input->post('vImporArticulos_maq'),
-                  'vImporPersona' => $this->input->post('vImporPersona'),
+                  'vImporMenu' => $this->input->post('vImporMenu'),
                 
                   'vPersonas' => $this->input->post('vPersonas'),
                   'vLicencia' => $this->input->post('vLicencia'),
@@ -262,7 +297,8 @@ class Permisos extends CI_Controller {
                   'vPremios' => $this->input->post('vPremios'),
                 
                   'vRep_maquinas' => $this->input->post('vRep_maquinas'),
-                  'vRep_ticket' => $this->input->post('vRep_ticket')
+                  'vRep_ticket' => $this->input->post('vRep_ticket'),
+                  'vRep_pedido' => $this->input->post('vRep_pedido'),
 
             );
             

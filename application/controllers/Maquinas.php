@@ -173,6 +173,7 @@ class Maquinas extends CI_Controller {
 
 //        $this->form_validation->set_rules('nombre', 'nombre', 'trim|required');
         
+        
         if ($this->form_validation->run('maquinas') == false) {
             $this->data['custom_error'] = (validation_errors() ? '<div class="form_error">' . validation_errors() . '</div>' : false);
         } else {
@@ -180,37 +181,39 @@ class Maquinas extends CI_Controller {
             
             $nro_egm = $this->input->post('nro_egm');
             $fabricante = $this->input->post('fabricante');
-            $modelo = $this->input->post('modelo');
-            $p_pago = $this->input->post('p_pago');
-            $denom = $this->input->post('denom');
-            $juego= $this->input->post('juego');
-            $nro_serie= $this->input->post('nro_serie');
-            $programa= $this->input->post('programa');
-            $credito= $this->input->post('credito');
-            $estado = $this->input->post('estado');
+//            $modelo = $this->input->post('modelo');
+//            $p_pago = $this->input->post('p_pago');
+//            $denom = $this->input->post('denom');
+//            $juego= $this->input->post('juego');
+//            $nro_serie= $this->input->post('nro_serie');
+//            $programa= $this->input->post('programa');
+//            $credito= $this->input->post('credito');
+//            $estado = $this->input->post('estado');
             
             $ap_minima = $this->input->post('ap_minima');
             $ap_maxima = $this->input->post('ap_maxima');
             $cant_lineas = $this->input->post('cant_lineas');
-            $tipo = $this->input->post('tipo_juego');
+//            $tipo = $this->input->post('tipo_juego');
 
             $data = array(
-                'nro_egm' => $nro_egm,
-                'fabricante' => $fabricante,
-                'modelo' => $modelo,
-                'p_pago' => $p_pago,
-                'denom' => $denom,
-                'juego' => $juego,
-                'nro_serie' => $nro_serie,
-                'programa' => $programa,
-                'credito' => $credito,
-                'estado' => $estado,
+//                'nro_egm' => $nro_egm,
+//                'fabricante' => $fabricante,
+//                'modelo' => $modelo,
+//                'p_pago' => $p_pago,
+//                'denom' => $denom,
+//                'juego' => $juego,
+//                'nro_serie' => $nro_serie,
+//                'programa' => $programa,
+//                'credito' => $credito,
+//                'estado' => $estado,
                 'ap_minima' => $ap_minima,
                 'ap_maxima' => $ap_maxima,
-                'cant_lineas' => $cant_lineas,
-                'tipo_juego' => $tipo
+                'cant_lineas' => $cant_lineas
+//                'tipo_juego' => $tipo
             );
-            
+            echo "<pre>";
+            var_dump($_POST);
+            echo "</pre>";
             if ($this->maquinas_model->edit('maquinas', $data, 'idMaquina', $this->input->post('idMaquina')) == TRUE) {
                 $acciones = array(
                         'usuario' => $this->session->userdata('id'),

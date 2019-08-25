@@ -1,8 +1,8 @@
 <!--<a href="<?php // echo base_url();?>index.php/maquinas/agregar" class="btn btn-success">-->
-<?php // if($this->permission->checkPermission($this->session->userdata('permiso'),'cArticulos')){ ?>
+<?php  if($this->permission->checkPermission($this->session->userdata('permiso'),'cEstudio')){ ?>
   <a href="<?php  echo base_url()?>index.php/estudio/agregar" class="btn btn-success">
     <i class="icon-plus icon-white"></i> Agregar nuevo Estudio</a>
-<?php // } ?>
+<?php  } ?>
 
 
 <?php
@@ -64,13 +64,13 @@ if(!$results){?>
                 
                 echo '<td> ';
                  
-//                if($this->permission->checkPermission($this->session->userdata('permiso'),'vPremios')){ 
+                if($this->permission->checkPermission($this->session->userdata('permiso'),'eEstudio')){ 
                     echo '<a href="'.base_url().'index.php/estudio/editar/'.$r->idEstudio.'" class="btn btn-info tip-top" title="Editar Candidato"><i class="icon-pencil icon-white"></i></a>';
-//                }
-//                if($this->permission->checkPermission($this->session->userdata('permiso'),'vPremios')){
+                }
+                if($this->permission->checkPermission($this->session->userdata('permiso'),'dEstudio')){
                     echo '<a href="#modal-excluir" class="btn btn-danger tip-top " role="button" data-toggle="modal" candidato="'.$r->idEstudio.'"  title="Eliminar candidato">
                                     <i class="icon-remove icon-white"></i></a>';
-//                }             
+                }             
                 echo'</td>';
             echo '</tr>';
             

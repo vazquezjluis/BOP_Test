@@ -110,7 +110,7 @@ if (isset($result)){
                                         <td> &nbsp;
                                             <a  href="<?php echo base_url()?>index.php/licencia/vincular?persona=<?php echo $result[0]->id;?>&persona_str=<?php echo $result[0]->nombre.' '.$result[0]->apellido;?>">
                                                 <label><i class="icon-edit"></i>
-                                                    &nbsp;-&nbsp;Asociar LICENCIA 
+                                                    &nbsp;-&nbsp;Asociar Documento LICENCIA 
                                                     </label>
                                             </a>
                                         </td>
@@ -182,26 +182,41 @@ if (isset($result)){
                   ;
                 ?>
                 <table  class='table table-bordered'>
-                    <tr><td colspan='2'><b> Licencias del empleado</b></td></tr>
+                    <tr><td colspan='5'><b> Licencias del empleado</b></td></tr>
                     <tr>
-                        <td><b>#</b></td>
-                        <td><b>Titulo</b></td>
-                        <td><b>Inicio</b></td>
-                        <td><b>Finaliza</b></td>
-                        <td><b>Dias tomados</b></td>
-                        <td><b>Descripcion</b></td>
-                        <td></td>
+                        <td colspan="5"><i>Si usted no puede ver archivos .doc o .docx, agrege la extencion</i> <label class="alert alert-info"><a href="https://chrome.google.com/webstore/detail/office-editing-for-docs-s/gbkeegbaiigmenfmjfclcdgdpimamgkj?hl=es-419"> haciendo click aquí.</a></label></td>
+                    </tr>
+                    <tr>
+                        <td><b>Cod. Bejerman</b></td>
+                        <td><b>Fecha</b></td>
+                        <td><b>Novedad</b></td>
+                        <td><b>Comentario</b></td>
+                        <td><b>Documentacion</b></td>
                     </tr>
               <?php
                     foreach ($licencia as $c){
                     echo " <tr> 
-                                <td>".$c->idLicenciaPersona."</td> 
-                                <td>".$c->titulo." (".$c->dias_corresponde." dias)</td> 
-                                <td>".$c->f_inicio."</td> 
-                                <td>".$c->f_fin."</td> 
-                                <td>".$c->dias_tomados."</td> 
-                                <td>".$c->lpdesc."</td> 
-                                <td></td> 
+                                <td>".$c->idBejerman."</td> 
+                                <td>".$c->fecha."</td> 
+                                <td>".$c->novedad."</td> 
+                                <td>".$c->COMENTARIO."</td> 
+                                <td>";
+                                
+                            if(isset($licencia_comprobantes)){
+                                
+                                foreach($licencia_comprobantes as $lc){
+                                    
+                                if($c->idBejerman==$lc->idLicencia){ ?>
+                    <a href="#modal-licencia_documento" urlLicencia="<?php echo $lc->url;?>" class="btn  tip-top " role="button" data-toggle="modal"   title="Ver Documento">
+                                    <i class="icon-list-alt"></i></a>
+                                    
+                            <?php
+                                }
+                                }
+                            }
+                            else { echo "Sin comprobantes."; }
+                            echo " <a href='#modal-documento_licencia'  class='btn btn-mini tip-top' role='button' data-toggle='modal' 
+                                title='Nuevo Documento' idLicencia='".$c->idBejerman."'>Nuevo Doc</a></td> 
                            </tr>";
                     } ?>
                 </table>
@@ -466,13 +481,20 @@ if (isset($result)){
                    ?>
                 <table  class='table table-bordered'>
                     <tr>
+                        <td colspan="6"><i>Si usted no puede ver archivos .doc o .docx, agrege la extencion</i> <label class="alert alert-info"><a href="https://chrome.google.com/webstore/detail/office-editing-for-docs-s/gbkeegbaiigmenfmjfclcdgdpimamgkj?hl=es-419"> haciendo click aquí.</a></label></td>
+                    </tr>
+                    <tr>
                         <td><b>#</b></td>
                         <td><b>Titulo</b></td>
                         <td><b>Institucion</b></td>
+                        <td><b>Documento</b></td>
                         <td><b>Fecha</b></td>
+                        <td><b>Estado</b></td>
                         <td><b></b></td>
                     </tr>
+                    
               <?php
+              $documento_estudio = '';
                   foreach ($estudios as $s) {
                       ?>
                     
@@ -480,7 +502,26 @@ if (isset($result)){
                         <td><?php echo $s->idEstudio_persona; ?></td>
                         <td><?php echo $s->titulo; ?></td>
                         <td><?php echo $s->institucion; ?></td>
+                        <td>
+                          <?php if(isset($s->url)){
+                              $documento_estudio=$s->url;?>
+                            <a href="#modal-estudio_documento" class="btn  tip-top " role="button" data-toggle="modal"   title="Ver Documento">
+                                    <i class="icon-list-alt"></i></a>
+                         <?php } ?>
+                        
+                        
+                        </td>
                         <td><?php echo date_format(date_create($s->fecha_registro),'d/m/y'); ?></td>
+                        <td>
+                            <?php if ($this->permission->checkPermission($this->session->userdata('permiso'),'eEstudio')){ ?>
+                            <select class="estado_estudio" estudio = "<?php echo $s->idEstudio_persona; ?>">
+                                <option value="">---------</option>
+                                <option value="En curso"    <?php if($s->estado_str =="En curso")  { echo "selected";}?>>En Curso</option>
+                                <option value="Abandonado"  <?php if($s->estado_str =="Abandonado"){ echo "selected";}?>>Abandonado</option>
+                                <option value="Finalizado"  <?php if($s->estado_str =="Finalizado"){ echo "selected";}?>>Finalizado</option>
+                            </select>
+                            <?php } else{ echo $s->estado_str;} ?>
+                        </td>
                         <td>
                             <?php
                             
@@ -717,9 +758,75 @@ if (isset($result)){
   </form>
 </div>
 
+<!-- Modal estudio_documento--->
+<div id="modal-estudio_documento" class="modal hide fade" style="width: 60%; " tabindex="-1" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h5 id="myModalLabel">Documento</h5>
+  </div>
+  <div class="modal-body" >
+      <embed style="width: 100%; min-height: 500px;" src="<?php 
+            if($documento_estudio!='')
+                {
+//                header("Content-Type: application/msword"); 
+                echo $documento_estudio;}
+            else{echo base_url()."assets/img/sin_imagen.jpg"; 
+            }?>" 
+        style="max-height: 500px;">
+      
+      
+  </div>
+</div>
+
+<!-- Modal licencia_documento--->
+<div id="modal-licencia_documento" class="modal hide fade" style="width: 60%; " tabindex="-1" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h5 id="myModalLabel">Documento</h5>
+  </div>
+  <div class="modal-body" >
+      <embed id="url_licencia" style="width: 100%; min-height: 500px;" src="" style="max-height: 500px;">
+      
+  </div>
+</div>
+
+<!-- Modal documento_licencia--->
+<div id="modal-documento_licencia" class="modal hide fade"  tabindex="-1" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
+  <form action="<?php echo base_url() ?>index.php/licencia/vincular" method="post" enctype="multipart/form-data">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h5 id="myModalLabel">Adjuntar comprobante</h5>
+  </div>
+  <div class="modal-body">
+    
+    <input name="desde_persona"  type="hidden" value="1">
+    <input name="persona_id" id="persona_id" type="hidden" value="<?php echo $_GET['buscar']; ?>">
+    <input name="licencia" id="licencia" type="hidden" >
+      
+      
+    <div class="control-group">
+        <div class="controls">
+            <input type="file" class="form-control" name="userFiles[]" multiple/>
+        </div>
+    </div>
+    
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+    <button class="btn btn-success">Guardar</button>
+  </div>
+  </form>
+</div>
 <script type="text/javascript">
 $(document).ready(function(){
+    
         $(document).on('click', 'a', function(event) {       
+            var urlLicencia = $(this).attr('urlLicencia');
+            $('#url_licencia').attr('src',urlLicencia);
+            
+            var licencia = $(this).attr('idLicencia');
+            $('#licencia').val(licencia);
+            
             var familiar = $(this).attr('familiar');
             $('#idFamiliar').val(familiar);
             
@@ -779,7 +886,31 @@ $(document).ready(function(){
                 }
           });
           
-         
+          
+          $("#persona").autocomplete({
+            source: "<?php echo base_url(); ?>index.php/Persona/autoCompletePersona",
+            minLength: 1,
+            select: function( event, ui ) {
+                    $("#persona_id").val(ui.item.id);
+                    $("#formBuscar").submit();
+                    
+                }
+          });
+          
+          
+          $(".estado_estudio").on('change', function(event) {
+              
+              
+              
+              $.ajax({
+                          type: "GET",
+                          url: "<?php echo base_url();?>index.php/persona/guarda_estado_estudio?estado_str="+this.value+"&idEstudioPersona="+$(this).attr('estudio'),
+                          success: function(data)
+                          {
+                            
+                          }
+                    });
+            });
           
       });
       

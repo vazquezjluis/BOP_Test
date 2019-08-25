@@ -688,6 +688,11 @@ class Ticket extends CI_Controller {
                 
                         
                 break;
+            case 2: 
+                $this->data['ref']='';
+                $this->data['link_referencia']="<i style='color:red'>El ticket no tiene referencia</i>";
+                    return false;
+                break;
         }
     }
     

@@ -73,7 +73,7 @@
                     <div class="control-group">
                         <label  class="control-label">Fecha<span class="required">*</span></label>
                         <div class="controls">
-                            <input id="fecha_meta_Estado" type="datetime-local" name="fecha_meta_Estado" value="<?php echo set_value('fecha_meta_Estado'); ?>" required="required" />
+                            <input id="fecha_meta_estado" type="datetime-local" name="fecha_meta_estado" value="<?php echo set_value('fecha_meta_Estado'); ?>" required="required" />
                         </div>
                     </div>
                     

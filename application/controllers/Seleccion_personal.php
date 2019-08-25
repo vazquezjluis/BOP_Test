@@ -105,7 +105,7 @@ class Seleccion_personal extends CI_Controller {
         if ($this->form_validation->run('seleccion_personal') == false) {
             $this->data['custom_error'] = (validation_errors() ? '<div class="form_error">' . validation_errors() . '</div>' : false);
         } else {
-            
+          
             
             $data = array(
                 'nombre' => $this->input->post('nombre'),

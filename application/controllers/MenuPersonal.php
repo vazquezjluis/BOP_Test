@@ -29,12 +29,20 @@ class MenuPersonal extends CI_Controller {
         $this->gestionar();
     }
 
+    function buscarMenu(){
+        $menu           = $this->menuPersonal_model->get('menu_personal','menu_personal.*',' menu_personal.fecha_menu = "'.$this->input->get('fecha').'" AND menu_personal.estado = 1 ');
+        
+        if(count($menu)){
+            echo json_encode($menu);
+        }else{ echo '0';}
+        
+    }
     function gestionar(){
         
         $this->load->library('pagination');
 
         $config['base_url'] = base_url().'index.php/menuPersonal/gestionar/';
-        $config['total_rows'] = $this->menuPersonal_model->count('menu_personal');
+        $config['total_rows'] = count($this->menuPersonal_model->getActive('menu_personal','*'));
         $config['per_page'] = 10;
         $config['next_link'] = 'Próxima';
         $config['prev_link'] = 'Anterior';
@@ -113,9 +121,12 @@ class MenuPersonal extends CI_Controller {
             );
 
             
-            $existe = $this->menuPersonal_model->get('menu_personal', '*', ' menu_personal.estado =1 AND menu_personal.fecha_menu = "'.$this->input->post('fecha_menu').'"');
+            //$existe = $this->menuPersonal_model->get('menu_personal', '*', ' menu_personal.estado =1 AND menu_personal.fecha_menu = "'.$this->input->post('fecha_menu').'"');
             
-            if (count($existe)==0){
+            
+
+            //if (count($existe)==0 AND in_array(date("w"),array(0,6))){//Solo se puede cargar sabados o domingos
+            //if (count($existe)==0){//Carga todos los dias 
                 if ($this->menuPersonal_model->add('menu_personal', $data) == TRUE) {
                     $id_nuevo = $this->db->insert_id();
                     $acciones = array(
@@ -133,9 +144,15 @@ class MenuPersonal extends CI_Controller {
                 } else {
                     $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error al cargar un menu.</p></div>';
                 }    
-            }else{
-                $this->data['custom_error'] = '<div class="form_error"><p>Ya existe un menu para el '.date('d/m/Y',  strtotime($this->input->post('fecha_menu'))).'.</p></div>';
-            }
+            //}
+            //else{
+               // if(!in_array(date("w"),array(0,6))){
+                 //   $this->data['custom_error'] = '<div class="form_error"><p>Solo se puede cargar el menu los dias sabados o domingos.</p></div>';
+                // }else{
+                    //$this->data['custom_error'] = '<div class="form_error"><p>Ya existe un menu para el '.date('d/m/Y',  strtotime($this->input->post('fecha_menu'))).'.</p></div>';
+                // }
+                
+            //}
             
             
         }

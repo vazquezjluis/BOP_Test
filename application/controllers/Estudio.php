@@ -22,6 +22,7 @@ class Estudio extends CI_Controller {
 
         
         $this->load->model('estudio_model', '', TRUE);
+        $this->load->model('titulo_model', '', TRUE);
         $this->load->model('consola_model', '', TRUE);
         $this->load->model('archivos_model', '', TRUE);
         $this->load->model('institucion_model', '', TRUE);
@@ -59,7 +60,7 @@ class Estudio extends CI_Controller {
 
         $this->pagination->initialize($config); 	
 
-        $this->data['results'] = $this->estudio_model->get('estudio','estudio.*, institucion_str(estudio.institucion) as institucion',' estudio.estado = 1',$config['per_page'],$this->uri->segment(3));
+        $this->data['results'] = $this->estudio_model->get('estudio','estudio.*, institucion_str(estudio.institucion) as institucion, titulo_str(estudio.titulo) as titulo',' estudio.estado = 1',$config['per_page'],$this->uri->segment(3));
        
 	$this->data['view'] = 'rrhh/estudio/estudio';
        	$this->load->view('tema/header',$this->data);
@@ -142,6 +143,7 @@ class Estudio extends CI_Controller {
             }
         }
         $this->data['institucion'] = $this->institucion_model->getActive('institucion','*');
+        $this->data['titulo'] = $this->titulo_model->getActive('titulo','*');
         $this->data['view'] = 'rrhh/estudio/agregarEstudio';
         $this->load->view('tema/header', $this->data);
 
@@ -182,6 +184,7 @@ class Estudio extends CI_Controller {
         }
 
         $this->data['institucion'] = $this->institucion_model->getActive('institucion','*');
+        $this->data['titulo'] = $this->titulo_model->getActive('titulo','*');
         $this->data['result'] = $this->estudio_model->getById($this->uri->segment(3));
         
         $this->data['view'] = 'rrhh/estudio/editarEstudio';
@@ -246,20 +249,30 @@ class Estudio extends CI_Controller {
                         $this->session->set_flashdata('success','estudio vinculado con éxito!');
                         //redirect(base_url().'index.php/licencia/vincular');
                     }
-                    if ($this->input->post('desde_persona')!==NULL){
-                        redirect(base_url().'index.php/persona/visualizar?buscar='.$this->input->post('persona_id'));
-                    }
+                    
                         
                 }
             else
             {
                 $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error al guardar la consola del vinculo de la licencia.</p></div>';
             }
+            //si existen archivos
+            if (isset($_FILES)){
+              if ($this->adjuntar_archivo($id_estudio_persona,"estudio_persona") ==TRUE){
+                  //archivos cargados con exito
+              }else{
+                  $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error al guardar el CV.</p></div>';
+              }
+            }
+            if ($this->input->post('desde_persona')!==NULL){
+                        redirect(base_url().'index.php/persona/visualizar?buscar='.$this->input->post('persona_id'));
+                    }
+            
             
         }
         
         
-        $this->data['estudio'] = $this->estudio_model->get("estudio","*","estado = 1");
+        $this->data['estudio'] = $this->estudio_model->get("estudio","estudio.*, titulo_str(estudio.titulo) as titulo","estado = 1");
         $this->data['view'] = 'rrhh/estudio/vincularEstudio';
         $this->load->view('tema/header',$this->data);
    
@@ -304,7 +317,6 @@ class Estudio extends CI_Controller {
         if (!is_dir('./assets/archivos/'.$date)) {//si el directorio no exise lo crea
             mkdir('./assets/archivos/' . $date, 0777, TRUE);
         }
-        
         $data = array();
         if( !empty($_FILES['userFiles']['name'])){
             $filesCount = count($_FILES['userFiles']['name']);
@@ -320,7 +332,7 @@ class Estudio extends CI_Controller {
                 if($this->upload->do_upload('userFile')){
                     $fileData = $this->upload->data();
                     if ($documento==''){
-                        $documento='CV';
+                        $documento='estudio';
                     }
                     $data = array(
                         'documento' => $documento,

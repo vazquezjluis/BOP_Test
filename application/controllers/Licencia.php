@@ -248,15 +248,18 @@ class Licencia extends CI_Controller {
     }
     
     function vincular(){
+        
         $valida = 0;
         if (isset($_POST)){
-            $valida = $this->validar_vinculo($_POST);
+//            $valida = $this->validar_vinculo($_POST);
+            $valida=0;
         }
         $this->load->library('form_validation');    
-		$this->data['custom_error'] = '';	
+	$this->data['custom_error'] = '';
+        
         if ($this->form_validation->run('vincular_licencia') == false)
         {
-             $this->data['custom_error'] = (validation_errors() ? '<div class="alert alert-danger">'.validation_errors().'</div>' : false);
+            $this->data['custom_error'] = (validation_errors() ? '<div class="alert alert-danger">'.validation_errors().'</div>' : false);
         }elseif($valida!=0)
         {
             $this->data['custom_error'] = '<div class="alert alert-danger">'.$valida.'</div>';
@@ -267,11 +270,11 @@ class Licencia extends CI_Controller {
             $data_licencia_persona = array(
                 'idLicencia' => $this->input->post('licencia'),
                 'idPersona' => $this->input->post('persona_id'),
-                'dias' => $this->input->post('dias'),
-                'descripcion' => $this->input->post('descripcion'),
+                //'dias' => $this->input->post('dias'),
+                //'descripcion' => $this->input->post('descripcion'),
                 'fecha_registro' => date('Y-m-d'),
-                'f_inicio' => $this->input->post('inicio'),
-                'f_fin' => $this->input->post('fin'),
+                //'f_inicio' => $this->input->post('inicio'),
+                //'f_fin' => $this->input->post('fin'),
                 'usuario' => $this->session->userdata('id')
             );
             
@@ -290,6 +293,15 @@ class Licencia extends CI_Controller {
                         $this->session->set_flashdata('success','Licencia vinculada con éxito!');
                             //redirect(base_url().'index.php/licencia/vincular');
                         }
+                    //si existen archivos
+                    if (isset($_FILES)){
+                      if ($this->adjuntar_archivo($id_licencia_persona,"licencia_persona") ==TRUE){
+                          //archivos cargados con exito
+                      }else{
+                          $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error al guardar los documentos.</p></div>';
+                      }
+        //            $this->adjuntar_archivo(123456,"licencia_persona");
+                    }    
                     if ($this->input->post('desde_persona')!==NULL){
                         redirect(base_url().'index.php/persona/visualizar?buscar='.$this->input->post('persona_id'));
                     }    
@@ -299,17 +311,6 @@ class Licencia extends CI_Controller {
             else
             {
                 $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error al guardar la consola del vinculo de la licencia.</p></div>';
-            }
-            
-            
-            //si existen archivos
-            if (isset($_FILES)){
-              if ($this->adjuntar_archivo($id_licencia_persona,"licencia_persona") ==TRUE){
-                  //archivos cargados con exito
-              }else{
-                  $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error al guardar los documentos.</p></div>';
-              }
-//            $this->adjuntar_archivo(123456,"licencia_persona");
             }
         }
         
@@ -340,6 +341,18 @@ class Licencia extends CI_Controller {
 
     }
     
+    public function nuevoDocumentoLicencia(){
+        //si existen archivos
+        if (isset($_FILES)){
+          if ($this->adjuntar_archivo($id_licencia_persona,"licencia_persona") ==TRUE){
+              //archivos cargados con exito
+          }else{
+              $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error al guardar los documentos.</p></div>';
+          }
+//            $this->adjuntar_archivo(123456,"licencia_persona");
+        }
+    }
+    
     function validar_vinculo($post){
         if (!isset($post["persona_id"])){ return "campo persona invalida.";}
         if (!isset($post["licencia"])){ return "campo licencia invalida.";}
@@ -355,7 +368,7 @@ class Licencia extends CI_Controller {
     function adjuntar_archivo($referencia,$funcionalidad){
         $date = date('d-m-Y');
         $config['upload_path'] = './assets/archivos/'.$date;
-        $config['allowed_types'] = 'txt|jpg|jpeg|gif|png|pdf|PDF|JPG|JPEG|GIF|PNG';
+        $config['allowed_types'] = 'txt|jpg|jpeg|gif|png|pdf|PDF|JPG|JPEG|GIF|PNG|doc|docx';
         $config['max_size']     = 0;
         $config['max_width']  = '10000';
         $config['max_height']  = '10000';
@@ -411,6 +424,7 @@ class Licencia extends CI_Controller {
             }//fin foreach
             
         }// end if
+        
         return true;
     }//end function
     

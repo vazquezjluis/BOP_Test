@@ -73,7 +73,7 @@ if (isset($_GET['persona'])){
                         </div>
                     </div>
                     
-                    <div class="control-group ">
+<!--                    <div class="control-group ">
                         <div class="input-append span6">
                             <label for="inicio" class="control-label">Inicio<span class="required">*</span></label>
                             <div class="controls">
@@ -88,7 +88,7 @@ if (isset($_GET['persona'])){
                                 <input id="dias" type="number" name="dias"  required="required" readonly="readonly"/>
                             </div>
                         </div>
-                    </div>
+                    </div>-->
                     
                     <div class="control-group">
                         <label for="documento" class="control-label">Adjuntar comprobante <span class="required"></span></label>

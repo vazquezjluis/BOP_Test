@@ -1,4 +1,6 @@
-<?php $permisos = unserialize($result->permisos);?>
+<?php $permisos = unserialize($result->permisos);
+
+?>
 <div class="span12" style="margin-left: 0">
     <form action="<?php echo base_url();?>index.php/permisos/editar" id="formPermiso" method="post">
 
@@ -53,6 +55,7 @@
                                       <li><a data-toggle="tab" href="#tab5">Configuracion</a></li>
                                       <li><a data-toggle="tab" href="#tab6">Ayuda</a></li>
                                       <li><a data-toggle="tab" href="#tab7">Gastronomia</a></li>
+                                      <li><a data-toggle="tab" href="#tab8">Sala Reuniones</a></li>
 
                                    </ul>
                                 </div>
@@ -165,7 +168,10 @@
                                                     </label>
                                                 </td>
                                                 <td>
-                                                    
+                                                    <label>
+                                                        <input <?php if(isset($permisos['vRep_pedido'])){ if($permisos['vRep_pedido'] == '1'){echo 'checked';}}?> name="vRep_pedido" class="marcar" type="checkbox" value="1" />
+                                                        <span class="lbl"> Ver Reporte de Pedidos</span>
+                                                    </label>
                                                 </td>
                                                 <td>
                                                 </td>
@@ -238,6 +244,90 @@
                                                         <input <?php if(isset($permisos['dDesempeno'])){ if($permisos['dDesempeno'] == '1'){echo 'checked';}}?> name="dDesempeno" class="marcar" type="checkbox" value="1" />
                                                         <span class="lbl"> Eliminar Desempeño</span>
                                                     </label>
+                                                </td>
+
+                                            </tr>
+                                            <tr>
+
+                                                <td>
+                                                    <label>
+                                                        <input <?php if(isset($permisos['vTitulo'])){ if($permisos['vTitulo'] == '1'){echo 'checked';}}?> name="vTitulo" class="marcar" type="checkbox" value="1" />
+                                                        <span class="lbl"> Visualizar Titulos</span>
+                                                    </label>
+                                                </td>
+
+                                                <td>
+                                                    <label>
+                                                        <input <?php if(isset($permisos['cTitulo'])){ if($permisos['cTitulo'] == '1'){echo 'checked';}}?> name="cTitulo" class="marcar" type="checkbox" value="1" />
+                                                        <span class="lbl"> Agregar Titulo</span>
+                                                    </label>
+                                                </td>
+
+                                                <td>
+                                                    <label>
+                                                        <input <?php if(isset($permisos['eTitulo'])){ if($permisos['eTitulo'] == '1'){echo 'checked';}}?> name="eTitulo" class="marcar" type="checkbox" value="1" />
+                                                        <span class="lbl"> Editar Titulo</span>
+                                                    </label>
+                                                </td>
+
+                                                <td>
+                                                    <label>
+                                                        <input <?php if(isset($permisos['dTitulo'])){ if($permisos['dTitulo'] == '1'){echo 'checked';}}?> name="dTitulo" class="marcar" type="checkbox" value="1" />
+                                                        <span class="lbl"> Eliminar Titulo</span>
+                                                    </label>
+                                                </td>
+
+                                            </tr>
+                                            <tr>
+
+                                                <td>
+                                                    <label>
+                                                        <input <?php if(isset($permisos['vEstudio'])){ if($permisos['vEstudio'] == '1'){echo 'checked';}}?> name="vEstudio" class="marcar" type="checkbox" value="1" />
+                                                        <span class="lbl"> Visualizar Estudios</span>
+                                                    </label>
+                                                </td>
+
+                                                <td>
+                                                    <label>
+                                                        <input <?php if(isset($permisos['cEstudio'])){ if($permisos['cEstudio'] == '1'){echo 'checked';}}?> name="cEstudio" class="marcar" type="checkbox" value="1" />
+                                                        <span class="lbl"> Agregar Estudio</span>
+                                                    </label>
+                                                </td>
+
+                                                <td>
+                                                    <label>
+                                                        <input <?php if(isset($permisos['eEstudio'])){ if($permisos['eEstudio'] == '1'){echo 'checked';}}?> name="eEstudio" class="marcar" type="checkbox" value="1" />
+                                                        <span class="lbl"> Editar Estudio</span>
+                                                    </label>
+                                                </td>
+
+                                                <td>
+                                                    <label>
+                                                        <input <?php if(isset($permisos['dEstudio'])){ if($permisos['dEstudio'] == '1'){echo 'checked';}}?> name="dEstudio" class="marcar" type="checkbox" value="1" />
+                                                        <span class="lbl"> Eliminar Estudio</span>
+                                                    </label>
+                                                </td>
+
+                                            </tr>
+                                            <tr>
+
+                                                <td>
+                                                    <label title="Recibe avisos de licencias, o periosods de prueba del empleado.">
+                                                        <input <?php if(isset($permisos['vAvisoTicket'])){ if($permisos['vAvisoTicket'] == '1'){echo 'checked';}}?> name="vAvisoTicket" class="marcar" type="checkbox" value="1" />
+                                                        <span class="lbl"> Notificar avisos con tickets.</span>
+                                                    </label>
+                                                </td>
+
+                                                <td>
+                                                    
+                                                </td>
+
+                                                <td>
+                                                    
+                                                </td>
+
+                                                <td>
+                                                    
                                                 </td>
 
                                             </tr>
@@ -333,8 +423,8 @@
 
                                                     <td>
                                                         <label>
-                                                            <input <?php if(isset($permisos['vImporPersona'])){ if($permisos['vImporPersona'] == '1'){echo 'checked';}}?> name="vImporPersona" class="marcar" type="checkbox" value="1" />
-                                                            <span class="lbl"> Visualizar Importador/Persona</span>
+                                                            <input <?php if(isset($permisos['vImporMenu'])){ if($permisos['vImporMenu'] == '1'){echo 'checked';}}?> name="vImporMenu" class="marcar" type="checkbox" value="1" />
+                                                            <span class="lbl"> Visualizar Importador/Menu</span>
                                                         </label>
                                                     </td>
 
@@ -473,6 +563,48 @@
                                                     </td>
 
                                                     <td>
+                                                    </td>
+
+                                                </tr>
+                                             </tbody>
+                                       </table>
+                                   </div>
+                                   
+                                   <!--SALA REUNIONES-->
+                                   <div id="tab8" class="tab-pane" style="min-height: 300px">
+                                       <table class="table table-bordered">
+                                             <tbody>
+                                                <!--CALENDARIO-->
+                                                <tr>
+
+                                                    <td>
+                                                        <label>
+                                                            <label>
+                                                                <input <?php if(isset($permisos['vSala'])){ if($permisos['vSala'] == '1'){echo 'checked';}}?> name="vSala" class="marcar" type="checkbox" value="1" />
+                                                                <span class="lbl"> Visualizar Calendario</span>
+                                                            </label>
+                                                        </label>
+                                                    </td>
+
+                                                    <td>
+                                                        <label>
+                                                            <input <?php if(isset($permisos['cSala'])){ if($permisos['cSala'] == '1'){echo 'checked';}}?> name="cSala" class="marcar" type="checkbox" value="1" />
+                                                            <span class="lbl"> Agregar Evento</span>
+                                                        </label>
+                                                    </td>
+
+                                                    <td>
+                                                        <label>
+                                                            <input <?php if(isset($permisos['eSala'])){ if($permisos['eSala'] == '1'){echo 'checked';}}?> name="eSala" class="marcar" type="checkbox" value="1" />
+                                                            <span class="lbl"> Editar Evento</span>
+                                                        </label>
+                                                    </td>
+
+                                                    <td>
+                                                        <label>
+                                                            <input <?php if(isset($permisos['dSala'])){ if($permisos['dSala'] == '1'){echo 'checked';}}?> name="dSala" class="marcar" type="checkbox" value="1" />
+                                                            <span class="lbl"> Eliminar Evento</span>
+                                                        </label>
                                                     </td>
 
                                                 </tr>

@@ -53,6 +53,7 @@ if(!$results){?>
         <th></th>
     </tr>
         <?php 
+        
         foreach ($results as $r) {
 //            if($r->estado == 1){$estado = "Activo";}else{$estado="Inactivo";}
 //            if($r->categoria == 1){$categoria = "Electrónica";}else{$categoria="";}
@@ -63,7 +64,7 @@ if(!$results){?>
                 echo '<td>'.$r->domicilio.'</td>';
                 echo '<td>'.$r->contacto.'</td>';
                 echo '<td>'.$r->descripcion.'</td>';
-                echo '<td>'.$r->meta_estado.' - '.date('d/m/Y H:m:s',  strtotime($r->fecha_meta_estado)).'</td>';
+                echo '<td>'.$r->meta_estado.' - '.date('d/m/Y h:i A',  strtotime($r->fecha_meta_estado)).'</td>';
                 
                 echo '<td> ';
                  echo '<a href="'.base_url().'index.php/seleccion_personal/visualizar/'.$r->idSeleccion_personal.'"  class="btn tip-top" title="Ver detalle"><i class="icon-eye-open"></i></a>'; 

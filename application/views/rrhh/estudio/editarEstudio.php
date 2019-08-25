@@ -12,18 +12,29 @@
                     echo '<div class="alert alert-danger">' . $custom_error . '</div>';
                     
                 }
-                echo "<pre>";
-                    var_dump( date('d/m/Y',  strtotime($result->fecha)));
-                    echo "</pre>";
                 ?>
                 <form action="<?php echo current_url(); ?>" id="formEstudio" method="post" class="form-horizontal" >
                     <div class="control-group">
                         <?php echo form_hidden('idEstudio',$result->idEstudio) ?>
                         <label for="titulo" class="control-label">Titulo<span class="required">*</span></label>
                         <div class="controls">
-                            <input id="titulo" type="text" name="titulo" value="<?php echo $result->titulo; ?>"  />
+                            <select name="titulo" id="titulo" required="required">
+                                <option value=''>--Seleccione--</option>
+                                <?php 
+                                foreach($titulo as $t){
+                                    echo "<option value='".$t->idTitulo."'  ";
+                                    if ($result->titulo==$t->idTitulo){
+                                        echo " selected ";
+                                    }
+                                    echo ">".$t->nombre."</option>";
+                                }
+                                ?>
+                            </select>
                         </div>
                     </div>
+                    
+                    
+                    
                     
                     <div class="control-group">
                         <label  class="control-label">Tipo<span class="required">*</span></label>

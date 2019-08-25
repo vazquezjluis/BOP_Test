@@ -31,7 +31,8 @@ class Pedido extends CI_Controller {
         $this->gestionar();
     }
     function monitor(){
-        $this->data['pendiente'] = $this->pedido_model->get('pedido','pedido.*,persona_str(pedido.persona) as persona, menu_str(pedido.idMenu) as menu',' pedido.estado = 1');
+        $this->data['pendiente'] = $this->pedido_model->get('pedido','pedido.*, menu_str(pedido.idMenu) as menu',' pedido.estado = 1 AND !ISNULL(`idCalendarioMenu`)  AND !ISNULL(`idMenu`)');
+        
         $this->data['listo'] = $this->pedido_model->get('pedido','pedido.*,usuario_str(pedido.usuario) as usr, menu_str(pedido.idMenu) as menu',' pedido.estado = 2');
        
 	$this->data['view'] = 'gastronomia/monitor';
@@ -41,6 +42,7 @@ class Pedido extends CI_Controller {
          $this->data['custom_error'] = '';
         $this->data['menu'] = $this->menuPersonal_model->get('menu_personal','menu_personal.*',' menu_personal.fecha_menu = "'.date('Y-m-d').'" AND menu_personal.estado = 1 ');
         
+                
        
 	$this->data['view'] = 'gastronomia/pedidos';
        	$this->load->view('tema/monitor',$this->data);
@@ -380,6 +382,26 @@ class Pedido extends CI_Controller {
             redirect(base_url().'index.php/persona/visualizar?buscar='.$idPersona);
     }
     
+    public function estado_str($estado){
+        switch ($estado){
+            case '1':
+                $estado_str = 'pendiente';
+                break;
+            case '2':
+                $estado_str = 'listo';
+                break;
+            case '3':
+                $estado_str = 'entregado';
+                break;
+            case '4':
+                $estado_str = 'devuelto';
+                break;
+            default :
+                $estado_str = 'error:estado no encontrado';
+                break;
+        }
+    }
+    
     public  function pedido_listo(){
         $id_pedido = $_GET['val'];
         $data = array(
@@ -389,7 +411,8 @@ class Pedido extends CI_Controller {
         if($this->pedido_model->edit('pedido',$data,'idPedido',$id_pedido)){
             $data = $this->pedido_model->get('pedido','pedido.*,usuario_str(pedido.usuario) as usr, menu_str(pedido.idMenu) as menu',' pedido.idPedido = '.$id_pedido); 
             
-            echo $data[0]->persona_str.' '.$data[0]->menu.' '.date('d/m/Y H:m:s',  strtotime($data[0]->f_listo));
+            echo json_encode($data);
+            //echo $data[0]->persona_str.' '.$data[0]->menu.' '.date('d/m/Y H:m:s',  strtotime($data[0]->f_listo));
             //$this->session->set_flashdata('success','Estudio eliminado!');  
         }else{
             echo "Error ##RRE44565 consulte con el administrador.";

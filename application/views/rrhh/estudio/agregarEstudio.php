@@ -20,7 +20,21 @@
                     <div class="control-group">
                         <label  class="control-label">Titulo<span class="required">*</span></label>
                         <div class="controls">
-                            <input id="titulo" type="text" name="titulo" value="<?php echo set_value('titulo'); ?>" required="required" />
+                            <!--input id="titulo" type="text" name="titulo" value="<?php // echo set_value('titulo'); ?>" required="required" /-->
+                            <select name="titulo" id="titulo" required="required">
+                                <option value=''>--Seleccione--</option>
+                                <?php 
+                                foreach($titulo as $t){
+                                    echo "<option value='".$t->idTitulo."'  ";
+                                    if (set_value('titulo')==$t->idTitulo){
+                                        echo " selected ";
+                                    }
+                                    echo ">".$t->nombre."</option>";
+                                }
+                                
+                                ?>
+                            </select>
+                            <a href="<?php echo base_url()?>index.php/titulo/agregar?titulo=1" class="btn btn-default btn-mini"><i class="icon-plus icon-white"></i> Agregar nuevo título</a>
                         </div>
                     </div>
                     
@@ -58,11 +72,12 @@
                     </div>
                     
                     <div class="control-group">
-                        <label  class="control-label">Fecha<span class="required">*</span></label>
+                        <label  class="control-label">Fecha inicio</label>
                         <div class="controls">
-                            <input id="fecha" type="date" name="fecha" value="<?php echo set_value('fecha'); ?>" required="required" />
+                            <input id="fecha" type="date" name="fecha" value="<?php echo set_value('fecha'); ?>" />
                         </div>
                     </div>
+                    
                     
                     <div class="control-group">
                         <label for="documento" class="control-label">Adjuntar Titulo <span class="required"></span></label>

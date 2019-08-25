@@ -30,9 +30,10 @@ class Estudio_model extends CI_Model {
     }
     function getEstudioPersona($where=''){
         
-        $this->db->select(' estudio.*,idEstudio_persona,fecha_registro,institucion_str(estudio.institucion) as institucion');
+        $this->db->select(' estudio.*,idEstudio_persona,fecha_registro,documentos.url,institucion_str(estudio.institucion) as institucion, titulo_str(estudio.titulo) as titulo, estudio_persona.estado_str');
         $this->db->from("estudio_persona");
         $this->db->join('estudio', 'estudio.idEstudio = estudio_persona.idEstudio', 'inner');
+        $this->db->join('documentos', 'documentos.referencia = estudio_persona.idEstudio_persona AND documentos.funcionalidad = "estudio_persona" AND documentos.documento = "estudio" ', 'left');
         //$this->db->order_by('estudio_persona.fecha_registro','desc');
         if($where){
             $this->db->where($where);

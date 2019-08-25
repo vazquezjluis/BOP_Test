@@ -14,13 +14,34 @@ class Usuarios_model extends CI_Model {
 
     
 
-    function get($perpage=0,$start=0,$one=false){
+    function get($perpage=0,$start=0,$one=false,$where = ''){
         
         $this->db->from('usuarios');
         $this->db->select('usuarios.*, permisos.nombre as permiso');
         $this->db->limit($perpage,$start);
         $this->db->join('permisos', 'usuarios.permisos_id = permisos.idPermiso', 'left');
   
+        if($where!=''){
+            $this->db->where($where);
+        }
+        
+        $query = $this->db->get();
+        
+        $result =  !$one  ? $query->result() : $query->row();
+        return $result;
+    }
+    
+    function getAvisos($perpage=0,$start=0,$one=false,$where = ''){
+        
+        $this->db->from('usuarios');
+        $this->db->select('usuarios.*, permisos.nombre as permiso');
+        $this->db->limit($perpage,$start);
+        $this->db->join('permisos', 'usuarios.permisos_id = permisos.idPermiso', 'inner');
+  
+        if($where!=''){
+            $this->db->where($where);
+        }
+        
         $query = $this->db->get();
         
         $result =  !$one  ? $query->result() : $query->row();

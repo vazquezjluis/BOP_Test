@@ -81,6 +81,25 @@ $config =
                                 )
                     )
                 ,
+                'sala' => array(
+                                array(
+                                    'field'=>'txtTitulo',
+                                    'label'=>'txtTitulo',
+                                    'rules'=>'required|trim'
+                                )
+//                                ,
+//                                array(
+//                                    'field'=>'descripcion',
+//                                    'label'=>'descripcion',
+//                                    'rules'=>'required|trim'
+//                                ),
+//                                array(
+//                                    'field'=>'descripcion',
+//                                    'label'=>'descripcion',
+//                                    'rules'=>'required|trim'
+//                                )
+                    )
+                ,
                 'menu' => array(
                                 array(
                                     'field'=>'descripcion',
@@ -100,41 +119,41 @@ $config =
                                     'label'=>'fabricante',
                                     'rules'=>'trim'
                                 ),
-                                array(
-                                    'field'=>'modelo',
-                                    'label'=>'modelo',
-                                    'rules'=>'required|trim'
-                                ),
-                                array(
-                                    'field'=>'p_pago',
-                                    'label'=>'p_pago',
-                                    'rules'=>'required|trim'
-                                ),
-                                array(
-                                    'field'=>'denom',
-                                    'label'=>'denom',
-                                    'rules'=>'required|trim'
-                                ),
-                                array(
-                                    'field'=>'juego',
-                                    'label'=>'juego',
-                                    'rules'=>'required|trim'
-                                ),
-                                array(
-                                    'field'=>'nro_serie',
-                                    'label'=>'nro_serie',
-                                    'rules'=>'required|trim'
-                                ),
-                                array(
-                                    'field'=>'programa',
-                                    'label'=>'programa',
-                                    'rules'=>'required|trim'
-                                ),
-                                array(
-                                    'field'=>'credito',
-                                    'label'=>'credito',
-                                    'rules'=>'required|trim'
-                                )
+//                                array(
+//                                    'field'=>'modelo',
+//                                    'label'=>'modelo',
+//                                    'rules'=>'required|trim'
+//                                ),
+//                                array(
+//                                    'field'=>'p_pago',
+//                                    'label'=>'p_pago',
+//                                    'rules'=>'required|trim'
+//                                ),
+//                                array(
+//                                    'field'=>'denom',
+//                                    'label'=>'denom',
+//                                    'rules'=>'required|trim'
+//                                ),
+//                                array(
+//                                    'field'=>'juego',
+//                                    'label'=>'juego',
+//                                    'rules'=>'required|trim'
+//                                ),
+//                                array(
+//                                    'field'=>'nro_serie',
+//                                    'label'=>'nro_serie',
+//                                    'rules'=>'required|trim'
+//                                ),
+//                                array(
+//                                    'field'=>'programa',
+//                                    'label'=>'programa',
+//                                    'rules'=>'required|trim'
+//                                ),
+//                                array(
+//                                    'field'=>'credito',
+//                                    'label'=>'credito',
+//                                    'rules'=>'required|trim'
+//                                )
                     )
                 ,
                 'articulos' => array(array(

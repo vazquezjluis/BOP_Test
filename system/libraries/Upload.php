@@ -397,6 +397,7 @@ class CI_Upload {
 			}
 		}
                 
+               
 		if ( ! isset($_file))
 		{
 			$this->set_error('upload_no_file_selected', 'debug');
@@ -410,10 +411,12 @@ class CI_Upload {
 			return FALSE;
 		}
 
+                
 		// Was the file able to be uploaded? If not, determine the reason why.
 		if ( ! is_uploaded_file($_file['tmp_name']))
 		{
 			$error = isset($_file['error']) ? $_file['error'] : 4;
+                        
                         
 			switch ($error)
 			{

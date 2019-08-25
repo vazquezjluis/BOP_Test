@@ -9,40 +9,32 @@
         <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap.min.css" />
         <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap-responsive.min.css" />
         <link href="<?php echo base_url();?>assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+        
         <script src="<?php echo base_url()?>assets/js/jquery-1.10.2.min.js"></script>
-        <link rel="shortcut icon" href="<?php echo base_url(); ?>assets/img/fav.png">
+        <script src="<?php echo base_url()?>assets/js/moment.min.js"></script>
+        <!-- Full calendar -->
+        <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/fullcalendar.css">
+        <script src="<?php echo base_url()?>assets/js/fullcalendar.min.js"></script>
+        <script src="<?php echo base_url()?>assets/js/es.js"></script>
+        <script src="<?php echo base_url()?>assets/js/bootstrap.min.js"></script>
+        
+        
+        
         <style>
-            .pendiente {
-                color:#FFFFFF;
-                width: 100%;
-                font-weight: bold;
-                background-color: #802420;
-                border: 1px solid red;
-                border-radius: 5px;
-                font-size: 15px;
-                padding-bottom:  20px;
-                padding-top:  10px;
-                padding-right :  10px;
-                margin-bottom: 1%;
-                margin-top: 1%;
+            .fc th{
+                padding: 10px 0px;
+                vertical-align: middle;
+                background: #F2F2F2;
             }
-            .listo{
-                color:#FFFFFF;
-                background-color: #006600;
-                width: 100%;
-                font-weight: bold;
-                border: 1px solid green;
-                border-radius: 5px;
-                font-size: 15px;
-                padding-bottom:  20px;
-                padding-top:  10px;
-                padding-right :  10px;
-                margin-bottom: 1%;
-                margin-top: 1%;
+            .fc-time { display: none;}
+            .fc-content { padding: 5px;}
+            .fc-unthemed td.fc-today {
+                background: #f2f2f2;
             }
+            
         </style>
     </head>
-    <body style="background-color: #000000; color:#FFFFFF; margin: auto;text-align: center;">
+    <body style="background-color: #FFFFFF;">
         <?php if(isset($view)){echo $this->load->view($view, null, true);}?>
          
     </body>

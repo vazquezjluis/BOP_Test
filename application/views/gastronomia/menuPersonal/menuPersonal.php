@@ -1,6 +1,16 @@
-<?php  if ($this->permission->checkPermission($this->session->userdata('permiso'),'cMenu')){ ?>
-    <a href="<?php echo base_url();?>index.php/menuPersonal/agregar" class="btn btn-success"><i class="icon-plus icon-white"></i> Agregar nuevo Menu</a>
-<?php
+<?php  if ($this->permission->checkPermission($this->session->userdata('permiso'),'cMenu')){
+//    if (in_array(date("w"),array(0,6))){?>
+        <a href="<?php echo base_url();?>index.php/menuPersonal/agregar" class="btn btn-success"><i class="icon-plus icon-white"></i> Agregar nuevo Menu</a>
+        <a href="#" class="pull-right" title="Ver eemplo de archivo">&nbsp;&nbsp;&nbsp;<i class="icon-info-sign"></i></a>
+        <?php  if ($this->permission->checkPermission($this->session->userdata('permiso'),'vImporMenu')){
+//    if (in_array(date("w"),array(0,6))){?>
+            <a href="<?php echo base_url();?>index.php/importador/menu" class="btn btn-primary pull-right"><i class="icon-plus icon-white"></i> Importar Excel </a>
+    <?php // }else{
+        }
+        ?>
+        <!--<div class="alert alert-danger">Solo se puede cargar menú los dias Sabados o Domingos.</div>-->
+    <?php    
+//    }
 }
 if(!$results){?>
 
@@ -63,7 +73,7 @@ if(!$results){?>
         <?php foreach ($results as $r) {
      
             
-            if($r->fecha_menu == date('Y-m-d')){$estado = '<div class="alert alert-success">Activo</div>';}else{$estado = '<div class="alert alert-danger">Inactivo</div>';}
+            if($r->fecha_menu == date('Y-m-d')){$estado = '<div class="alert alert-success">Activo</div>';}else{$estado = '<div style="color:red;">Inactivo</div>';}
             echo '<tr>';
             echo '<td>'.$r->idMenuPersonal.'</td>';
             echo '<td>'.$r->descripcion.'</td>';

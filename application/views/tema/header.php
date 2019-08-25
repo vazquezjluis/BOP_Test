@@ -11,6 +11,9 @@
 <link rel="stylesheet" href="<?php echo base_url();?>assets/css/matrix-style.css" />
 <link rel="stylesheet" href="<?php echo base_url();?>assets/css/matrix-media.css" />
 
+
+
+
 <link href="<?php echo base_url();?>assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
 
 <!--link rel="stylesheet" href="<?php //echo base_url();?>assets/css/fullcalendar.css" /--> 
@@ -60,7 +63,7 @@
     
     <!--RRHH-->
     <?php if( $this->permission->checkPermission($this->session->userdata('permiso'),'vPersonas') || 
-               $this->permission->checkPermission($this->session->userdata('permiso'),'vLicencias') || 
+//               $this->permission->checkPermission($this->session->userdata('permiso'),'vLicencias') || 
                $this->permission->checkPermission($this->session->userdata('permiso'),'vCapacitacion') || 
                $this->permission->checkPermission($this->session->userdata('permiso'),'vPremios')  
             ){ ?>
@@ -70,9 +73,9 @@
               <?php if($this->permission->checkPermission($this->session->userdata('permiso'),'vPersonas')){ ?>
                 <li><a href="<?php echo base_url()?>index.php/persona">Personas</a></li>
               <?php } ?>
-              <?php if($this->permission->checkPermission($this->session->userdata('permiso'),'vLicencia')){ ?>
-                <li><a href="<?php echo base_url()?>index.php/licencia">Licencias</a></li>
-              <?php } ?>
+              <?php // if($this->permission->checkPermission($this->session->userdata('permiso'),'vLicencia')){ ?>
+                <!--<li><a href="<?php // echo base_url()?>index.php/licencia">Licencias</a></li>-->
+              <?php // } ?>
               <?php if($this->permission->checkPermission($this->session->userdata('permiso'),'vCapacitacion')){ ?>
                 <li><a href="<?php echo base_url()?>index.php/capacitacion">Capacitacion</a></li>
               <?php } ?>
@@ -85,8 +88,11 @@
               <?php // if($this->permission->checkPermission($this->session->userdata('seleccion_personal'),'vSeleccion_personal')){ ?>
                 <li><a href="<?php echo base_url()?>index.php/uniforme">Uniformes</a></li>
               <?php // } ?>
-              <?php // if($this->permission->checkPermission($this->session->userdata('seleccion_personal'),'vSeleccion_personal')){ ?>
+              <?php  if($this->permission->checkPermission($this->session->userdata('permiso'),'vEstudio')){ ?>
                 <li><a href="<?php echo base_url()?>index.php/estudio">Estudios</a></li>
+              <?php  } ?>
+              <?php // if($this->permission->checkPermission($this->session->userdata('seleccion_personal'),'vSeleccion_personal')){ ?>
+                <li><a href="<?php echo base_url()?>index.php/titulo">Titulos</a></li>
               <?php // } ?>
                 <!--<li><a href="#">Fallas (en construccion)</a></li>-->
           </ul>
@@ -118,6 +124,14 @@
     <?php // } ?>  
     
     
+    <!--SALA DE REUNUNIONES-->
+    <?php if($this->permission->checkPermission($this->session->userdata('permiso'),'vSala')){ ?>
+        <li class=" <?php if(isset($menuClientes)){echo 'active open';};?>">
+            <a href="<?php echo base_url()?>index.php/sala"><i class="icon icon-calendar"></i> <span>Sala de Reuniones</span></a>
+           
+        </li>
+    <?php } ?>  
+        
     <!--MAQUINAS-->
     <?php if($this->permission->checkPermission($this->session->userdata('permiso'),'vMaquina')){ ?>
         <li class=" <?php if(isset($menuClientes)){echo 'active open';};?>">
@@ -152,10 +166,11 @@
               <?php if($this->permission->checkPermission($this->session->userdata('permiso'),'vRep_ticket')){ ?>
                 <li><a href="<?php echo base_url()?>index.php/Reportes/tickets">Tickets</a></li>
               <?php } ?>
-              <?php if($this->permission->checkPermission($this->session->userdata('permiso'),'vPersonas')){ ?>
-                <li><a href="<?php echo base_url()?>index.php/Reportes/personas">Personas</a></li>
+              <?php if($this->permission->checkPermission($this->session->userdata('permiso'),'vRep_pedido')){ ?>
+                <li><a href="<?php echo base_url()?>index.php/Reportes/pedidos">Pedidos</a></li>
+                <li><a href="<?php echo base_url()?>index.php/Reportes/calendariomenu">Menus programados</a></li>
               <?php } ?>
-                <li><a href="#">Fallas (en construccion)</a></li>
+                <!--<li><a href="#">Fallas (en construccion)</a></li>-->
           </ul>
         </li>
     <?php } ?>
@@ -216,8 +231,8 @@
                 <li><a href="<?php echo base_url()?>index.php/importador/articulos_maquinas">Articulos a máquinas</a></li>
             <?php } ?>
  
-            <?php if($this->permission->checkPermission($this->session->userdata('permiso'),'vImporPersona')){ ?>
-                <li><a href="<?php echo base_url()?>index.php/importador/persona">Persona</a></li>
+            <?php if($this->permission->checkPermission($this->session->userdata('permiso'),'vImporMenu')){ ?>
+                <li><a href="<?php echo base_url()?>index.php/importador/menu">Menu</a></li>
             <?php } ?>
  
           </ul>

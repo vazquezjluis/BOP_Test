@@ -18,10 +18,10 @@ class Importador extends CI_Controller {
           redirect('bingoOasis/login');
         }
 
-        if(!$this->permission->checkPermission($this->session->userdata('permiso'),'vLaboratorio')){
-          $this->session->set_flashdata('error','Usted no tiene permisos para ver los Importadores del sistema.');
-          redirect(base_url());
-        }
+//        if(!$this->permission->checkPermission($this->session->userdata('permiso'),'vImportador')){
+//          $this->session->set_flashdata('error','Usted no tiene permisos para ver los Importadores del sistema.');
+//          redirect(base_url());
+//        }
         
         $this -> load -> helper ( array ( 'form' ,  'url' )); 
 
@@ -306,96 +306,92 @@ class Importador extends CI_Controller {
         $this->load->view('tema/header',$this->data);
     }
     
-    function persona(){
-        $_SESSION['importacion_activa'] = 'persona';
-        $this->load->model('persona_model', '', TRUE);
-        $this->data['results'] = $this->persona_model->get('persona','*','',false);
-        
-        /* Importacion de articulos*/
-        switch ( $this->input->post('tipo')) {
-            case 'persona':
+    function menu(){
+        $_SESSION['importacion_activa'] = 'menu';
+        $tipo =$this->input->post('tipo');
+        if(isset($tipo) and  $tipo =='menu'){
                 //para evitar la recarga de la pagina
                 if (isset($_SESSION['filename'])){
-                    $this->cancel_import('persona');//limpia las sesiones y elimina el archivo temporal
+                    $this->cancel_import('menu');//limpia las sesiones y elimina el archivo temporal
                 }
-                
-                
+
+
                 $error = '';
                 $max_size = 300;
                 $file = $_FILES['el_importado']['name'];
                 $doc_type = $this->get_type($_FILES['el_importado']['name']);           
-		$doc_size = ceil($_FILES['el_importado']['size'] / 1024);
-                
+                $doc_size = ceil($_FILES['el_importado']['size'] / 1024);
+
                 /* valida el tipo de archivo para .xlsx */
                 if($doc_type != 'xlsx' ){
                     $error .= 'Por favor seleccione un archivo .xlsx <br/>';
                 }
-		
+
                 /* valida el peso del archivo */
                 if($doc_size > (1024  * $max_size)){
                     $error .= 'El archivo no puede tener mas de 30 MB. \n';
                 }
-                
+
                 if ($error!=''){
                     $this->session->set_flashdata('error',$error);  
                 }else{
-                    
+
                     /* esta variable almacena la ruta del documento */
-                    $path =  './assets/archivos/importados/persona';
-                    
+                    $path =  './assets/archivos/importados/menu';
+
                     /*nombre del archivo*/
                     $expD = explode('-', date('Y-m-d'));$expH = explode(':', date('H:i:s'));
                     $name = $expD[0].$expD[1].$expD[2].$expH[0].$expH[1].$expH[2];
                     $name = 'imp_'.$this->session->userdata('id').'_'.$name.'.'.$doc_type;
-                    
+
                     /* Carga el archivo para ser evaluado*/
                     if ($this->do_upload($name,$path,'csv|xls|xlsx',$max_size,$doc_type == true)){
                         //crea la sesion con la ruta del archivo, si ocurre un error eliminamos el archivo
                         $_SESSION['filename']= $path."/".$name;
-                        
+
                         //valida los encabezados de la primera fila
-                        if ($this->valida_encabezado('persona',$name,$path,$file)==FALSE){
+                        if ($this->valida_encabezado('menu',$name,$path,$file)==FALSE){
                             $this->session->set_flashdata('error','Los encabezados son incorrectos, revisa la imagen para ver un ejemplo.');                            
                             $error = 'valida_encabezado';
-                            $this->cancel_import('articulos');
+                            $this->cancel_import('menu');
                         }
-                        
+
                         //obtiene los datos
-                        if ($this->get_datos_articulos($name,$path,$file)==false){
+                        if ($this->get_datos_menu($name,$path,$file)==false){
                             $this->session->set_flashdata('error',"Ocurrió un error al obtener los datos del archivo excel"); 
-                            $error = 'get_datos_persona';
-                            $this->cancel_import('articulos');
+                            $error = 'get_datos_menu';
+                            $this->cancel_import('menu');
                         }
-                        
+
                         //valida los datos
-                        if ($this->valida_datos_articulos()==false){
+                        if ($this->valida_datos_menu()==false){
                             $this->session->set_flashdata('error',"Ocurrió un error al validar los datos archivo excel"); 
-                            $error = 'valida_datos_articulos';
-                            $this->cancel_import('articulos');
+                            $error = 'valida_datos_menu';
+                            $this->cancel_import('menu');
                         }
-                        
+
                         //ultimo control de errores
                         if ($error == ''){
-                            $this->presubmit_articulos();
-                            $this->data['view'] = 'importador/presubmit_articulos';
+                            //$this->presubmit_menu();
+                            $this->previo_importacion('menu');
+                            $this->data['view'] = 'importador/presubmit_menu';
                         }else{
-                            $this->data['view'] = 'importador/articulos';
+                            $this->previo_importacion('menu');
+                            $this->session->set_flashdata('error', 'Ocurrio un error al importar los datos del archivo.');
+                            $this->data['view'] = 'importador/menu';
                         }
-                        
-                        
+
+
                     }  else {
-                        $this->session->set_flashdata('error',"Ocurrió un error al subir el archivo para ser analizado"); 
-                        $this->data['view'] = 'importador/articulos';
-                        
+                            $this->session->set_flashdata('error',"Ocurrió un error al subir el archivo para ser analizado"); 
+                            $this->data['view'] = 'importador/menu';
+
                     }
                 }
-                break;
-
-            default:
-                $this->data['view'] = 'importador/articulos';
-                break;
-        } 
+        }
+                
         
+        $this->data['view'] = 'importador/menu';
         $this->load->view('tema/header',$this->data);
     }
     
@@ -408,7 +404,7 @@ class Importador extends CI_Controller {
             $config [ 'file_name' ]             =  $name;
 
             $this->load->library('upload' , $config );
-
+           
             if  (  !  $this ->upload ->do_upload ( 'el_importado' )) 
             { 
                     $this->session->set_flashdata('error',$this -> upload -> display_errors ());
@@ -465,53 +461,11 @@ class Importador extends CI_Controller {
                 
                 return true;
                 break;
-            case 'persona':
-                if (trim($objPHPExcel->getActiveSheet()->getCell("A1")->getCalculatedValue())!='id'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("B1")->getCalculatedValue())!='nombre'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("C1")->getCalculatedValue())!='apellido'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("D1")->getCalculatedValue())!=''){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("E1")->getCalculatedValue())!='skart_codEle3'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("F1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("G1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("H1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("I1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("J1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("K1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("L1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("M1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("N1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("O1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("P1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("Q1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("R1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("S1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("T1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("U1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("V1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("W1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("X1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("Y1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("Z1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("AA1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("AB1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("AC1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("AD1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("AE1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("AF1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("AG1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("AH1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("AI1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("AJ1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("AK1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("AL1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("AM1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("AN1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("AO1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("AP1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("AQ1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("AR1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("AS1")->getCalculatedValue())!='cantidad'){return false;}
-                if (trim($objPHPExcel->getActiveSheet()->getCell("AT1")->getCalculatedValue())!='cantidad'){return false;}
+            case 'menu':
+                if (trim($objPHPExcel->getActiveSheet()->getCell("A1")->getCalculatedValue())!='FECHA'){return false;}
+                if (trim($objPHPExcel->getActiveSheet()->getCell("B1")->getCalculatedValue())!='ENSALADA DEL DIA'){return false;}
+                if (trim($objPHPExcel->getActiveSheet()->getCell("C1")->getCalculatedValue())!='PLATO PRINCIPAL'){return false;}
+                if (trim($objPHPExcel->getActiveSheet()->getCell("D1")->getCalculatedValue())!='REFRIGERIO'){return false;}
                 
                
                 return true;
@@ -795,6 +749,116 @@ class Importador extends CI_Controller {
         }else{
             $this->data['result'] = $this->previo_importacion('articulos');
         }
+    }
+    
+    
+    //*********************
+    //FUNCIONES MENUS
+    function get_datos_menu($name,$path,$file){
+      
+      //creamos el objeto que debe leer el excel
+      $objReader = new PHPExcel_Reader_Excel2007();
+      $objPHPExcel = $objReader->load($path."/".$name);
+ 
+      //número de filas del archivo excel
+      $total_rows = $objPHPExcel->getActiveSheet()->getHighestRow();//ejemplo 1,2  
+      //numero de columnas
+      $total_cols = $objPHPExcel->getActiveSheet()->getHighestColumn();//ejemplo A,B
+      
+      
+      //recorre las filas
+      for($i = 2; $i <= $total_rows ; $i++){
+            //guardo los datos en la sesion
+            //$_SESSION['datos_excel'][$i-2]['FECHA']             = trim($objPHPExcel->getActiveSheet()->getCell('A'.$i)->getCalculatedValue()) ;
+
+            $cell = $objPHPExcel->getActiveSheet()->getCell('A'.$i);
+            if(PHPExcel_Shared_Date::isDateTime($cell)){
+                $FFF = PHPExcel_Shared_Date::ExcelToPHP($cell->getValue());
+                $_SESSION['datos_excel'][$i-2]['FECHA'] =  (string)date('d/m/Y',$FFF); 
+            }else{
+                $_SESSION['datos_excel'][$i-2]['FECHA'] =  $cell->getValue();
+            }
+            
+            $_SESSION['datos_excel'][$i-2]['ENSALADA DEL DIA']  = trim($objPHPExcel->getActiveSheet()->getCell('B'.$i)->getCalculatedValue()) ;
+            $_SESSION['datos_excel'][$i-2]['PLATO PRINCIPAL']   = trim($objPHPExcel->getActiveSheet()->getCell('C'.$i)->getCalculatedValue()) ;
+            $_SESSION['datos_excel'][$i-2]['REFRIGERIO']        = trim($objPHPExcel->getActiveSheet()->getCell('D'.$i)->getCalculatedValue()) ;
+            
+      }
+      return true;
+      
+    }
+    
+    function valida_datos_menu(){
+        //crea un array para guardar errores
+        $_SESSION['errores'] = array();
+        $_SESSION['errores']['gral'] = array();
+        $_SESSION['errores']['FECHA_length'] = array();
+        $_SESSION['errores']['FECHA_formato'] = array();
+        
+        for($i = 0; $i < count($_SESSION['datos_excel']); $i++){
+            
+            //validacion FECHA
+            if(strlen(trim($_SESSION['datos_excel'][$i]['FECHA'])) != 10 ){
+                array_push($_SESSION['errores']['FECHA_length'], $i);	
+                if(!in_array($i, $_SESSION['errores']['gral'])){
+                    array_push($_SESSION['errores']['gral'], $i);
+                }
+            }
+            //validacion FECHA
+            if(strpos(trim($_SESSION['datos_excel'][$i]['FECHA']),'/') === false ){
+                array_push($_SESSION['errores']['FECHA_formato'], $i);	
+                if(!in_array($i, $_SESSION['errores']['gral'])){
+                    array_push($_SESSION['errores']['gral'], $i);
+                }
+            }
+            //validacion ENSALADA DEL DIA
+            if(strlen(trim($_SESSION['datos_excel'][$i]['ENSALADA DEL DIA'])) == 0 ){
+                array_push($_SESSION['errores']['ENSALADA_length'], $i);	
+                if(!in_array($i, $_SESSION['errores']['gral'])){
+                    array_push($_SESSION['errores']['gral'], $i);
+                }
+            }
+            //validacion PLATO PRINCIPAL
+            if(strlen(trim($_SESSION['datos_excel'][$i]['PLATO PRINCIPAL'])) == 0 ){
+                array_push($_SESSION['errores']['PLATO_length'], $i);	
+                if(!in_array($i, $_SESSION['errores']['gral'])){
+                    array_push($_SESSION['errores']['gral'], $i);
+                }
+            }
+            
+            //validacion REFRIGERIO
+            if(strlen(trim($_SESSION['datos_excel'][$i]['REFRIGERIO'])) == 0 ){
+                array_push($_SESSION['errores']['REFRIGERIO_length'], $i);	
+                if(!in_array($i, $_SESSION['errores']['gral'])){
+                    array_push($_SESSION['errores']['gral'], $i);
+                }
+            }
+            
+        }
+        return true;
+    }
+    
+    function presubmit_menu(){
+//        $html = '';
+//        $this->data['result']= array();
+//       
+//        if (count($_SESSION['errores']['gral'])){
+//            foreach($_SESSION['errores']['gral'] as $gral){
+//                
+//                //Cantidad
+//                if(in_array($gral, $_SESSION['errores']['cantidad_length'])){
+//                    $html.= $this->create_update($gral,'text','cantidad','cantidad');
+//                }
+//                //stkart_codgen
+//                if(in_array($gral, $_SESSION['errores']['stkart_codgen_length'])){
+//                    $html.= $this->create_update($gral,'text','stkart_codgen','stkart_codgen');
+//                }
+//                
+//            }
+//            $this->data['html'] = $html;
+//        }else{
+//            $this->data['result'] = $this->previo_importacion('articulos');
+//        }
     }
     
     //*********************
@@ -1220,6 +1284,58 @@ class Importador extends CI_Controller {
                         );
                     return  $return;
             break;
+            case "menu":
+                    //verifica cuales son los registros distintos, iguales o nuevos en el archivo
+                    
+                    if (count($_SESSION['datos_excel'])){
+                        //cargar el modelo
+                        $this->load->model('menuPersonal_model', '', TRUE);
+                        $errorFecha = 0;
+                        foreach($_SESSION['datos_excel'] as $k=> $datos){
+                            
+                            if(strpos($datos['FECHA'],'/')===false){
+                                $errorFecha = 1;
+                            }else{
+                                $mi_fecha = explode("/",$datos['FECHA']);
+                                $FECHA_FORMATEADA = $mi_fecha[2]."-".$mi_fecha[1]."-".$mi_fecha[0];
+                                $mis_datos[$FECHA_FORMATEADA] = array( 
+                                    $datos['ENSALADA DEL DIA'],
+                                    $datos['PLATO PRINCIPAL'],
+                                    $datos['REFRIGERIO']) ;
+                            }
+                            
+                        }
+                        
+                        if($errorFecha == 0){
+                            foreach ($mis_datos as $su_fecha =>$descripciones){
+                               //clave es la fecha el valor son los menus
+                                foreach($descripciones as $desc){
+                                    $data = array(
+                                        'descripcion' => $desc,
+                                        'fecha_menu' => $su_fecha,
+                                        'estado'=>1,
+                                        'f_proceso' => date('Y-m-d h:i:s'),
+                                        'usuario_carga'=>$this->session->userdata('id')
+                                    );
+                                    if ($this->menuPersonal_model->add('menu_personal', $data)) {
+                                        //agregado con exito    
+                                    }else{
+                                        //$errores[] = $datos['nro_egm'];
+                                    }
+                                }
+                            }
+                            
+                            $this->session->set_flashdata('success', 'Menu importado con exito con éxito!');
+                            
+                        }else{
+                            $this->session->set_flashdata('error', 'Error: el formato de fecha es invalido. Verifique que el formato sea dd/mm/yyyy , si es asi utilice en excel la funcion TEXTO(xx,"dd/mm/yy") luego copie los valores.'); 
+                        }
+                    }else{
+                        //die()
+                    }
+                    
+//                    return  $return;
+            break;
             case "articulos_maquinas";
                 //verifica cuales son los registros distintos, iguales o nuevos en el archivo
                 if (count($_SESSION['datos_excel'])){
@@ -1478,6 +1594,10 @@ class Importador extends CI_Controller {
                 break;
             case "articulos_maquinas":
                 redirect(base_url().'index.php/Importador/articulos_maquinas/');
+
+                break;
+            case "menu":
+                redirect(base_url().'index.php/Importador/menu/');
 
                 break;
 

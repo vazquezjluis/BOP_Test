@@ -33,6 +33,8 @@ class Persona extends CI_Controller {
         $this->load->model('permisos_model', '', TRUE);
         $this->load->model('uniforme_model', '', TRUE);
         $this->load->model('estudio_model', '', TRUE);
+        $this->load->model('consola_model', '', TRUE);
+        $this->load->model('calendarioMenu_model', '', TRUE);
     }
 	
     function index(){
@@ -275,12 +277,15 @@ class Persona extends CI_Controller {
                 $this->data['url_img'] = $this->archivos_model->get('documentos','url',' funcionalidad = "persona" AND sector = 2 AND referencia = '.$this->data['result'][0]->id);
                 //obtengo las capacitaciones del empleado
                 $this->data['capacitacion'] = $this->capacitacion_model->getPersonaCapacitacion(0,0,' capacitacion_persona.idPersona = '.$this->data['result'][0]->id);
-                $this->data['licencia'] = $this->licencia_model->getPersonaLicencia(' licencia_persona.idPersona = '.$this->data['result'][0]->id);
+                //$this->data['licencia'] = $this->licencia_model->getPersonaLicencia(' licencia_persona.idPersona = '.$this->data['result'][0]->id);
+                $this->data['licencia'] = $this->persona_model->get_licencias($this->input->get('buscar'));
+                $this->data['licencia_comprobantes'] = $this->persona_model->get_licencia_comprobante($this->input->get('buscar'));
                 $this->data['premio'] = $this->premio_model->getPremioPersona('premio_persona.estado = 1 AND premio_persona.idPersona = '.$this->data['result'][0]->id);
                 $this->data['familiar'] = $this->familiar_model->getFamiliarPersona('familiar.estado = 1 AND familiar.idPersona = '.$this->data['result'][0]->id);
                 $this->data['desempeno'] = $this->desempeno_model->getDesempenoPersona('desempeno.estado = 1 AND desempeno.idPersona = '.$this->data['result'][0]->id);
                 $this->data['sansion'] = $this->persona_model->get_sanciones($this->input->get('buscar'));
                 $this->data['ausencia'] = $this->persona_model->get_ausencia($this->input->get('buscar'));
+                
                 $this->data['uniforme'] = $this->persona_model->get_uniforme(' uniforme_has_persona.idPersona = '.$this->input->get('buscar'));
                
                 $this->data['estudios'] = $this->estudio_model->getEstudioPersona(' estudio_persona.idPersona = '.$this->input->get('buscar').' AND estudio_persona.estado = 1');
@@ -307,6 +312,28 @@ class Persona extends CI_Controller {
 //        $this->load->view('tema/header', $this->data);
     }
     
+    public function guarda_estado_estudio(){
+        $data = array(
+            "estado_str"=>$_GET['estado_str']
+        );
+        if ($this->estudio_model->edit('estudio_persona', $data, 'idEstudio_persona', $_GET['idEstudioPersona']) == TRUE) {
+            $acciones = array(
+                    'usuario' => $this->session->userdata('id'),
+                    'accion_id' => 1,
+                    'accion' => 'Modifica el estado del estudio : '.$_GET['estado_str'],
+                    'modulo' => 2,
+                    'fecha_registro' => date('Y-m-d h:i:s')
+                );
+                
+                if ($this->consola_model->add('consola',$acciones) == TRUE){
+                    echo "status:ok";
+                }else{
+                    echo "Error:consola";
+                }
+        }
+    }
+
+
     public function autoCompletePersona(){
         
         if (isset($_GET['term'])){
@@ -326,28 +353,48 @@ class Persona extends CI_Controller {
 
     }
     
-    public function verificarLegajo(){
+    public function calendarioMenuEmpleado(){
         
         header('Access-Control-Allow-Origin: '.base_url());
         header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
         header('Access-Control-Max-Age: 1000');
         header('Access-Control-Allow-Headers: Content-Type');
         
-        $persona = $this->persona_model->get_persona(" WHERE legajo = ".$this->input->get('leg'));
-        $this->data['pendiente'] = $this->pedido_model->get('pedido','pedido.*,persona_str(pedido.persona) as persona, menu_str(pedido.idMenu) as menu',' pedido.estado = 1 and pedido.legajo = '.$this->input->get('leg'));
-        if (count($this->data['pendiente'])){
-            $pedido = "pendiente";
-        }else{
-            $pedido = '';
-        }
+        /* Obtengo la persona desde Lenox*/
+        $persona = $this->persona_model->get_persona(" WHERE legajo = ".$this->input->get('leg')," id,nombre, apellido");
+        /* Obtengo el calendario de menu de la persona con su legajo */
+        $calendarioMenu = $this->calendarioMenu_model->get_calendario (" legajo = ".$this->input->get('leg')." AND estado = 1 ");
+        
+        
         if (count($persona)){
-            $json = array('persona' => $persona[0]->id, 'nombre' => $persona[0]->apellido.' '.$persona[0]->nombre, 'pedido'=>$pedido);
-            echo json_encode($json);
+            if (count($calendarioMenu)){
+                foreach ($calendarioMenu as $k=> $cm){
+                    $json[$k]['idCalendarioMenu']   = $cm->idCalendarioMenu;
+                    $json[$k]['legajo']             = $persona[0]->legajo;
+                    $json[$k]['title']              = $cm->title;
+                    $json[$k]['descripcion']        = $cm->descripcion;
+                    $json[$k]['start']              = $cm->start;
+                    $json[$k]['color']              = $cm->color;
+                    $json[$k]['textColor']          = $cm->textColor;
+                    $json[$k]['end']                = $cm->end;
+                    $json[$k]['idMenu']             = $cm->idMenu;
+                    $json[$k]['nombre']             = $persona[0]->nombre;
+                    $json[$k]['apellido']           = $persona[0]->apellido;
+                    $json[$k]['idPersona']          = $persona[0]->id;
+                    
+                }
+            }else{
+                $json[0]['nombre']      = $persona[0]->nombre;
+                $json[0]['apellido']    = $persona[0]->apellido;
+                $json[0]['legajo']      = $persona[0]->legajo;
+                $json[0]['idPersona']   = $persona[0]->id;
+            }
+            
         }else{
-            $json = array('persona' => 'error', 'nombre' => 'Ingrese su legajo para realizar el pedido.');
-            echo json_encode($json);
+            $json[0]['nombre']      = 'error';
         }    
         
+        echo json_encode($json);
     }
 
 }
