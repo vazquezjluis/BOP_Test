@@ -33,7 +33,7 @@ class Desempeno_model extends CI_Model {
         
         $this->db->from('desempeno');
         $this->db->select('desempeno.*, '
-                . ' persona_str(desempeno.idPersona) as persona, usuario_str(desempeno.usuario) as usuario ');
+                . '  usuario_str(desempeno.usuario) as usuario ');
         if ($where !=''){
             $this->db->where('desempeno.estado = 1 AND '.$where);
         }else{

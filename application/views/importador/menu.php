@@ -1,5 +1,8 @@
 <div class="row-fluid" style="margin-top:0">
     <div class="span12">
+        <?php if (isset($_GET['error'])) {
+                    echo '<div class="alert alert-danger">'.$_GET['error'].'</div>';
+                } ?>
         <div class="widget-box">
             <div class="widget-title">
                 <span class="icon">
@@ -10,8 +13,10 @@
             <div class="widget-content nopadding">
                 <div class="span12 well">
                     <div class="span12"><h3>Importador de Menus</h3></div>
+                     
                     <div class="span8">
                         <h5>Requermientos</h5>
+                        <div class="alert alert-info"><strong>Atencion!</strong> Asegurate de que no existan menus cargados manualmente, Si existen el archivo no se importara.</div>
                         <p><span class="icon-chevron-right"></span> &nbsp;&nbsp;El archivo debe tener extencion .xlsx</p>
                         <p><span class="icon-chevron-right"></span>&nbsp;&nbsp; Debe respetar los encabezados como se muestra en la imagen partiendo de la celda "A1".</p>    
                        
@@ -32,13 +37,23 @@
                 
                 <form action="<?php echo current_url(); ?>" id="formArquivo" enctype="multipart/form-data" method="post" class="form-horizontal" >
                     
-                    
                     <div class="control-group">
                         <div class="controls">
                             <input  type="hidden" name="tipo" value="menu"/>
                             <input id="archivo" type="file" name="el_importado" required="required"/> (solo .xlsx)
                         </div>
                     </div>
+                    <div class="control-group">
+                        
+                            <label class="control-label"> Tipo dle Menu </label>
+                            <div class="controls">
+                                <select id="tipo_menu" name="tipo_menu" required="required">
+                                    <option value="externo">Externo (Proveedor)</option>
+                                    <option value="interno">Interno (Aperitivos del Bingo)</option>
+                                </select>
+                            </div>
+                    </div>
+                    
 
                     <div class="form-actions">
                         <div class="span12">

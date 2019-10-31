@@ -178,16 +178,22 @@ $config =
                                     'rules'=>'required|trim'
                                 ),
                                 
+//                                array(
+//                                    'field'=>'legajo',
+//                                    'label'=>'Legajo',
+//                                    'rules'=>'required|trim'
+//                                ),
+                                
                                 array(
                                     'field'=>'estado',
                                     'label'=>'Estado',
                                     'rules'=>'required|trim'
                                 ),
-                                array(
-                                    'field'=>'email',
-                                    'label'=>'Email',
-                                    'rules'=>'required|trim|valid_email'
-                                ),
+//                                array(
+//                                    'field'=>'email',
+//                                    'label'=>'Email',
+//                                    'rules'=>'required|trim|valid_email'
+//                                ),
                                 array(
                                     'field'=>'clave',
                                     'label'=>'Clave',

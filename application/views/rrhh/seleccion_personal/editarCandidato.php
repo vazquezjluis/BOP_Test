@@ -73,6 +73,23 @@
                     </div>
                     
                     <div class="control-group">
+                        <label  class="control-label">Sector <span class="required">*</span></label>
+                        <div class="controls">
+                            <?php if (isset($sector)) { ?>
+                            <select name="sector" id="sector">
+                                <?php 
+                                     foreach ($sector as $s){
+                                         ?>
+                                <option value="<?php echo $s->id; ?>" <?php if ($s->id == $result->sector ){ echo "selected";}?>><?php echo $s->descripcion; ?></option>
+                                <?php
+                                     }
+                                ?>
+                            </select>
+                            <?php } else { echo "error al obtener los sectores..." ;} ?>
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
                         <label for="descripcion" class="control-label">Descripcion<span class="required">*</span></label>
                         <div class="controls">
                             <textarea  id="descripcion" type="text" name="descripcion"><?php echo $result->descripcion; ?></textarea>   

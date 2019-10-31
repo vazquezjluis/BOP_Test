@@ -1,59 +1,66 @@
 
 <div class="container">
-      <div class="span12" style="margin-left:0px;">
-        <div class="span12" style="margin-left:0px;">
-            <h3>Pedidos pendientes</h3>
+      <div class="span12" style="margin-left:0px;margin-bottom: 2px;">
+        <div class="span10" style="margin-left:0px;margin-bottom: 2px;">
+            <h4>Pedidos pendientes</h4>
             <?php 
             if (isset($pendiente)){
+                ?>
+            <table  class="table table-bordered " style="background-color:white;">
+            <?php
                 foreach ($pendiente as $p){ ?>
                 
-                    <div id="pendiente_<?php echo $p->idPedido;?>" class="span12 alert alert-danger" style="margin-left:0px;" >
-                        
-                        <div class="span3" style="margin-left:0px;">
-                            <div style="width:50%;float: left;">
-                                <img style="border-radius:5px; width: 60px; height: 60px;" 
+                    
+                        <tr id="pendiente_<?php echo $p->idPedido;?>">
+                            
+                            <td>
+                                <img style="border-radius:5px; width: 50px; height: 50px;" 
                                      src="<?php echo base_url(); ?>index.php/persona/imagen?id=<?php echo $p->persona;?>"  
                                      id="imgSalida">
-                            </div>
-                            <div style="width:50%;float: left;"><?php echo $p->persona_str ;?></div>
-                        </div>
-                        <div class="span6">
-                            <b style="font-size:16px;"><?php echo strtoupper($p->menu.' - '.date('d/m/Y H:m:s',  strtotime($p->f_registro))); ?></b>
-                        </div>
-                        <div class="span2">
-                            <?php
-                            if($this->permission->checkPermission($this->session->userdata('permiso'),'ePedido')){ ?>
-                            <button style="float: right;" value="<?php echo $p->idPedido; ?>" onclick="btnListo(this.value)"  class="btn btn-danger btnListo"><i class="icon icon-ok"></i> Pedido listo</button>
-                            <?php } ?>
-                        </div>   
-                        
-                    </div>
+                            </td>
+                            
+                            <td><?php echo $p->persona_str ;?></td>
+                              
+                            <td><b style="font-size:16px;"><?php echo strtoupper($p->menu.'  '.$p->menuBingo.' - '.date('d/m/Y H:m:s',  strtotime($p->f_registro))); ?></b></td>
+                            
+                            <td>
+                                <?php
+                                if($this->permission->checkPermission($this->session->userdata('permiso'),'ePedido')){ ?>
+                                <button  value="<?php echo $p->idPedido; ?>" onclick="btnListo(this.value)"  class="btn btn-primary btnListo"><i class="icon icon-ok"></i> Pedido listo</button>
+                                <?php } ?>
+                            </td>
+                        </tr>
+                    
                 
-                <?php }
+                <?php } ?>
+            </table>
+                <?php
                     }
                 ?>
         </div>
         
-        <div class="span12" style="margin-left:0px;">
-            <h3>Pedidos Listos</h3>
+        <div class="span10" style="margin-left:0px;margin-bottom: 2px;">
+            <h4>Pedidos Listos</h4>
             
             <?php 
-            if (isset($listo)){
-                foreach ($listo as $l){ ?>
-                <div id="listo_<?php echo $l->idPedido;?>" class="span12 alert alert-success" style="margin-left:0px;">
+            if (isset($listo)){ ?>
+            <table class="table table-bordered" style="background-color:white">
+            <?php     foreach ($listo as $l){ ?>
                     
-                    <div class="span3" style="margin-left:0px;">
-                            <div style="width:50%;float: left;">
-                                <img style="border-radius:5px; width: 60px; height: 60px;" 
-                                     src="<?php echo base_url(); ?>index.php/persona/imagen?id=<?php echo $l->persona;?>"  
-                                     id="imgSalida">
-                            </div>
-                            <div style="width:50%;float: left;"><?php echo $l->persona_str ;?></div>
-                        </div>
-                        <div class="span6">
-                            <b style="font-size:16px;"><?php echo strtoupper($l->menu.' - '.date('d/m/Y H:m:s',  strtotime($l->f_registro))); ?></b>
-                        </div>
-                        <div class="span2">
+                    <tr id="listo_<?php echo $l->idPedido;?>">
+                        <td>
+                            <img style="border-radius:5px; width: 50px; height: 50px;" 
+                                 src="<?php echo base_url(); ?>index.php/persona/imagen?id=<?php echo $l->persona;?>"  
+                                 id="imgSalida">
+                        </td>
+                            
+                        <td><?php echo $l->persona_str ;?></td>
+                        
+                        <td>
+                            <b style="font-size:16px;"><?php echo strtoupper($l->menu.'  '.$l->menuBingo.' - '.date('d/m/Y H:m:s',  strtotime($l->f_registro))); ?></b>
+                        </td>
+                        
+                        <td>
                             <?php
                             if($this->permission->checkPermission($this->session->userdata('permiso'),'ePedido')){ ?>
                                 <div class="btn-group">
@@ -61,12 +68,16 @@
                                     <button  value="<?php echo $l->idPedido; ?>" onclick="btnEntregado(this.value)" class="btn btn-success btnEntregado"><i class="icon icon-ok"></i> Entregado</button>
                                 </div>
                             <?php } ?>
-                        </div>   
-                </div>
-                <?php }
+                        </td>   
+                    </tr>
+                   
+                <?php } ?>
+                     <tr id="nuevo_pedido_listo"></tr>
+                </table>
+            <?php    
             }
             ?>
-            <div id="nuevo_pedido_listo"></div>
+            
         </div>
       </div>
 </div>
@@ -90,7 +101,11 @@
 
 <script>
         
-        //setTimeout('document.location.reload()',10000);
+        setTimeout('document.location.reload()',60000);
+        //var f  =  new Date();
+        //console.log(f.getSeconds());
+        
+        
         function btnEntregado(val){
             let idPedido = val;
             $.ajax({
@@ -115,20 +130,19 @@
                     dataType: 'json',
                     success: function(data)
                     {
+                        
                         var html = 
-                        '<div id="listo_'+val+'" class="span12 alert alert-success" style="margin-left:0px;" >'+
-                            '<div class="span3" style="margin-left:0px;">'+
-                                '<div style="width:50%;float: left;">'+
-                                    '<img style="border-radius:5px; width: 60px; height: 60px;" '+
-                                         'src="<?php echo base_url(); ?>index.php/persona/imagen?id='+data[0].persona+'" '+ 
-                                         '>'+
-                                '</div>'+
-                                '<div style="width:50%;float: left;">'+data[0].persona_str+'</div>'+
-                            '</div>'+
-                            '<div class="span6">'+
-                                '<b style="font-size:16px;">'+data[0].menu+''+data[0].f_registro+'</b>'+
-                            '</div>'+
-                            '<div class="span2">';
+                        '<tr id="listo_'+val+'" >'+
+                            '<td>'+
+                                '<img style="border-radius:5px; width: 50px; height: 50px;" '+
+                                     'src="<?php echo base_url(); ?>index.php/persona/imagen?id='+data[0].persona+'" '+ 
+                                     '>'+
+                            '</td>'+
+                            '<td>'+data[0].persona_str+'</td>'+
+                            '<td>'+
+                                '<b style="font-size:16px;">'+data[0].menu+'  '+data[0].menuBingo+' - '+data[0].f_registro+'</b>'+
+                            '</td>'+
+                            '<td>';
                                 <?php
                                 if($this->permission->checkPermission($this->session->userdata('permiso'),'ePedido')){ ?>
                                     html+='<div class="btn-group">'+
@@ -136,9 +150,9 @@
                                         '<button  value="'+val+'" onclick="btnEntregado(this.value)"class="btn btn-success btnEntregado"><i class="icon icon-ok"></i> Entregado</button>'+
                                     '</div>'+
                                 <?php } ?>
-                            '</div>'+   
-                        '</div>'+
-                        '<div id="nuevo_pedido_listo"></div>';
+                            '</td>'+   
+                        '</tr>'+
+                        '<tr id="nuevo_pedido_listo"></tr>';
                         $("#nuevo_pedido_listo").replaceWith(html);
                         $("#pendiente_"+val).replaceWith('');
                     }

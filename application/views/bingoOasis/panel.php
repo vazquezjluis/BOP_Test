@@ -93,7 +93,7 @@
     </div>-->
 
 </div>
-
+<?php  if($this->permission->checkPermission($this->session->userdata('permiso'),'vRep_ticket')){ ?>
 <div class="row-fluid" style="margin-top: 0">
 
             <div class="span12">
@@ -119,6 +119,7 @@
                 </div>
             </div>
         </div>
+<?php } ?>
 <!--<div class="row-fluid" style="margin-top: 0">
 
             <div class="span12">

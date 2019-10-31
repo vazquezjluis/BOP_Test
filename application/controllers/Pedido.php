@@ -25,28 +25,88 @@ class Pedido extends CI_Controller {
         $this->load->model('menuPersonal_model', '', TRUE);
         $this->load->model('consola_model', '', TRUE);
         $this->load->model('archivos_model', '', TRUE);
+        $this->load->model('persona_model', '', TRUE);
+        $this->load->model('usuarios_model', '', TRUE);
+        $this->load->model('calendarioMenu_model', '', TRUE);
+        $this->load->model('fechalimiteprogramado_model', '', TRUE);
+        $this->load->model('valormenu_model', '', TRUE);
+        $this->load->model('parametroMenu_model', '', TRUE);
     }
 	
     function index(){
         $this->gestionar();
     }
     function monitor(){
-        $this->data['pendiente'] = $this->pedido_model->get('pedido','pedido.*, menu_str(pedido.idMenu) as menu',' pedido.estado = 1 AND !ISNULL(`idCalendarioMenu`)  AND !ISNULL(`idMenu`)');
+        $this->data['pendiente'] = $this->pedido_model->get('pedido','pedido.*, menu_str(pedido.idMenu) as menu,menu_str(pedido.idMenuBingo) as menuBingo ',' pedido.estado = 1 AND !ISNULL(`idCalendarioMenu`)  AND !ISNULL(`idMenu`)');
         
-        $this->data['listo'] = $this->pedido_model->get('pedido','pedido.*,usuario_str(pedido.usuario) as usr, menu_str(pedido.idMenu) as menu',' pedido.estado = 2');
+        $this->data['listo'] = $this->pedido_model->get('pedido','pedido.*,usuario_str(pedido.usuario) as usr, menu_str(pedido.idMenu) as menu, menu_str(pedido.idMenuBingo) as menuBingo',' pedido.estado = 2');
        
 	$this->data['view'] = 'gastronomia/monitor';
-       	$this->load->view('tema/monitor',$this->data);
+       	$this->load->view('tema/header',$this->data);
     }
     function pedidos(){
-         $this->data['custom_error'] = '';
-        $this->data['menu'] = $this->menuPersonal_model->get('menu_personal','menu_personal.*',' menu_personal.fecha_menu = "'.date('Y-m-d').'" AND menu_personal.estado = 1 ');
+        $this->data['custom_error'] = '';
+        //Obtiene el usuario
+        $this->data['usuario']  = $this->usuarios_model->getById($this->session->userdata('id'));
+        //Obtiene la persona asociada al usuario con el legajos del usuario
+        $this->data['persona']  = $this->persona_model->get_persona(' WHERE legajo ='.$this->data['usuario']->legajo);
+     
         
-                
-       
+        $this->data['menu']     = $this->menuPersonal_model->get('menu_personal','menu_personal.*',' menu_personal.fecha_menu = "'.date('Y-m-d').'" AND menu_personal.estado = 1 ');
+        $this->data['importe_externo'] = $this->valormenu_model->get('valormenu','importe_externo',' valormenu.estado != 0');
+        $this->data['calendario_menu'] = $this->calendarioMenuEmpleado($this->data['persona'][0]->legajo, $this->data['persona'][0]->nombre, $this->data['persona'][0]->apellido, $this->data['persona'][0]->id);
+        //$this->data['f_limite'] = $this->fechalimiteprogramado_model->get('fechalimiteprogramado','fecha',' fechalimiteprogramado.estado != 0');
+        $this->data['parametroMenu'] = $this->parametroMenu_model->get('parametro_menu','*',' parametro_menu.estado = 1 ');
+        
+        
 	$this->data['view'] = 'gastronomia/pedidos';
-       	$this->load->view('tema/monitor',$this->data);
+       	$this->load->view('tema/header',$this->data);
     }
+    function calendario_menu(){
+        $this->data['usuario']  = $this->usuarios_model->getById($this->session->userdata('id'));
+        $this->data['persona']  = $this->persona_model->get_persona(' WHERE legajo ='.$this->data['usuario']->legajo);
+        echo $this->calendarioMenuEmpleado($this->data['persona'][0]->legajo, $this->data['persona'][0]->nombre, $this->data['persona'][0]->apellido, $this->data['persona'][0]->id);
+    }
+    public function calendarioMenuEmpleado($legajo,$nombre,$apellido,$id_persona){
+        
+        header('Access-Control-Allow-Origin: '.base_url());
+        header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+        header('Access-Control-Max-Age: 1000');
+        header('Access-Control-Allow-Headers: Content-Type');
+        
+        /* Obtengo el calendario de menu de la persona con su legajo */
+        $calendarioMenu = $this->calendarioMenu_model->get_calendario (" legajo = ".$legajo." AND estado = 1 ");
+        
+            if (count($calendarioMenu)){
+                foreach ($calendarioMenu as $k=> $cm){
+                    $json[$k]['idCalendarioMenu']   = $cm->idCalendarioMenu;
+                    
+                    $json[$k]['title']              = $cm->title;
+                    $json[$k]['descripcion']        = $cm->descripcion;
+                    $json[$k]['start']              = $cm->start;
+                    $json[$k]['color']              = $cm->color;
+                    $json[$k]['textColor']          = $cm->textColor;
+                    $json[$k]['end']                = $cm->end;
+                    $json[$k]['idMenu']             = $cm->idMenu;
+                    $json[$k]['idMenuBingo']             = $cm->idMenuBingo;
+                    $json[$k]['nombre']      = $nombre;
+                    $json[$k]['apellido']    = $apellido;
+                    $json[$k]['legajo']      = $legajo;
+                    $json[$k]['idPersona']   = $id_persona;
+                    
+                }
+            }
+            else{
+                $json[0]['nombre']      = $nombre;
+                $json[0]['apellido']    = $apellido;
+                $json[0]['legajo']      = $legajo;
+                $json[0]['idPersona']   = $id_persona;
+            }
+            
+        
+        return json_encode($json);
+    }
+    
     function gestionar(){
         
         $this->load->library('pagination');
@@ -409,7 +469,7 @@ class Pedido extends CI_Controller {
           'f_listo' =>  date('Y-m-d h:i:s')
         );
         if($this->pedido_model->edit('pedido',$data,'idPedido',$id_pedido)){
-            $data = $this->pedido_model->get('pedido','pedido.*,usuario_str(pedido.usuario) as usr, menu_str(pedido.idMenu) as menu',' pedido.idPedido = '.$id_pedido); 
+            $data = $this->pedido_model->get('pedido','pedido.*,usuario_str(pedido.usuario) as usr, menu_str(pedido.idMenu) as menu,menu_str(pedido.idMenuBingo) as menuBingo',' pedido.idPedido = '.$id_pedido); 
             
             echo json_encode($data);
             //echo $data[0]->persona_str.' '.$data[0]->menu.' '.date('d/m/Y H:m:s',  strtotime($data[0]->f_listo));
@@ -418,7 +478,6 @@ class Pedido extends CI_Controller {
             echo "Error ##RRE44565 consulte con el administrador.";
         }
     }
-    
     public  function pedido_entregado(){
         $id_pedido = $_GET['val'];
         $data = array(
@@ -426,7 +485,7 @@ class Pedido extends CI_Controller {
           'f_listo' =>  date('Y-m-d h:i:s')
         );
         if($this->pedido_model->edit('pedido',$data,'idPedido',$id_pedido)){
-            $data = $this->pedido_model->get('pedido','pedido.*,usuario_str(pedido.usuario) as usr, menu_str(pedido.idMenu) as menu',' pedido.idPedido = '.$id_pedido); 
+            $data = $this->pedido_model->get('pedido','pedido.*,usuario_str(pedido.usuario) as usr, menu_str(pedido.idMenu) as menu, menu_str(pedido.idMenuBingo) as menuBingo',' pedido.idPedido = '.$id_pedido); 
             
             echo $data[0]->persona_str.' '.$data[0]->menu.' '.date('d/m/Y H:m:s',  strtotime($data[0]->f_listo));
             //$this->session->set_flashdata('success','Estudio eliminado!');  
@@ -443,7 +502,7 @@ class Pedido extends CI_Controller {
           'f_listo' =>  date('Y-m-d h:i:s')
         );
         if($this->pedido_model->edit('pedido',$data,'idPedido',$id_pedido)){
-            $data = $this->pedido_model->get('pedido','pedido.*,usuario_str(pedido.usuario) as usr, menu_str(pedido.idMenu) as menu',' pedido.idPedido = '.$id_pedido); 
+            $data = $this->pedido_model->get('pedido','pedido.*,usuario_str(pedido.usuario) as usr, menu_str(pedido.idMenu) as menu, menu_str(pedido.idMenuBingo) as menuBingo',' pedido.idPedido = '.$id_pedido); 
             
             echo $data[0]->persona_str.' '.$data[0]->menu.' '.date('d/m/Y H:m:s',  strtotime($data[0]->f_listo));
             //$this->session->set_flashdata('success','Estudio eliminado!');  

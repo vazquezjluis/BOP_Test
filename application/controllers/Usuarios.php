@@ -79,6 +79,7 @@ class Usuarios extends CI_Controller {
         } else
         {     
             $data = array(
+                    'legajo' => set_value('legajo'),
                     'nombre' => set_value('nombre'),
                     'estado' => set_value('estado'),
                     'usr' => set_value('usr'),
@@ -128,9 +129,10 @@ class Usuarios extends CI_Controller {
 
         $this->load->library('form_validation');    
         $this->data['custom_error'] = '';
+//        $this->form_validation->set_rules('legajo', 'Legajo', 'trim|required');
         $this->form_validation->set_rules('nombre', 'Nombre', 'trim|required');
         $this->form_validation->set_rules('usr', 'Usuario', 'trim|required');
-        $this->form_validation->set_rules('email', 'Email', 'trim|required');
+//        $this->form_validation->set_rules('email', 'Email', 'trim|required');
         $this->form_validation->set_rules('estado', 'Estado', 'trim|required');
         $this->form_validation->set_rules('permisos_id', 'Permiso', 'trim|required');
 
@@ -151,6 +153,7 @@ class Usuarios extends CI_Controller {
             if($clave != null){
 
                 $data = array(
+                        'legajo' => $this->input->post('legajo'),
                         'nombre' => $this->input->post('nombre'),
                         'usr' => $this->input->post('usr'),
                         'estado' => $this->input->post('estado'),
@@ -164,7 +167,7 @@ class Usuarios extends CI_Controller {
             else{
 
                 $data = array(
-                        'nombre' => $this->input->post('nombre'),
+                        'legajo' => $this->input->post('legajo'),
                         'estado' => $this->input->post('estado'),
                         'usr' => $this->input->post('usr'),
                         'email' => $this->input->post('email'),

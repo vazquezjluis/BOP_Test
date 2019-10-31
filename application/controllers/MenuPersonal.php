@@ -15,14 +15,18 @@ class MenuPersonal extends CI_Controller {
           redirect('bingoOasis/login');
         }
 
-//        if(!$this->permission->checkPermission($this->session->userdata('permiso'),'vPremios')){
-//          $this->session->set_flashdata('error','Usted no tiene permisos para configurar los premios del sistema.');
-//          redirect(base_url());
-//        }
+        if(!$this->permission->checkPermission($this->session->userdata('permiso'),'vMenu')){
+          $this->session->set_flashdata('error','Usted no tiene permisos .');
+          redirect(base_url());
+        }
 
         
         $this->load->model('menuPersonal_model', '', TRUE);
+        $this->load->model('valormenu_model', '', TRUE);
+        $this->load->model('fechalimiteprogramado_model', '', TRUE);
         $this->load->model('consola_model', '', TRUE);
+        $this->load->model('parametroMenu_model', '', TRUE);
+        $this->load->model('persona_model', '', TRUE);
     }
 	
     function index(){
@@ -30,9 +34,32 @@ class MenuPersonal extends CI_Controller {
     }
 
     function buscarMenu(){
-        $menu           = $this->menuPersonal_model->get('menu_personal','menu_personal.*',' menu_personal.fecha_menu = "'.$this->input->get('fecha').'" AND menu_personal.estado = 1 ');
+        $persona  = $this->persona_model->get_persona(' WHERE legajo ='.$_GET['legajo']);
+     
+        $jornada  = $this->persona_model->get_jornada($persona[0]->id );
+        $excluido = false;
+        $jornadas_excluidas =  array(32,54,95,99,39,15);//ID DE LA TABLA JORNADA DE LENOX
+        if (count($jornada)){
+            foreach ($jornada as $j) {
+                if($j->fecha == $_GET['fecha']){
+                  //verifico la jornada    
+                  if (in_array($j->id_jornada_generica, $jornadas_excluidas)){
+                      $excluido = true;
+                  }  
+                }
+            }
+            
+            if($excluido) {
+                $sql = ' menu_personal.fecha_menu = "'.$this->input->get('fecha').'" AND menu_personal.estado = 1 and tipo_menu = "interno" ';
+            }else {
+                $sql = ' menu_personal.fecha_menu = "'.$this->input->get('fecha').'" AND menu_personal.estado = 1 ';
+            }
+            $menu = $this->menuPersonal_model->get('menu_personal','menu_personal.*',$sql);
+   
+        }
         
-        if(count($menu)){
+        
+        if(isset($menu) and count($menu)){
             echo json_encode($menu);
         }else{ echo '0';}
         
@@ -66,6 +93,12 @@ class MenuPersonal extends CI_Controller {
         $this->pagination->initialize($config); 	
 
         $this->data['results'] = $this->menuPersonal_model->get('menu_personal','*',' menu_personal.estado != 0',$config['per_page'],$this->uri->segment(3));
+        $this->data['importe_externo'] = $this->valormenu_model->get('valormenu','importe_externo',' valormenu.estado != 0');
+        $this->data['fechaLimiteProgramado'] = $this->fechalimiteprogramado_model->get('fechalimiteprogramado','fecha',' fechalimiteprogramado.estado != 0');
+        $this->data['parametroMenu'] = $this->parametroMenu_model->get('parametro_menu','*',' parametro_menu.estado!=0 ');
+        
+//var_dump($this->data['importe_externo']);//die();
+       // $this->data['results'] = $this->menuPersonal_model->get_group_fecha('menu_personal', ' GROUP_CONCAT(CONCAT("#",descripcion,"(",if(ISNULL(tipo_menu),"externo",tipo_menu),")","@") SEPARATOR "  ") as descripcion, fecha_menu, tipo_menu, idMenuPersonal',' menu_personal.estado != 0',$config['per_page'],$this->uri->segment(3));
         
 	$this->data['view'] = 'gastronomia/menuPersonal/menuPersonal';
        	$this->load->view('tema/header',$this->data);
@@ -115,6 +148,8 @@ class MenuPersonal extends CI_Controller {
             $data = array(
                 'descripcion' => $this->input->post('descripcion'),
                 'fecha_menu' => $this->input->post('fecha_menu'),
+                'tipo_menu' => $this->input->post('tipo_menu'),
+                'valor' => $this->input->post('valor'),
                 'estado'=>1,
                 'f_proceso' => date('Y-m-d h:i:s'),
                 'usuario_carga'=>$this->session->userdata('id')
@@ -173,7 +208,9 @@ class MenuPersonal extends CI_Controller {
             
             $data = array(                    
                 'descripcion' => $this->input->post('descripcion'),
-                'fecha_menu' => $this->input->post('fecha_menu')
+                'fecha_menu' => $this->input->post('fecha_menu'),
+                'tipo_menu' => $this->input->post('tipo_menu'),
+                'valor' => $this->input->post('valor'),
             );
 
             if ($this->menuPersonal_model->edit('menu_personal', $data, 'idMenuPersonal', $this->input->post('idMenuPersonal')) == TRUE) {
@@ -189,7 +226,7 @@ class MenuPersonal extends CI_Controller {
                     redirect(base_url() . 'index.php/menuPersonal/editar/'.$this->input->post('idMenuPersonal'));
                 }
             } else {
-                $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error.</p></div>';
+                $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error al editar el menu.</p></div>';
             }
         }
 
@@ -218,6 +255,57 @@ class MenuPersonal extends CI_Controller {
         }         
         
                   
+        redirect(base_url().'index.php/menuPersonal/');
+    }
+    
+    function addParameters() {
+       
+        $error = '';
+        if (!isset($_POST['dia'])){
+            $error.= ' Debe selecconar al menos un dia de la semana. <br>';
+        }
+        if (!isset($_POST['tiempo'])){
+            $error.= ' Debe selecconar dia, semana o mes. <br>';
+        }
+        if (!isset($_POST['cantidad'])){
+            $error.= ' Debe completar el campos cantidad. <br>';
+        }
+        
+        if($error!=''){
+                $this->session->set_flashdata('error',$error);
+        }else {
+            $data = array(
+                'dia'       => implode(',',$this->input->post('dia')),
+                'tiempo'    => $this->input->post('tiempo'),
+                'cantidad'  => $this->input->post('cantidad'),
+                'estado'=>1,
+                'f_proceso' => date('Y-m-d h:i:s'),
+                'usuario_carga'=>$this->session->userdata('id')
+            );
+            
+            //primero edito todos los registros en estado 1 a cero
+            if($this->parametroMenu_model->edit('parametro_menu',array("estado"=>0),"1","1")){
+                if ($this->parametroMenu_model->add('parametro_menu',$data) == TRUE)
+                {   
+                    $acciones = array(
+                        'usuario' => $this->session->userdata('id'),
+                        'accion_id' => 1,
+                        'accion' => 'Agrega el parametro: '.implode(',', $this->input->post('dia')).' - '.$this->input->post('fecha_menu'),
+                        'modulo' => 1,
+                        'fecha_registro' => date('Y-m-d')
+                    );
+                    if ($this->consola_model->add('consola',$acciones) == TRUE){
+                        $this->session->set_flashdata('success','Parametros registrados con éxito!');
+                    }
+                }
+                else
+                {
+                    $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error al agregar la falla.</p></div>';
+                }
+            }
+            
+            
+        }      
         redirect(base_url().'index.php/menuPersonal/');
     }
     function eliminar(){
@@ -420,26 +508,6 @@ class MenuPersonal extends CI_Controller {
         return true;
     }//end function
     
-    public function eliminarEstudioPersona(){
-        $id =  $this->input->post('id');
-        $idPersona =  $this->input->post('idPersona');
-        if ($id == null){
-            $this->session->set_flashdata('error','Ocurrio un error al intentar eliminar el estudio.');            
-            redirect(base_url().'index.php/estudio/estudio/');
-        }
-        $data = array(
-          'estado' => 0
-        );
-        
-         if($this->estudio_model->edit('estudio_persona',$data,'idEstudio_persona',$id)){
-          $this->session->set_flashdata('success','Estudio eliminado!');  
-        }
-        else{
-          $this->session->set_flashdata('error','Error al eliminar el estudio!');  
-        }  
-//            $this->capacitacion_model->delete('capacitacion','idCapacitacion',$id);             
-            redirect(base_url().'index.php/persona/visualizar?buscar='.$idPersona);
-    }
     
 }
 

@@ -1,3 +1,20 @@
+
+<script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery.dataTables2019.min.js" ></script>
+<link href="<?php  echo base_url()?>assets/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
+<style>
+    .dataTables_filter{
+        width: 40%;
+        float: left;
+        top: 0px;
+    }
+    .dataTables_length select{ max-width: 60px;}
+    .dataTables_length{
+        width: 40%;
+        float: right;
+    }
+</style>
+
 <!--<a href="<?php // echo base_url();?>index.php/maquinas/agregar" class="btn btn-success">-->
 <?php // if($this->permission->checkPermission($this->session->userdata('permiso'),'cArticulos')){ ?>
   <a href="<?php  echo base_url()?>index.php/seleccion_personal/agregar" class="btn btn-success">
@@ -30,7 +47,7 @@ if(!$results){?>
 	
 
 ?>
-<div class="widget-box">
+<div     class="widget-box">
      <div class="widget-title">
         <span class="icon">
             <i class="icon-barcode"></i>
@@ -39,19 +56,22 @@ if(!$results){?>
         
      </div>
 
-<div class="widget-content nopadding">
-<div style="overflow-x:auto;">
-<table class="table table-bordered">
-    <tr>
-        <th>#</th>
-        <th>Nombre</th>
-        <th>Apellido</th>
-        <th>Domicilio</th>
-        <th>Contacto</th>
-        <th>Descripcion</th>
-        <th>Estado</th>
-        <th></th>
-    </tr>
+
+    <table class="display compact" style="width:98%" id="registros">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Domicilio</th>
+                <th>Contacto</th>
+                <th>Descripcion</th>
+                <th>Sector</th>
+                <th>Estado</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
         <?php 
         
         foreach ($results as $r) {
@@ -64,6 +84,7 @@ if(!$results){?>
                 echo '<td>'.$r->domicilio.'</td>';
                 echo '<td>'.$r->contacto.'</td>';
                 echo '<td>'.$r->descripcion.'</td>';
+                echo '<td>'.$sector[$r->sector].'</td>';
                 echo '<td>'.$r->meta_estado.' - '.date('d/m/Y h:i A',  strtotime($r->fecha_meta_estado)).'</td>';
                 
                 echo '<td> ';
@@ -80,13 +101,13 @@ if(!$results){?>
             echo '</tr>';
             
         }?> 
-    </tbody>
-</table>
-</div>
-</div>
+        </tbody>
+    </table>
+
+</
 </div>
 
-<?php   echo $this->pagination->create_links(); 
+<?php //   echo $this->pagination->create_links(); 
 }?>
 
 
@@ -117,6 +138,12 @@ $(document).ready(function(){
         $('#idCandidato').val(candidato);
 
     });
+    
+     $('#registros').dataTable( {
+//            "bInfo": false,
+//            "bLengthChange": false,
+//            "nTHead":false
+          } );
 
 });
 

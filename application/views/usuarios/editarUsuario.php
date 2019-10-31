@@ -12,6 +12,15 @@
                     echo '<div class="alert alert-danger">' . $custom_error . '</div>';
                 } ?>
                 <form action="<?php echo current_url(); ?>" id="formUsuario" method="post" class="form-horizontal" >
+                    
+                    <div class="control-group">
+                        
+                        <label for="legajo" class="control-label">Legajo<span class="required">*</span></label>
+                        <div class="controls">
+                            <input id="legajo" type="number" class="solo-numero" name="legajo"  value="<?php echo $result->legajo; ?>"  />
+                            <span id="info" style="color:red"></span>
+                        </div>
+                    </div>
                     <div class="control-group">
                         <?php echo form_hidden('idUsuarios',$result->idUsuarios) ?>
                         <label for="nombre" class="control-label">Nombre<span class="required">*</span></label>
@@ -21,7 +30,7 @@
                     </div>
 
                     <div class="control-group">
-                        <label for="email" class="control-label">Email<span class="required">*</span></label>
+                        <label for="email" class="control-label">Email<span class="required"></span></label>
                         <div class="controls">
                             <input id="email" type="text" name="email" value="<?php echo $result->email; ?>"  />
                         </div>
@@ -95,14 +104,18 @@
 <script type="text/javascript">
       $(document).ready(function(){
 
+            $('.solo-numero').keyup(function (){
+                        this.value = (this.value + '').replace(/[^0-9]/g, '');
+                      });
+
            $('#formUsuario').validate({
             rules : {
-                  nombre:{ required: true},
-                  email:{ required: true,email:true}
+                  nombre:{ required: true}
+                  //email:{ required: true,email:true}
             },
             messages: {
-                  nombre :{ required: 'Campo Requerido.'},
-                  email:{ required: 'Campo Requerido.',email:'Ingrese un correo electrónico válido.'}
+                  nombre :{ required: 'Campo Requerido.'}
+                  //email:{ required: 'Campo Requerido.',email:'Ingrese un correo electrónico válido.'}
 
             },
 
@@ -116,6 +129,33 @@
                 $(element).parents('.control-group').addClass('success');
             }
            });
+           
+            $("#legajo").keyup(function(){          
+                leer(this.value);          
+            });
+           
+           function leer(valor){
+                if (valor.length>2){
+                    $.ajax({
+                        type: "POST",
+                        url: "<?php echo base_url();?>index.php/persona/get_persona?leg="+valor,
+                        dataType: 'json',
+                        success: function(data)
+                        {
+
+                            if (data[0].nombre =="error"){
+                                $("#info").text('El empleado no existe.');
+                                $("#nombre").val(" ");
+                                $("#email").val(" ");
+                            }else{
+                                $("#nombre").val(data[0].nombre+" "+data[0].apellido);
+                                $("#email").val(data[0].email);
+                                $("#info").text('');
+                            }
+                        }
+                    });
+                }
+            }
 
       });
 </script>

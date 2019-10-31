@@ -2,12 +2,16 @@
 <div class="row-fluid" style="margin-top:0">
     <div class="span12">
         <div class="widget-box">
+            
+            
             <div class="widget-title">
                 <span class="icon">
                     <i class="icon-user"></i>
                 </span>
                 <h5>Datos del Menu</h5>
             </div>
+            
+            
             <div class="widget-content nopadding">
                 <?php if ($custom_error != '') {
                     echo '<div class="alert alert-danger">'.$custom_error.'</div>';
@@ -28,6 +32,24 @@
                             <input name="fecha_menu" type="date" id="fecha_menu"   required="required">
                         </div>
                     </div>
+                    
+
+                    <div class="control-group">
+                        <label  class="control-label">Tipo de Menu<span class="required">*</span></label>
+                        <div class="controls">
+                            <select  name="tipo_menu" id="tipo_menu"  required="required">
+                                <option value="externo">Externo (Proveedor)</option>
+                                <option value="interno">Interno (Refrigerios del Bingo)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="valor" class="control-label">Valor $</label>
+                        <div class="controls">
+                            <input name="valor" type="number" id="valor" value="" />
+                        </div> 
+                    </div> 
                     
                     <div class="form-actions">
                         <div class="span12">

@@ -252,7 +252,11 @@ if (isset($result)){
                                 <td>".$c->f_fin."</td> 
                                 <td>".$c->capacitador."</td> 
                                 <td>".$c->institucionStr."</td> 
-                                <td></td> 
+                                <td>
+                                    <a href='#modal-eliminarCapacitacionPersona' class='btn btn-danger tip-top ' 
+                                    role='button' data-toggle='modal' capacitacionPersona='".$c->idCapacitacionPersona."'  
+                                    title='Eliminar capacitacion'><i class='icon-remove icon-white'></i></a>                                
+                                </td> 
                            </tr>";
                     } ?>
                 </table>
@@ -626,6 +630,25 @@ if (isset($result)){
   </form>
 </div>
 
+<!-- Modal capacitacion persona-->
+<div id="modal-eliminarCapacitacionPersona" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <form action="<?php echo base_url() ?>index.php/capacitacion/eliminarCapacitacionPersona" method="post" >
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h5 id="myModalLabel">Eliminar Capacitacion</h5>
+  </div>
+  <div class="modal-body">
+    <input type="hidden" id="idCapacitacionPersona" name="id" value="" >
+    <input type="hidden"  name="idPersona" value="<?php if (isset($_GET['buscar'])) {echo $_GET['buscar'];}?>" >
+    <h5 style="text-align: center">Realmente desea eliminar esta capacitacion?</h5>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+    <button class="btn btn-danger">Eliminar</button>
+  </div>
+  </form>
+</div>
+
 <!-- Modal eliminar desempeño--->
 <div id="modal-eliminarDesempeno" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <form action="<?php echo base_url() ?>index.php/desempeno/eliminar" method="post" >
@@ -827,6 +850,8 @@ $(document).ready(function(){
             var licencia = $(this).attr('idLicencia');
             $('#licencia').val(licencia);
             
+            var capacitacion = $(this).attr('capacitacionPersona');
+            $('#idCapacitacionPersona').val(capacitacion);
             var familiar = $(this).attr('familiar');
             $('#idFamiliar').val(familiar);
             

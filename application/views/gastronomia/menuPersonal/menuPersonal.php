@@ -1,10 +1,91 @@
 <?php  if ($this->permission->checkPermission($this->session->userdata('permiso'),'cMenu')){
 //    if (in_array(date("w"),array(0,6))){?>
-        <a href="<?php echo base_url();?>index.php/menuPersonal/agregar" class="btn btn-success"><i class="icon-plus icon-white"></i> Agregar nuevo Menu</a>
-        <a href="#" class="pull-right" title="Ver eemplo de archivo">&nbsp;&nbsp;&nbsp;<i class="icon-info-sign"></i></a>
+    <div class="span12">
+        <div class="span3">
+               <a href="<?php echo base_url();?>index.php/menuPersonal/agregar" class="btn btn-success"><i class="icon-plus icon-white"></i> Agregar nuevo Menu</a>
+        </div>
+        <div class="span3">    
+            <a href="#modal-valor" role="button" data-toggle="modal" class="btn btn"> Cambiar valores del menu del proveedor $ <?php if (count($importe_externo)) {echo $importe_externo[0]->importe_externo;}else{ echo "-";}?></a>            
+        </div>
+        
         <?php  if ($this->permission->checkPermission($this->session->userdata('permiso'),'vImporMenu')){
 //    if (in_array(date("w"),array(0,6))){?>
+        <div class="span3"> 
             <a href="<?php echo base_url();?>index.php/importador/menu" class="btn btn-primary pull-right"><i class="icon-plus icon-white"></i> Importar Excel </a>
+        </div>
+    </div>
+<div class="span12 " style="margin: 1% 0% 1% 0%;">
+    <?php 
+    
+    $dia        = array();
+    $cantidad   = 0;
+    $tiempo     = '';
+    if (isset($parametroMenu)){
+        $dia        = explode(',',$parametroMenu[0]->dia);
+        $cantidad   = $parametroMenu[0]->cantidad;
+        $tiempo     = $parametroMenu[0]->tiempo;
+    }
+    
+    
+    ?>
+    <form action="<?php echo base_url() ?>index.php/menuPersonal/addParameters" method="post">
+        
+    
+    <div class="span12 well">
+        
+        <div class="span2">
+            <label><input type="checkbox" name="dia[]" value="lu" <?php if(in_array('lu', $dia)){ echo "checked";}?>    style="margin-top: 0px;"> Lunes</label>
+            <label><input type="checkbox" name="dia[]" value="ma" <?php if(in_array('ma', $dia)){ echo "checked";}?>   style="margin-top: 0px;"> Martes</label>
+            <label><input type="checkbox" name="dia[]" value="mi" <?php if(in_array('mi', $dia)){ echo "checked";}?>     style="margin-top: 0px;"> Miercoles</label>
+            <label><input type="checkbox" name="dia[]" value="ju" <?php if(in_array('ju', $dia)){ echo "checked";}?>   style="margin-top: 0px;"> Jueves</label>
+            <label><input type="checkbox" name="dia[]" value="vi" <?php if(in_array('vi', $dia)){ echo "checked";}?>  style="margin-top: 0px;"> Viernes</label>
+        </div>    
+        <div class="span2" style="margin-left:0px">
+            <label><input type="checkbox" name="dia[]" value="sa" <?php if(in_array('sa', $dia)){ echo "checked";}?> style="margin-top: 0px;"> Sabado</label>
+            <label><input type="checkbox" name="dia[]" value="do" <?php if(in_array('do', $dia)){ echo "checked";}?>  style="margin-top: 0px;"> Domingo</label>
+        </div>
+        
+        <div class="span6" style="margin-left:0px">
+            <div class="form-control">
+                <div class="span12">
+                    <div class="span3">
+                        Cantidad
+                        <input type="number" style="max-width: 60px;"id="cantidad" value="<?php echo $cantidad;?>" required="required"name="cantidad" />
+                    </div>
+
+                    <div class="span1">
+                        <input type="radio" <?php if($tiempo == "dia"){ echo "checked";}?> style="margin-top: 0px;" name="tiempo" value="dia" id="dias">Dias
+                    </div>
+                    <div class="span1">
+                        <input type="radio" <?php if($tiempo == "semana"){ echo "checked";}?> style="margin-top: 0px;" name="tiempo" value="semana" id="semana">Sem.
+                    </div>
+                    <div class="span1">
+                        <input type="radio" <?php if($tiempo == "mes"){ echo "checked";}?> style="margin-top: 0px;" name="tiempo" value="mes" id="meses">Meses                    
+                    </div>    
+                </div>
+                <div class="span12" style="margin-left: 0px;">
+                    <hr>
+                </div>
+                <div class="span8" style="margin-left: 0px;">
+                    <button  class="btn btn-default">Guardar parametros</button>
+                    <?php // echo " Hoy ".date_format(new DateTime(), date('d/m/Y'));?>
+<!--                    <p>
+                        <span class="icon-arrow-right">
+                        Cantidad de dias, semanas o meses que el empleado puede programar su plato,
+                        a partir del </span>
+                    </p>-->
+                    
+                </div>
+            </div>
+            
+        </div>
+        
+            <!--<a href="#modal-fechaLimite" role="button" data-toggle="modal" class="btn btn"> Fecha límite para programar el menu <?php if (count($fechaLimiteProgramado)) {echo  date('d/m/Y',strtotime($fechaLimiteProgramado[0]->fecha));}else{ echo "-";}?></a>-->
+    </div>
+    
+    </form>
+</div>
+
     <?php // }else{
         }
         ?>
@@ -12,6 +93,7 @@
     <?php    
 //    }
 }
+
 if(!$results){?>
 
         <div class="widget-box">
@@ -30,7 +112,8 @@ if(!$results){?>
                         <th>#</th>
                         <th>Menu</th>
                         <th>Fecha del menu</th>
-                        <th>Estado</th>
+                        <th>Tipo</th>
+                        <!--<th>Estado</th>-->
                         <th></th>
                     </tr>
                 </thead>
@@ -65,7 +148,8 @@ if(!$results){?>
             <th>#</th>
             <th>Menu</th>
             <th>Fecha del menu</th>
-            <th>Estado</th>
+            <th>Tipo</th>
+            <th>Valor</th>
             <th></th>
         </tr>
     </thead>
@@ -78,7 +162,17 @@ if(!$results){?>
             echo '<td>'.$r->idMenuPersonal.'</td>';
             echo '<td>'.$r->descripcion.'</td>';
             echo '<td>'.date('d/m/Y',strtotime($r->fecha_menu)).'</td>';
-            echo '<td>'.$estado.'</td>';
+            if ($r->tipo_menu == 'externo'){$color_tipo = 'style="color:blue;"';}else{$color_tipo ='style="color:orange;"';}
+            echo '<td '.$color_tipo.'><b>'.$r->tipo_menu.'</b></td>';
+            if ($r->tipo_menu == "externo"){
+                if (count($importe_externo)) {
+                    echo '<td>$ '.$importe_externo[0]->importe_externo.'</td>';}
+                else{ echo '<td></td>';}
+                
+            }else{
+                echo '<td>$ '.$r->valor.'</td>';
+            }
+            
             echo '<td>';
             //if ($this->permission->checkPermission($this->session->userdata('permiso'),'eMenu')){
               //  if ($r->estado == 1){
@@ -87,10 +181,10 @@ if(!$results){?>
                   //  echo '<a href="#modal-activar"role="button" data-toggle="modal" menu="'.$r->idMenuPersonal.'"  class="btn tip-top" title="Activar"><i class="icon-ok icon-white"></i></a>';
                // }
             //}    
-            echo '&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;';
-            //if ($this->permission->checkPermission($this->session->userdata('permiso'),'eMenu')){
-              //  echo '<a href="'.base_url().'index.php/menuPersonal/editar/'.$r->idMenuPersonal.'" class="btn btn-info tip-top" title="Editar Permiso"><i class="icon-pencil icon-white"></i></a>';
-           // }
+            echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+            if ($this->permission->checkPermission($this->session->userdata('permiso'),'eMenu')){
+                echo '<a href="'.base_url().'index.php/menuPersonal/editar/'.$r->idMenuPersonal.'" class="btn btn-info tip-top" title="Editar Permiso"><i class="icon-pencil icon-white"></i></a>';
+            }
             if ($this->permission->checkPermission($this->session->userdata('permiso'),'dMenu')){
                 echo '<a href="#modal-eliminar" role="button" data-toggle="modal" menu="'.$r->idMenuPersonal.'" class="btn btn-danger tip-top" title="Eliminar Menu"><i class="icon-trash icon-white"></i></a>';
             }
@@ -123,6 +217,60 @@ if(!$results){?>
   <div class="modal-footer">
     <button class="btn" data-dismiss="modal" aria-hidden="true">Cancelar</button>
     <button class="btn btn-info">Desactivar</button>
+  </div>
+  </form>
+</div>
+
+
+<div id="modal-valor" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <form action="<?php echo base_url() ?>index.php/valorMenu/agregar" method="post" class="form-horizontal" >
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h5 id="myModalLabel">Modificar el valor del menu</h5>
+  </div>
+  <div class="modal-body">
+      <div class="alert alert-info"> Este valor comienza a ser vigente a partir de ahora, los platos ya pedidos conservan su costo. </div>
+    <div class="control-group">
+        <label for="valor" class="control-label">Valor general para el menu Externo<span class="required">$</span></label>
+        <div class="controls">
+            <input id="importe_externo" type="number" name="importe_externo" value="" required="required" placeholder="<?php if (count($importe_externo)) {echo "Valor actual $".$importe_externo[0]->importe_externo;}else{ echo " ingrese el valor ";}?>" />
+        </div>
+        <!--<label for="valor" class="control-label">Menu externo<span class="required">$</span></label>-->
+        <div class="controls">
+            <input id="importe_interno" type="hidden" name="importe_interno" value="0" />
+        </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+    <button class="btn btn-info">Guardar</button>
+  </div>
+  </form>
+</div>
+
+<div id="modal-fechaLimite" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <form action="<?php echo base_url() ?>index.php/fechaLimiteProgramado/agregar" method="post" class="form-horizontal" >
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h5 id="myModalLabel">Modificar el valor de la fecha Limite de programacion del menu</h5>
+  </div>
+  <div class="modal-body">
+      <div class="alert alert-info">Esta fecha es el límite en el que los empleados pueden programar su menu.<br> 
+          Si tu pones 30/09/2019 entonces el día 01/10/2019 el empleado no podrá programar su plato</div>
+    <div class="control-group">
+        <label for="valor" class="control-label">Nueva fecha límite<span class="required">*</span></label>
+        <div class="controls">
+            <input id="fecha_limite" type="date" name="fecha_limite" value="" required="required"  />
+        </div>
+        <!--<label for="valor" class="control-label">Menu externo<span class="required">$</span></label>-->
+        <div class="controls">
+            <input id="importe_interno" type="hidden" name="importe_interno" value="0" />
+        </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+    <button class="btn btn-info">Guardar</button>
   </div>
   </form>
 </div>

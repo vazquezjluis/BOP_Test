@@ -41,7 +41,7 @@ class Persona_model extends CI_Model {
                 INNER JOIN CLIENTES clie ON clie.id = aus.id_cliente
             WHERE
             aus.id_cliente = '.$persona.'
-            AND nov.id IN (6,7,18)'; 
+            AND nov.id IN (25,7,18)'; 
         
         if ($mes_actual) {
             $sql.=' AND MONTH(aus.fecha) = MONTH(SYSDATETIME()) ';
@@ -144,7 +144,7 @@ class Persona_model extends CI_Model {
     }
   
     
-   function get_uniforme($where=''){
+    function get_uniforme($where=''){
         $this->db->from('uniforme_has_persona');
         $this->db->select('uniforme_has_persona.*,usuario_str(uniforme_has_persona.usuario) as usuario');
         if ($where !=''){
@@ -167,7 +167,8 @@ class Persona_model extends CI_Model {
         $persona_dato = $this->get_persona(' WHERE id= '.$persona);
         
     }
-            function get_imagen($id){
+    
+    function get_imagen($id){
         $bd_lenox =  $this->load->database('lenox',TRUE);
         /* Execute the query. */  
         $stmt = $bd_lenox->query('SELECT imagen FROM CLIENTES WHERE id = '.$id);  
@@ -195,8 +196,6 @@ class Persona_model extends CI_Model {
         return $result;
     }
 
-   
-    
     function getSector($table,$fields){
         
         $this->db->select($fields);
@@ -205,6 +204,21 @@ class Persona_model extends CI_Model {
         $query = $this->db->get();
         return $query->result();;
     }
+    
+    function get_jornada($persona){
+        $bd_lenox =  $this->load->database('lenox',TRUE);
+        
+        $sql='select TOP 40* from CALENDARIOS_CLIENTES
+                where id_cliente= '.$persona.'
+                order by fecha desc'; 
+        
+        $query = $bd_lenox->query($sql);
+                
+        $sansion_info =  $query->result();
+        
+        return $sansion_info;
+    }
+    
     function getActive($table,$fields){
         
         $this->db->select($fields);

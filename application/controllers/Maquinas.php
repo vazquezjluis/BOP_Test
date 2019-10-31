@@ -211,9 +211,6 @@ class Maquinas extends CI_Controller {
                 'cant_lineas' => $cant_lineas
 //                'tipo_juego' => $tipo
             );
-            echo "<pre>";
-            var_dump($_POST);
-            echo "</pre>";
             if ($this->maquinas_model->edit('maquinas', $data, 'idMaquina', $this->input->post('idMaquina')) == TRUE) {
                 $acciones = array(
                         'usuario' => $this->session->userdata('id'),

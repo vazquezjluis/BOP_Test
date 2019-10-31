@@ -27,7 +27,7 @@ class Importador extends CI_Controller {
 
 //        $this->load->model('laboratorio_model', '', TRUE);
 //        $this->load->model('consola_model', '', TRUE);
-//        $this->load->model('usuarios_model', '', TRUE);
+        $this->load->model('menupersonal_model', '', TRUE);
     }
 
     function maquinas(){
@@ -309,6 +309,9 @@ class Importador extends CI_Controller {
     function menu(){
         $_SESSION['importacion_activa'] = 'menu';
         $tipo =$this->input->post('tipo');
+        $tipo_menu =$this->input->post('tipo_menu');
+        
+        $this->data['custom_error'] = '';
         if(isset($tipo) and  $tipo =='menu'){
                 //para evitar la recarga de la pagina
                 if (isset($_SESSION['filename'])){
@@ -331,9 +334,12 @@ class Importador extends CI_Controller {
                 if($doc_size > (1024  * $max_size)){
                     $error .= 'El archivo no puede tener mas de 30 MB. \n';
                 }
+                
+                
+                
 
                 if ($error!=''){
-                    $this->session->set_flashdata('error',$error);  
+                    $this->data['custom_error'] = $error;  
                 }else{
 
                     /* esta variable almacena la ruta del documento */
@@ -351,23 +357,23 @@ class Importador extends CI_Controller {
 
                         //valida los encabezados de la primera fila
                         if ($this->valida_encabezado('menu',$name,$path,$file)==FALSE){
-                            $this->session->set_flashdata('error','Los encabezados son incorrectos, revisa la imagen para ver un ejemplo.');                            
+                            $this->data['custom_error'] = 'Los encabezados son incorrectos, revisa la imagen para ver un ejemplo.';                            
                             $error = 'valida_encabezado';
-                            $this->cancel_import('menu');
+                            $this->cancel_import('menu',$this->data['custom_error']);
                         }
 
                         //obtiene los datos
-                        if ($this->get_datos_menu($name,$path,$file)==false){
-                            $this->session->set_flashdata('error',"Ocurrió un error al obtener los datos del archivo excel"); 
+                        if ($this->get_datos_menu($name,$path,$file,$tipo_menu)==false){
+                            $this->data['custom_error'] = "Ocurrió un error al obtener los datos del archivo excel, recuerde que no deben existir menus cargados manualmente en las fechas que registra el archivo."; 
                             $error = 'get_datos_menu';
-                            $this->cancel_import('menu');
+                            $this->cancel_import('menu',$this->data['custom_error']);
                         }
 
                         //valida los datos
                         if ($this->valida_datos_menu()==false){
-                            $this->session->set_flashdata('error',"Ocurrió un error al validar los datos archivo excel"); 
+                            $this->data['custom_error'] = "Ocurrió un error al validar los datos archivo excel , recuerde que no deben existir menus cargados manualmente en las fechas que registra el archivo."; 
                             $error = 'valida_datos_menu';
-                            $this->cancel_import('menu');
+                            $this->cancel_import('menu',$this->data['custom_error']);
                         }
 
                         //ultimo control de errores
@@ -377,13 +383,13 @@ class Importador extends CI_Controller {
                             $this->data['view'] = 'importador/presubmit_menu';
                         }else{
                             $this->previo_importacion('menu');
-                            $this->session->set_flashdata('error', 'Ocurrio un error al importar los datos del archivo.');
+                            $this->data['custom_error'] = 'Ocurrio un error al importar los datos del archivo.';
                             $this->data['view'] = 'importador/menu';
                         }
 
 
                     }  else {
-                            $this->session->set_flashdata('error',"Ocurrió un error al subir el archivo para ser analizado"); 
+                            $this->data['custom_error'] = "Ocurrió un error al subir el archivo para ser analizado"; 
                             $this->data['view'] = 'importador/menu';
 
                     }
@@ -754,7 +760,7 @@ class Importador extends CI_Controller {
     
     //*********************
     //FUNCIONES MENUS
-    function get_datos_menu($name,$path,$file){
+    function get_datos_menu($name,$path,$file,$tipo_menu){
       
       //creamos el objeto que debe leer el excel
       $objReader = new PHPExcel_Reader_Excel2007();
@@ -772,16 +778,23 @@ class Importador extends CI_Controller {
             //$_SESSION['datos_excel'][$i-2]['FECHA']             = trim($objPHPExcel->getActiveSheet()->getCell('A'.$i)->getCalculatedValue()) ;
 
             $cell = $objPHPExcel->getActiveSheet()->getCell('A'.$i);
+            
+            
+            // Si el valor es un dateTime entonces trasnforma la fecha 
             if(PHPExcel_Shared_Date::isDateTime($cell)){
-                $FFF = PHPExcel_Shared_Date::ExcelToPHP($cell->getValue());
-                $_SESSION['datos_excel'][$i-2]['FECHA'] =  (string)date('d/m/Y',$FFF); 
+                //$FFF = PHPExcel_Shared_Date::ExcelToPHP($cell->getValue());
+                $stringDate= PHPExcel_Style_NumberFormat::toFormattedString($cell->getValue(), 'dd/mm/YYYY');
+                 
+                $_SESSION['datos_excel'][$i-2]['FECHA'] =  (string)$stringDate; 
             }else{
-                $_SESSION['datos_excel'][$i-2]['FECHA'] =  $cell->getValue();
+//                $_SESSION['datos_excel'][$i-2]['FECHA'] =  $cell->getValue();
+                return false;//El archivo no admite la carga de otros formatos que no sean fecha 
             }
             
             $_SESSION['datos_excel'][$i-2]['ENSALADA DEL DIA']  = trim($objPHPExcel->getActiveSheet()->getCell('B'.$i)->getCalculatedValue()) ;
             $_SESSION['datos_excel'][$i-2]['PLATO PRINCIPAL']   = trim($objPHPExcel->getActiveSheet()->getCell('C'.$i)->getCalculatedValue()) ;
             $_SESSION['datos_excel'][$i-2]['REFRIGERIO']        = trim($objPHPExcel->getActiveSheet()->getCell('D'.$i)->getCalculatedValue()) ;
+            $_SESSION['datos_excel'][$i-2]['TIPO_MENU']        = $tipo_menu ;
             
       }
       return true;
@@ -797,6 +810,8 @@ class Importador extends CI_Controller {
         
         for($i = 0; $i < count($_SESSION['datos_excel']); $i++){
             
+            $fecha[] = trim($_SESSION['datos_excel'][$i]['FECHA']);
+            $TIPOMenu = trim($_SESSION['datos_excel'][$i]['TIPO_MENU']);
             //validacion FECHA
             if(strlen(trim($_SESSION['datos_excel'][$i]['FECHA'])) != 10 ){
                 array_push($_SESSION['errores']['FECHA_length'], $i);	
@@ -835,7 +850,25 @@ class Importador extends CI_Controller {
             }
             
         }
-        return true;
+        
+        
+        // Si el sistema tiene menus cargados manualmente no permite la importacion
+        foreach ($fecha as $f){
+            $format = explode('/', $f);
+            $dateFormat[] =$format[2].'-'.$format[1].'-'.$format[0];            
+        }
+        $DATEString ='';
+        foreach($dateFormat as $date){
+            $DATEString .= ",'".$date."'";
+        }
+        $getManual = $this->menupersonal_model->getMenuManual(" fecha_menu IN (".substr($DATEString, 1).")  AND tipo_menu = '".$TIPOMenu."' and estado = 1 ");
+        
+        if (count($getManual)){
+            return false;
+        }else{
+            return true;
+        }
+        
     }
     
     function presubmit_menu(){
@@ -1297,11 +1330,13 @@ class Importador extends CI_Controller {
                                 $errorFecha = 1;
                             }else{
                                 $mi_fecha = explode("/",$datos['FECHA']);
+                                $TIPOMenu = $datos['TIPO_MENU'];
                                 $FECHA_FORMATEADA = $mi_fecha[2]."-".$mi_fecha[1]."-".$mi_fecha[0];
                                 $mis_datos[$FECHA_FORMATEADA] = array( 
                                     $datos['ENSALADA DEL DIA'],
                                     $datos['PLATO PRINCIPAL'],
-                                    $datos['REFRIGERIO']) ;
+                                    $datos['REFRIGERIO']
+                                    ) ;
                             }
                             
                         }
@@ -1315,8 +1350,12 @@ class Importador extends CI_Controller {
                                         'fecha_menu' => $su_fecha,
                                         'estado'=>1,
                                         'f_proceso' => date('Y-m-d h:i:s'),
+                                        'tipo_menu' => $TIPOMenu,
                                         'usuario_carga'=>$this->session->userdata('id')
                                     );
+                                    //Antes de agregar virifico la fecha y obtengo los platos de esa fecha
+                                    //recorro los platos de esa fecha
+                                    
                                     if ($this->menuPersonal_model->add('menu_personal', $data)) {
                                         //agregado con exito    
                                     }else{
@@ -1325,7 +1364,7 @@ class Importador extends CI_Controller {
                                 }
                             }
                             
-                            $this->session->set_flashdata('success', 'Menu importado con exito con éxito!');
+                            $this->session->set_flashdata('success', 'Menu importado con éxito!');
                             
                         }else{
                             $this->session->set_flashdata('error', 'Error: el formato de fecha es invalido. Verifique que el formato sea dd/mm/yyyy , si es asi utilice en excel la funcion TEXTO(xx,"dd/mm/yy") luego copie los valores.'); 
@@ -1567,7 +1606,7 @@ class Importador extends CI_Controller {
         }
     }
     
-    function cancel_import($tipo=''){
+    function cancel_import($tipo='',$error=''){
         unset($_SESSION['datos_excel']);
         unset($_SESSION['errores']);
         unset($_SESSION['update_import']);
@@ -1597,8 +1636,8 @@ class Importador extends CI_Controller {
 
                 break;
             case "menu":
-                redirect(base_url().'index.php/Importador/menu/');
-
+                redirect(base_url().'index.php/Importador/menu/?error='.$error);
+                
                 break;
 
             default:

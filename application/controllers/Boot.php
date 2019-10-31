@@ -101,7 +101,7 @@ class Boot extends CI_Controller {
             
             if(count($usuarios)){
                 //crea ticket o envia un email dependiendo de los parametros
-                //$this->aviso_usuario($usuarios,$por_vencer,'<b>Atencion!</b> quedan 15 dias para el vencimiento del periodo de Lactancia: ',true,false);
+                $this->aviso_usuario($usuarios,$por_vencer,'<b>Atencion!</b> quedan 15 dias para el vencimiento del periodo de Lactancia: ',true,false);
             }
         }
     }
@@ -236,11 +236,7 @@ class Boot extends CI_Controller {
             }
         }
     }
-    /**
-     * 
-     * @param array $sectores
-     * @return array
-     */
+   
     function get_usuarioPermiso($sectores){
         $usuarios = array();
         //Obtengo los perfiles que tienen permisos para ese sector
@@ -681,7 +677,6 @@ class Boot extends CI_Controller {
                 }
         }
     }
-
 
     public function autoCompletePersona(){
         

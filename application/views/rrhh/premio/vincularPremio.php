@@ -70,9 +70,9 @@ if (isset($_GET['persona'])){
                     </div>
                     
                     <div class="control-group">
-                        <label for="f_entrega" class="control-label">Fecha de entrega</label>
+                        <label for="f_entrega" class="control-label">Fecha de entrega *</label>
                         <div class="controls">
-                            <input type="date" id="f_entrega" type="text" name="f_entrega" />
+                            <input type="datetime-local" id="f_entrega" required="required" name="f_entrega" />
                         </div>
                     </div>
                     

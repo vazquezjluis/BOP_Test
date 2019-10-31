@@ -28,17 +28,31 @@ class MenuPersonal_model extends CI_Model {
         $result =  !$one  ? $query->result() : $query->row();
         return $result;
     }
-    function getEstudioPersona($where=''){
+    
+    function get_group_fecha($table,$fields,$where='',$perpage=0,$start=0,$one=false,$array='array'){
         
-        $this->db->select(' estudio.*,idEstudio_persona,fecha_registro,institucion_str(estudio_persona.idEstudio) as institucion');
-        $this->db->from("estudio_persona");
-        $this->db->join('estudio', 'estudio.idEstudio = estudio_persona.idEstudio', 'inner');
-        //$this->db->order_by('estudio_persona.fecha_registro','desc');
+        $this->db->select($fields);
+        $this->db->from($table);
+        $this->db->order_by('fecha_menu','desc');
+        $this->db->group_by('fecha_menu');
+        $this->db->limit($perpage,$start);
+        if($where){
+            $this->db->where($where);
+        }
+        
+        $query = $this->db->get();
+        
+        $result =  !$one  ? $query->result() : $query->row();
+        return $result;
+    }
+    function getMenuManual($where=''){
+        
+        $this->db->select('*');
+        $this->db->from("menu_personal");
         if($where){
             $this->db->where($where);
         }
         $query = $this->db->get();
-        
         return $query->result();
     }
 

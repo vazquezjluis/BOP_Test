@@ -48,7 +48,7 @@
 <!--start-top-serch-->
 <div id="search">
     
-  <a href="#" ><i class="icon icon-asterisk"></i> <span class="text">Version: <?php echo $this->config->item('app_version'); ?></span></a>
+    <a href="#" ><i class="icon icon-asterisk"></i> <span class="text">Usuario: <?php  echo $this->session->userdata('nombre'); ?></span></a>
 </div>
 <!--close-top-serch--> 
 
@@ -103,21 +103,22 @@
     <!--GASTRONOMIA-->
     <?php // if($this->permission->checkPermission($this->session->userdata('permiso'),'vMenuPersonal')){ ?>
         <li class="submenu <?php if(isset($menuClientes)){echo 'active open';};?>">
-            <?php  if($this->permission->checkPermission($this->session->userdata('permiso'),'vMenu') || 
-                        $this->permission->checkPermission($this->session->userdata('permiso'),'vPedido') ||
-                        $this->permission->checkPermission($this->session->userdata('permiso'),'cMenu')
+            <?php  if(
+                    //$this->permission->checkPermission($this->session->userdata('permiso'),'vMenu') || 
+                        $this->permission->checkPermission($this->session->userdata('permiso'),'cPedido') || 
+                        $this->permission->checkPermission($this->session->userdata('permiso'),'vPedido') 
                     ){ ?>
             <a href="#"><i class="icon  icon-glass"></i> <span>Gastronomia</span><span class="label"><i class="icon-chevron-down"></i></a>
             <?php } ?>
             <ul>
-              <?php  if($this->permission->checkPermission($this->session->userdata('permiso'),'vMenu')){ ?>
+              <?php  //if($this->permission->checkPermission($this->session->userdata('permiso'),'vMenu')){ ?>
                 <li><a href="<?php echo base_url()?>index.php/menuPersonal">ABM Menu</a></li>
-              <?php  } 
+              <?php  //} 
                     if($this->permission->checkPermission($this->session->userdata('permiso'),'vPedido')){ ?>
-                <li><a   href="javascript:void(0);" onclick="FullScreen('<?php echo base_url().'index.php/pedido/monitor'?>');">Monitor</a></li>
+                <li><a   href="<?php echo base_url().'index.php/pedido/monitor';?>">Monitor</a></li>
                 <?php }
                 if($this->permission->checkPermission($this->session->userdata('permiso'),'cPedido')){ ?>
-                <li><a   href="javascript:void(0);" onclick="FullScreen('<?php echo base_url().'index.php/pedido/pedidos'?>');">Pedidos</a></li>
+                <li><a   href="<?php echo base_url().'index.php/pedido/pedidos';?>">Pedidos</a></li>
                 <?php } ?>
           </ul>    
         </li>
@@ -268,10 +269,16 @@
   <div id="content-header">
         <div id="breadcrumb" > 
             <a href="<?php echo base_url()?>" title="Inicio" class="tip-bottom"><i class="icon-home"></i> Inicio</a> 
-                    <?php if($this->uri->segment(1) != null){?>
-            <a href="<?php echo base_url().'index.php/'.$this->uri->segment(1)?>" class="tip-bottom" title="<?php echo ucfirst($this->uri->segment(1));?>"><?php echo ucfirst($this->uri->segment(1));?></a> 
-                    <?php if($this->uri->segment(2) != null){?>
-            <a href="<?php echo base_url().'index.php/'.$this->uri->segment(1).'/'.$this->uri->segment(2).'/'.$this->uri->segment(3) ?>" class="current tip-bottom" title="<?php echo ucfirst($this->uri->segment(2)); ?>"><?php echo ucfirst($this->uri->segment(2));} ?></a> 
+                    <?php if($this->uri->segment(1) != null){
+                                if($this->uri->segment(1) == 'pedido'){
+                                    echo " <a class='tip-bottom'> ".$this->uri->segment(2). "</a>";
+                                }else{ ?>
+                                    <a href="<?php echo base_url().'index.php/'.$this->uri->segment(1)?>" class="tip-bottom" title="<?php echo ucfirst($this->uri->segment(1));?>"><?php echo ucfirst($this->uri->segment(1));?></a> 
+                                            <?php if($this->uri->segment(2) != null){?>
+                                    <a href="<?php echo base_url().'index.php/'.$this->uri->segment(1).'/'.$this->uri->segment(2).'/'.$this->uri->segment(3) ?>" class="current tip-bottom" title="<?php echo ucfirst($this->uri->segment(2)); ?>"><?php echo ucfirst($this->uri->segment(2));} ?></a> 
+                                    
+                              <?php  }?>
+            
                     <?php }?>
             
         </div>

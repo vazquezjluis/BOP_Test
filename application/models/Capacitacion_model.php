@@ -33,7 +33,7 @@ class Capacitacion_model extends CI_Model {
         
         $this->db->from('capacitacion_persona');
         $this->db->select('capacitacion_persona.*, '
-                . ' persona_str(capacitacion_persona.idPersona) as persona, '
+                //. ' persona_str(capacitacion_persona.idPersona) as persona, '
                 . ' capacitacion.tema, capacitacion.f_inicio,tema.nombre,institucion.nombre as institucionStr, '
                 . ' capacitacion.f_fin, capacitacion.capacitador, capacitacion.modalidad, capacitacion.institucion  ');
         if ($where !=''){

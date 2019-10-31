@@ -24,6 +24,7 @@ class Seleccion_personal extends CI_Controller {
         $this->load->model('seleccion_personal_model', '', TRUE);
         $this->load->model('consola_model', '', TRUE);
         $this->load->model('archivos_model', '', TRUE);
+        $this->load->model('sector_model', '', TRUE);
     }
 	
     function index(){
@@ -32,36 +33,42 @@ class Seleccion_personal extends CI_Controller {
 
     function gestionar(){
         
-        $this->load->library('pagination');
-
-        $config['base_url'] = base_url().'index.php/Seleccion_personal/gestionar/';
-        $config['total_rows'] = $this->seleccion_personal_model->count('seleccion_personal');
-        $config['per_page'] = 10;
-        $config['next_link'] = 'Próxima';
-        $config['prev_link'] = 'Anterior';
-        $config['full_tag_open'] = '<div class="pagination alternate"><ul>';
-        $config['full_tag_close'] = '</ul></div>';
-        $config['num_tag_open'] = '<li>';
-        $config['num_tag_close'] = '</li>';
-        $config['cur_tag_open'] = '<li><a style="color: #2D335B"><b>';
-        $config['cur_tag_close'] = '</b></a></li>';
-        $config['prev_tag_open'] = '<li>';
-        $config['prev_tag_close'] = '</li>';
-        $config['next_tag_open'] = '<li>';
-        $config['next_tag_close'] = '</li>';
-        $config['first_link'] = 'Primera';
-        $config['last_link'] = 'Última';
-        $config['first_tag_open'] = '<li>';
-        $config['first_tag_close'] = '</li>';
-        $config['last_tag_open'] = '<li>';
-        $config['last_tag_close'] = '</li>';
-
-        $this->pagination->initialize($config); 	
+//        $this->load->library('pagination');
+//
+//        $config['base_url'] = base_url().'index.php/Seleccion_personal/gestionar/';
+//        $config['total_rows'] = $this->seleccion_personal_model->count('seleccion_personal');
+//        $config['per_page'] = 10;
+//        $config['next_link'] = 'Próxima';
+//        $config['prev_link'] = 'Anterior';
+//        $config['full_tag_open'] = '<div class="pagination alternate"><ul>';
+//        $config['full_tag_close'] = '</ul></div>';
+//        $config['num_tag_open'] = '<li>';
+//        $config['num_tag_close'] = '</li>';
+//        $config['cur_tag_open'] = '<li><a style="color: #2D335B"><b>';
+//        $config['cur_tag_close'] = '</b></a></li>';
+//        $config['prev_tag_open'] = '<li>';
+//        $config['prev_tag_close'] = '</li>';
+//        $config['next_tag_open'] = '<li>';
+//        $config['next_tag_close'] = '</li>';
+//        $config['first_link'] = 'Primera';
+//        $config['last_link'] = 'Última';
+//        $config['first_tag_open'] = '<li>';
+//        $config['first_tag_close'] = '</li>';
+//        $config['last_tag_open'] = '<li>';
+//        $config['last_tag_close'] = '</li>';
+//
+//        $this->pagination->initialize($config); 	
 
 		  $this->data['results'] = $this->seleccion_personal_model->get(
                           'seleccion_personal',
-                          '*',' seleccion_personal.estado = 1',$config['per_page'],$this->uri->segment(3));
+                          '*',' seleccion_personal.estado = 1',0,$this->uri->segment(3));
        
+         $sector = $this->sector_model->get_sector(' where eliminado != 1 ');
+         foreach ($sector as $s){
+         
+             $this->data['sector'][$s->id] = $s->descripcion;
+         }
+         
 	    $this->data['view'] = 'rrhh/seleccion_personal/seleccion_personal';
        	$this->load->view('tema/header',$this->data);
 	
@@ -84,6 +91,10 @@ class Seleccion_personal extends CI_Controller {
         //Obtiene los datos del ticket
         $this->data['result'] = $this->seleccion_personal_model->get('seleccion_personal','*',
                 'seleccion_personal.idSeleccion_personal= '.$this->uri->segment(3));
+        
+//        echo "<pre>";
+//        var_dump($this->data['result']);
+//        echo "</pre>";
         
         //documentos
         $this->data['cv'] = $this->archivos_model->get('documentos','url',' funcionalidad = "seleccion_personal" AND sector = 2 AND documento="CV" AND estado = "1" AND referencia = '.$this->data['result'][0]->idSeleccion_personal);
@@ -114,6 +125,7 @@ class Seleccion_personal extends CI_Controller {
                 'contacto' => $this->input->post('contacto'),
                 'fuente_reclutamiento'=>$this->input->post('fuente_reclutamiento'),
                 'descripcion' => $this->input->post('descripcion'),
+                'sector' => $this->input->post('sector'),
                 'estado'=>1,
                 'meta_estado' => $this->input->post('meta_estado'),
                 'fecha_meta_estado' => $this->input->post('fecha_meta_estado'),
@@ -148,6 +160,7 @@ class Seleccion_personal extends CI_Controller {
             }
         }
 
+        $this->data['sector'] = $this->sector_model->get_sector(' where eliminado != 1 ');
         $this->data['view'] = 'rrhh/seleccion_personal/agregarCandidato';
         $this->load->view('tema/header', $this->data);
 
@@ -169,6 +182,7 @@ class Seleccion_personal extends CI_Controller {
                 'contacto' => $this->input->post('contacto'),
                 'fuente_reclutamiento'=>$this->input->post('fuente_reclutamiento'),
                 'descripcion' => $this->input->post('descripcion'),
+                'sector' => $this->input->post('sector'),
                 'estado'=>1,
                 'meta_estado'=>$this->input->post('meta_estado'),
                 'fecha_meta_estado'=>$this->input->post('fecha_meta_estado'),
@@ -193,7 +207,7 @@ class Seleccion_personal extends CI_Controller {
         }
 
         $this->data['result'] = $this->seleccion_personal_model->getById($this->uri->segment(3));
-        
+        $this->data['sector'] = $this->sector_model->get_sector(' where eliminado != 1 ');
         $this->data['view'] = 'rrhh/seleccion_personal/editarCandidato';
         $this->load->view('tema/header', $this->data);
 

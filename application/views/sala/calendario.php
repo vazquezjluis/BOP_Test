@@ -9,8 +9,21 @@
 <!--reloj-->
 <script src="<?php echo base_url()?>assets/js/bootstrap-clockpicker.js"></script>
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/bootstrap-clockpicker.css">
+<style>
+    .fc th{
+        padding: 5px 0px;
+        vertical-align: middle;
+        background: #F3F3F3;
+    }
+    .fc-day {background: #FFFFFF; border-color: #000000;}
+    .fc-time { display: none;}
+    .fc-content { padding: 5px; 
+    .fc-unthemed td.fc-today {
+        background: #F7F1D4;
+    }
+</style>
 
-<div class="widget-box">
+<!--<div class="widget-box">
      <div class="widget-title">
         <span class="icon">
             <i class="icon-lock"></i>
@@ -18,12 +31,12 @@
         <h5>Sala de reuniones</h5>
      </div>
     <br>
-    <div class="widget-content nopadding">
+    <div class="widget-content nopadding">-->
         
             <div id="calendarioWeb"></div>
        
-    </div>
-</div>
+<!--    </div>
+</div>-->
 
 
 
@@ -142,7 +155,7 @@ $(document).ready(function(){
                   }
               },
               error:function(){
-                  alert("Hay un error...");
+                  alert("Hay un error al enviar la informacion...");
               }
           });
     }
@@ -150,6 +163,7 @@ $(document).ready(function(){
     
     
     $("#calendarioWeb").fullCalendar({
+        height:550,
         header:{
             left:'today,prev,next',
             center:'title',

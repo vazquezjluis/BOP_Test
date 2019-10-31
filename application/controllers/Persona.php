@@ -353,7 +353,9 @@ class Persona extends CI_Controller {
 
     }
     
-    public function calendarioMenuEmpleado(){
+    
+    
+    public function get_persona(){
         
         header('Access-Control-Allow-Origin: '.base_url());
         header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
@@ -361,34 +363,15 @@ class Persona extends CI_Controller {
         header('Access-Control-Allow-Headers: Content-Type');
         
         /* Obtengo la persona desde Lenox*/
-        $persona = $this->persona_model->get_persona(" WHERE legajo = ".$this->input->get('leg')," id,nombre, apellido");
-        /* Obtengo el calendario de menu de la persona con su legajo */
-        $calendarioMenu = $this->calendarioMenu_model->get_calendario (" legajo = ".$this->input->get('leg')." AND estado = 1 ");
         
+        $persona = $this->persona_model->get_persona(" WHERE legajo = ".$this->input->get('leg')," id,nombre, apellido,");
         
         if (count($persona)){
-            if (count($calendarioMenu)){
-                foreach ($calendarioMenu as $k=> $cm){
-                    $json[$k]['idCalendarioMenu']   = $cm->idCalendarioMenu;
-                    $json[$k]['legajo']             = $persona[0]->legajo;
-                    $json[$k]['title']              = $cm->title;
-                    $json[$k]['descripcion']        = $cm->descripcion;
-                    $json[$k]['start']              = $cm->start;
-                    $json[$k]['color']              = $cm->color;
-                    $json[$k]['textColor']          = $cm->textColor;
-                    $json[$k]['end']                = $cm->end;
-                    $json[$k]['idMenu']             = $cm->idMenu;
-                    $json[$k]['nombre']             = $persona[0]->nombre;
-                    $json[$k]['apellido']           = $persona[0]->apellido;
-                    $json[$k]['idPersona']          = $persona[0]->id;
-                    
-                }
-            }else{
                 $json[0]['nombre']      = $persona[0]->nombre;
                 $json[0]['apellido']    = $persona[0]->apellido;
                 $json[0]['legajo']      = $persona[0]->legajo;
-                $json[0]['idPersona']   = $persona[0]->id;
-            }
+                $json[0]['email']       = $persona[0]->email;
+                $json[0]['idPersona']   = $persona[0]->id;            
             
         }else{
             $json[0]['nombre']      = 'error';

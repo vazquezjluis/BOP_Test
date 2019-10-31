@@ -25,6 +25,7 @@ class CalendarioMenu extends CI_Controller {
         $this->load->model('consola_model', '', TRUE);
         $this->load->model('calendarioMenu_model', '', TRUE);
         $this->load->model('pedido_model', '', TRUE);
+        $this->load->model('valormenu_model', '', TRUE);
     }
 	
     function index(){
@@ -104,10 +105,11 @@ class CalendarioMenu extends CI_Controller {
     function agregar() {
         $idMenu = $this->input->post('idMenu');
         $legajo = $this->input->post('legajo');
-        $id     = $this->input->post('idCalendarioMenu');
+        
         if(isset($idMenu) and isset($legajo)){
             $data = array(
                 'legajo'        => $this->input->post('legajo'),
+                'persona_str'   => $this->input->post('persona_str'),
                 'title'         => $this->input->post('title'),
                 'descripcion'   => $this->input->post('descripcion'),
                 'start'         => $this->input->post('start'),
@@ -115,26 +117,17 @@ class CalendarioMenu extends CI_Controller {
                 'textColor'     => $this->input->post('textColor'),
                 'end'           => $this->input->post('end'),
                 'idMenu'        => $this->input->post('idMenu'),
+                'idMenuBingo'   => $this->input->post('idMenuBingo'),
                 'estado'        => 1,
                 'f_registro'    => date('Y-m-d h:i:s')
             );
-            if (isset($id) and $id!=0 ){
-                //modificacion
-                if($this->calendarioMenu_model->edit('calendarioMenu',$data,'idCalendarioMenu',$id)){
-                    echo json_encode($data);
-                }
-            }else{
-                //creacion
-                if ($this->calendarioMenu_model->add('calendarioMenu', $data) == TRUE) {
-                    //$id_estudio = $this->db->insert_id();
-                    //$this->data['custom_success'] = 'calendario menu cargado!';
-                    echo json_encode($data);
-                } else {
-                    //$this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error.</p></div>';
-                }
+            if ($this->calendarioMenu_model->add('calendarioMenu', $data) == TRUE) {
+                //$id_estudio = $this->db->insert_id();
+                //$this->data['custom_success'] = 'calendario menu cargado!';
+                echo json_encode($data);
+            } else {
+                //$this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error.</p></div>';
             }
-            
-        }else{
             
         }
     }
@@ -197,66 +190,132 @@ class CalendarioMenu extends CI_Controller {
         }
     }
     
+    
     function pedir(){
         $idMenu = $this->input->post('idMenu');
         $legajo = $this->input->post('legajo');
         $id     = $this->input->post('idCalendarioMenu');
-        
-        $this->data["pendiente"] = $this->pedido_model->get("pedido",
-                "pedido.*,persona_str(pedido.persona) as persona, menu_str(pedido.idMenu) as menu",
-                " pedido.estado = 1 and pedido.f_registro = '".date('Y-m-d')."' and pedido.legajo = ".$this->input->post("legajo"));
-        
-        if (count($this->data['pendiente'])==0 and $id !=null and $id!='' and $idMenu!='' and $idMenu!=null){  
-            if(isset($idMenu) and isset($legajo)){
-                    $data = array(
-                        'legajo'            => $this->input->post('legajo'),
-                        'persona'           => $this->input->post('idPersona'),
-                        'persona_str'       => $this->input->post('personaStr'),
-                        'descripcion'       => '',
-                        'idMenu'            => $this->input->post('idMenu'),
-                        'usuario'           => $this->session->userdata('id'),
-                        'estado'            =>1,
-                        'f_registro'        => date('Y-m-d h:i:s'),
-                        'idCalendarioMenu'  => $id
-                    );
-                    //creacion
-                    if ($this->pedido_model->add('pedido', $data) == TRUE) {
-                        
-                        $id =  $this->input->post('idCalendarioMenu');
-                        if ($id == null){
+        //Obtengo el valor actual del menu que el empleado esta pidiendo
+        $valor_menu= $this->valormenu_model->get('valormenu','importe_interno,importe_externo','valormenu.estado!=0');
+        $valor_menu_interno = $this->menuPersonal_model->getById($idMenu);
+        if($valor_menu_interno->valor ==null){
+            $vmi = 0;
+        }else{
+            $vmi = $valor_menu_interno->valor;
+        }
+        if(!isset($idMenu) or $idMenu==NULL){
+            // si no retorna nada entonces existe un error
+        } else{
+            //Verifica si exite un regitro en el calendario, porque puede dar el caso que el empleado pida directamente
+            // sin haber echo una programacion el menu, tratandoce del dia actual
+            if (isset($id) and $id !=null){
+                //Verifico si existen menus pendientes en estado 1 con fecha actual y el legajos del empleado 
+                $this->data["pendiente"] = $this->pedido_model->get("pedido",
+                        "pedido.*,persona_str(pedido.persona) as persona, menu_str(pedido.idMenu) as menu",
+                        " pedido.f_registro = '".date('Y-m-d')."' and pedido.legajo = ".$this->input->post("legajo"));
 
-                        }else{
-                            $data = array(
-                                'color'        => '#da4f49',
-                            );
+                // Si no hay pedidos pendientes  y existe un menu
+                if (count($this->data['pendiente'])==0 and $idMenu!='' and $idMenu!=null){  
+                    
+                    
+                    // si existe el legajo y el id de menu entonces 
+                    
+                    if(isset($idMenu) and isset($legajo) and count($valor_menu)){
+                        
+                        
+                        $data = array(
+                            'legajo'            => $this->input->post('legajo'),
+                            'persona'           => $this->input->post('idPersona'),
+                            'persona_str'       => $this->input->post('persona_str'),
+                            'descripcion'       => '',
+                            'idMenu'            => $this->input->post('idMenu'),
+                            'idMenuBingo'       => $this->input->post('idMenuBingo'),
+                            'usuario'           => $this->session->userdata('id'),
+                            'importe_externo'   => $valor_menu[0]->importe_externo,
+                            'importe_interno'   => $vmi,
+                            'estado'            =>1,
+                            'f_registro'        => date('Y-m-d h:i:s'),
+                            'idCalendarioMenu'  => $id
+                        );
+                        //creacion
+                        if ($this->pedido_model->add('pedido', $data) == TRUE) {
+                            $data = array('color' => '#da4f49');
                             if($this->calendarioMenu_model->edit('calendarioMenu',$data,'idCalendarioMenu',$id)){
                                 echo json_encode($data);
                             }
                         }
-                    } else {
-                        //$this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error.</p></div>';
                     }
-            }else{
+                }
 
-            }// si existe idMenu y legajo
-        }//fin del if pendiente
+
+            }
+            else{
+                
+                if(count($valor_menu)){
+                    //Primero y ante todo guardo el registro en el calendario, direcatemnte con el color rojo
+                    $data = array(
+                        'legajo'        => $legajo,
+                        'persona_str'   => $this->input->post('persona_str'),
+                        'title'         => $this->input->post('title'),
+                        'descripcion'   => $this->input->post('descripcion'),
+                        'start'         => $this->input->post('start'),
+                        'color'         => '#da4f49',
+                        'textColor'     => $this->input->post('textColor'),
+                        'end'           => $this->input->post('end'),
+                        'idMenu'        => $idMenu,
+                        'idMenuBingo'        => $this->input->post('idMenuBingo'),
+                        'estado'        => 1,
+                        'f_registro'    => date('Y-m-d h:i:s')
+                    );
+                    if ($this->calendarioMenu_model->add('calendarioMenu', $data) == TRUE) {
+                        $id = $this->db->insert_id(); // Este es el ID del CalendarioMenu
+                        //Luego se crea el pedido en estado 1 pendiente
+
+                        $data_pedido = array(
+                                'legajo'            => $legajo,
+                                'persona'           => $this->input->post('idPersona'),
+                                'persona_str'       => $this->input->post('persona_str'),
+                                'descripcion'       => '',
+                                'idMenu'            => $idMenu,
+                                'idMenuBingo'       => $this->input->post('idMenuBingo'),
+                                'usuario'           => $this->session->userdata('id'),
+                                'estado'            => 1,
+                                'f_registro'        => date('Y-m-d h:i:s'),
+                                'importe_externo'   => $valor_menu[0]->importe_externo,
+                                'importe_interno'   => $vmi,
+                                'idCalendarioMenu'  => $id
+                            );
+                        if ($this->pedido_model->add('pedido', $data_pedido) == TRUE) {
+                                // retorna la data del calendario , No la del pedido
+                                echo json_encode($data);
+
+                            }
+                    } 
+                }
+        }
+    
+        }
     }//fin de la funcion
     
     function modificar(){
         
+        $idMenu = $this->input->post('idMenu');
+        $legajo = $this->input->post('legajo');        
         $id =  $this->input->post('idCalendarioMenu');
-        if ($id == null){
-            
-        }else{
+        
+        if ($id != null and isset($id) and isset($idMenu) and isset($legajo)){
             $data = array(
-                'legajo'        => $this->input->post('legajo'),
+                'legajo'        => $legajo,
+                'persona_str'   => $this->input->post('persona_str'),
                 'title'         => $this->input->post('title'),
                 'descripcion'   => $this->input->post('descripcion'),
                 'start'         => $this->input->post('start'),
                 'color'         => $this->input->post('color'),
                 'textColor'     => $this->input->post('textColor'),
                 'end'           => $this->input->post('end'),
-                'idMenu'        => $this->input->post('idMenu')
+                'idMenu'        => $idMenu,
+                'idMenuBingo'   => $this->input->post('idMenuBingo'),
+                'f_registro'    => date('Y-m-d h:i:s')
             );
             if($this->calendarioMenu_model->edit('calendarioMenu',$data,'idCalendarioMenu',$id)){
                 echo json_encode($data);
@@ -274,18 +333,23 @@ class CalendarioMenu extends CI_Controller {
         
     }
     
-    function buscaPedidoRealizado(){
+     function buscaPedidoRealizado(){
         
         /* Obtengo el calendario de menu de la persona con su legajo */
-        $pendiente  = $this->pedido_model->get('pedido','pedido.*, menu_str(pedido.idMenu) as menu',' idCalendarioMenu = '.$this->input->post('idCalendarioMenu'));
-        
-        if(count($pendiente)){
-            $data = array(
-                'descripcion'   => $pendiente[0]->menu,
-                'estadoStr'     => $this->pedido_model->estado_str($pendiente[0]->estado),
-            );
+        $calendarioMenu = $this->calendarioMenu_model->get_calendario (" legajo = ".$this->input->get('legajo')."   AND start = '".$this->input->get('fecha')." 00:00:00'");
+        //var_dump($calendarioMenu);
+        if(count($calendarioMenu)){
+            /* Obtengo el calendario de menu de la persona con su legajo */
+            $pendiente  = $this->pedido_model->get('pedido','pedido.*, menu_str(pedido.idMenu) as menu',' idCalendarioMenu = '.$calendarioMenu[0]->idCalendarioMenu.' AND legajo = '.$this->input->get('legajo'));
             
-            echo json_encode($data);
+            if(count($pendiente)){
+                $data = array(
+                    'descripcion'   => $pendiente[0]->menu,
+                    'estadoStr'     => $this->pedido_model->estado_str($pendiente[0]->estado),
+                );
+
+                echo json_encode($data);
+            }
         }
     }
     

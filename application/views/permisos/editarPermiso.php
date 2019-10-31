@@ -168,10 +168,7 @@
                                                     </label>
                                                 </td>
                                                 <td>
-                                                    <label>
-                                                        <input <?php if(isset($permisos['vRep_pedido'])){ if($permisos['vRep_pedido'] == '1'){echo 'checked';}}?> name="vRep_pedido" class="marcar" type="checkbox" value="1" />
-                                                        <span class="lbl"> Ver Reporte de Pedidos</span>
-                                                    </label>
+                                                    
                                                 </td>
                                                 <td>
                                                 </td>
@@ -543,26 +540,32 @@
                                                         <label>
                                                             <label>
                                                                 <input <?php if(isset($permisos['vPedido'])){ if($permisos['vPedido'] == '1'){echo 'checked';}}?> name="vPedido" class="marcar" type="checkbox" value="1" />
-                                                                <span class="lbl"> Visualizar Pedido</span>
+                                                                <span class="lbl"> Visualizar Pedido (Ver pedidos en el monitor)</span>
                                                             </label>
                                                         </label>
                                                     </td>
 
                                                     <td>
                                                         <label>
-                                                            <input <?php if(isset($permisos['cPedido'])){ if($permisos['cPedido'] == '1'){echo 'checked';}}?> name="cPedido" class="marcar" type="checkbox" value="1" />
-                                                            <span class="lbl"> Agregar Pedido</span>
+                                                            <input <?php if(isset($permisos['ePedido'])){ if($permisos['cPedido'] == '1'){echo 'checked';}}?> name="ePedido" class="marcar" type="checkbox" value="1" />
+                                                            <span class="lbl"> Editar Pedido (cambiar estados en el monitor)</span>
                                                         </label>
                                                     </td>
+                                                    
+                                                    <td>
+                                                        <label>
+                                                            <input <?php if(isset($permisos['cPedido'])){ if($permisos['cPedido'] == '1'){echo 'checked';}}?> name="cPedido" class="marcar" type="checkbox" value="1" />
+                                                            <span class="lbl"> Agregar Pedido (Programacion y pedidos)</span>
+                                                        </label>
+                                                    </td>
+
+                                                    
 
                                                     <td>
                                                         <label>
-                                                            <input <?php if(isset($permisos['ePedido'])){ if($permisos['cPedido'] == '1'){echo 'checked';}}?> name="ePedido" class="marcar" type="checkbox" value="1" />
-                                                            <span class="lbl"> Editar Pedido</span>
-                                                        </label>
-                                                    </td>
-
-                                                    <td>
+                                                        <input <?php if(isset($permisos['vRep_pedido'])){ if($permisos['vRep_pedido'] == '1'){echo 'checked';}}?> name="vRep_pedido" class="marcar" type="checkbox" value="1" />
+                                                        <span class="lbl"> Ver Reporte de Pedidos</span>
+                                                    </label>
                                                     </td>
 
                                                 </tr>

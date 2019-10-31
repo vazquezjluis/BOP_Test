@@ -25,20 +25,43 @@ class BingoOasis extends CI_Controller {
             redirect('bingoOasis/login');
         }
 
-        //Estadisticas del sistema
-        //obtiene la cantidad de tickets activos
-        $this->count_ticket(1);
-        //cuenta las maquinas fuera de servicio
-        $this->count_maquinas(0);
-        //cuenta los laboratorios en proceso
-        $this->count_laboratorio(1);
-        //obtiene los tivekt abiertos y cerrados
-        $this->reporte_ticket("abierto_cerrado");
         
-        //Maquinas fuera de servicio
-        $this->data['menuPanel'] = 'Panel';
-        $this->data['view'] = 'bingoOasis/panel';
-        $this->load->view('tema/header',  $this->data);
+        
+//        if (  $this->permission->checkPermission($this->session->userdata('permiso'),'vSala') == false and
+//              $this->permission->checkPermission($this->session->userdata('permiso'),'vPersonas') == false and 
+//              $this->permission->checkPermission($this->session->userdata('permiso'),'vCapacitacion') ==false and 
+//              $this->permission->checkPermission($this->session->userdata('permiso'),'vPremios') ==false and
+//              $this->permission->checkPermission($this->session->userdata('permiso'),'vPedido') == false and
+//              $this->permission->checkPermission($this->session->userdata('permiso'),'vMaquina') == false and
+//              $this->permission->checkPermission($this->session->userdata('permiso'),'vLaboratorio') == false and
+//              $this->permission->checkPermission($this->session->userdata('permiso'),'vRep_maquinas') == false and
+//                $this->permission->checkPermission($this->session->userdata('permiso'),'vArticulos') == false and
+//                $this->permission->checkPermission($this->session->userdata('permiso'),'vImporMaquinas') == false and
+//                $this->permission->checkPermission($this->session->userdata('permiso'),'vImporMenu') ==  false and
+//                $this->permission->checkPermission($this->session->userdata('permiso'),'cUsuario') == false and
+//                $this->permission->checkPermission($this->session->userdata('permiso'),'cPermiso') == false and
+//                $this->permission->checkPermission($this->session->userdata('permiso'),'cPedido') == true
+//                ){
+//            
+//                    $this->data['menuPanel'] = 'Panel';
+//                    $this->data['view'] = 'gastronomia/pedidos';
+//                    $this->load->view('tema/header',  $this->data);
+//                }
+//                else{
+                    //Estadisticas del sistema
+                    //obtiene la cantidad de tickets activos
+                    $this->count_ticket(1);
+                    //cuenta las maquinas fuera de servicio
+                    $this->count_maquinas(0);
+                    //cuenta los laboratorios en proceso
+                    $this->count_laboratorio(1);
+                    //obtiene los tivekt abiertos y cerrados
+                    $this->reporte_ticket("abierto_cerrado");
+                    //Maquinas fuera de servicio
+                    $this->data['menuPanel'] = 'Panel';
+                    $this->data['view'] = 'bingoOasis/panel';
+                    $this->load->view('tema/header',  $this->data);
+//                }
       
     }
 

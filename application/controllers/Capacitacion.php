@@ -30,8 +30,9 @@ class Capacitacion extends CI_Controller {
     }
 
     function index(){
-        $this->data['view'] = 'rrhh/capacitacion/capacitacion';
-       	$this->load->view('tema/header',$this->data);
+//        $this->data['view'] = 'rrhh/capacitacion/capacitacion';
+//       	$this->load->view('tema/header',$this->data);
+        $this->listadoCapacitacion();
     }
 
     function listadoCapacitacion(){
@@ -65,7 +66,8 @@ class Capacitacion extends CI_Controller {
         $this->data['results'] = $this->capacitacion_model->get($config['per_page'],$this->uri->segment(3));
         
        
-        $this->data['view'] = 'rrhh/capacitacion/listadoCapacitacion';
+        //$this->data['view'] = 'rrhh/capacitacion/listadoCapacitacion';
+        $this->data['view'] = 'rrhh/capacitacion/capacitacion';
        	$this->load->view('tema/header',$this->data);
 
        
@@ -314,10 +316,12 @@ class Capacitacion extends CI_Controller {
     
     public function eliminarCapacitacionPersona(){
         $id =  $this->input->post('id');
+        $idPersona =  $this->input->post('idPersona');
         if ($id == null){
             $this->session->set_flashdata('error','Ocurrio un error al intentar eliminar la capacitacion.');            
-            redirect(base_url().'index.php/capacitacion/listadoVinculo/');
+           // redirect(base_url().'index.php/capacitacion/listadoVinculo/');
         }
+        
         $data = array(
           'estado' => 0
         );
@@ -329,7 +333,9 @@ class Capacitacion extends CI_Controller {
           $this->session->set_flashdata('error','Error al eliminar la capacitacion!');  
         }  
 //            $this->capacitacion_model->delete('capacitacion','idCapacitacion',$id);             
-            redirect(base_url().'index.php/capacitacion/listadoVinculo');
+           // redirect(base_url().'index.php/capacitacion/listadoVinculo');
+        
+        redirect(base_url().'index.php/persona/visualizar?buscar='.$idPersona);
     }
 }
 

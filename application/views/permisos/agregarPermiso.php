@@ -141,10 +141,7 @@
                                                      </label>
                                                  </td>
                                                  <td>
-                                                     <label>
-                                                         <input name="vRep_pedido" class="marcar" type="checkbox"  value="1" />
-                                                         <span class="lbl"> Ver Reporte de pedidos</span>
-                                                     </label>
+                                                     
                                                  </td>
                                                  <td>
                                                  </td>
@@ -458,6 +455,40 @@
                                                          </label>
                                                      </td>
                                                  </tr>
+                                                 
+                                                 <tr>
+
+                                                    <td>
+                                                        <label>
+                                                            <label>
+                                                                <input name="vPedido" class="marcar" type="checkbox" value="1" />
+                                                                <span class="lbl"> Visualizar Pedido</span>
+                                                            </label>
+                                                        </label>
+                                                    </td>
+
+                                                    <td>
+                                                        <label>
+                                                            <input name="cPedido" class="marcar" type="checkbox" value="1" />
+                                                            <span class="lbl"> Agregar Pedido</span>
+                                                        </label>
+                                                    </td>
+
+                                                    <td>
+                                                        <label>
+                                                            <input  name="ePedido" class="marcar" type="checkbox" value="1" />
+                                                            <span class="lbl"> Editar Pedido</span>
+                                                        </label>
+                                                    </td>
+
+                                                    <td>
+                                                        <label>
+                                                         <input name="vRep_pedido" class="marcar" type="checkbox"  value="1" />
+                                                         <span class="lbl"> Ver Reporte de pedidos</span>
+                                                     </label>
+                                                    </td>
+
+                                                </tr>
                                              </tbody>
                                        </table>
                                    </div>
