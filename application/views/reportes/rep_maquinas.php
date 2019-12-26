@@ -113,7 +113,7 @@ if(!$results){?>
 
             echo '<tr>';
             echo '<td>
-                        <b>UID: </b>'.$r->nro_egm.'<br>
+                        <b>UID: </b>'.$r->nro_egm.' <br>
                         <b>Juego: </b>'.$r->juego.'<br>
                         <b>Serie: </b>'.$r->nro_serie.'  ';
             //if($this->permission->checkPermission($this->session->userdata('permiso'),'vTicket')){

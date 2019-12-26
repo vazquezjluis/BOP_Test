@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+<!--[if lt IE 9]><script language="javascript" type="text/javascript" src="<?php echo base_url();?>js/dist/excanvas.min.js"></script><![endif]-->
+
+>>>>>>> 78135b1e18f6bbb996b5ba058a1d6101a538c44b
 <script language="javascript" type="text/javascript" src="<?php echo base_url();?>assets/js/dist/jquery.jqplot.min.js"></script>
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>assets/js/dist/jquery.jqplot.min.css" />
 

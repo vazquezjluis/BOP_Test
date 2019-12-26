@@ -26,6 +26,7 @@ class Fallas extends CI_Controller {
     }
 
     function gestionar(){
+<<<<<<< HEAD
 
         // $this->load->library('pagination');
         //
@@ -60,6 +61,38 @@ class Fallas extends CI_Controller {
 
 
 
+=======
+        
+        $this->load->library('pagination');
+    
+        $config['base_url'] = base_url().'index.php/fallas/gestionar/';
+        $config['total_rows'] = $this->fallas_model->count('fallas');
+        $config['per_page'] = 10;
+        $config['next_link'] = 'Próxima';
+        $config['prev_link'] = 'Anterior';
+        $config['full_tag_open'] = '<div class="pagination alternate"><ul>';
+        $config['full_tag_close'] = '</ul></div>';
+        $config['num_tag_open'] = '<li>';
+        $config['num_tag_close'] = '</li>';
+        $config['cur_tag_open'] = '<li><a style="color: #2D335B"><b>';
+        $config['cur_tag_close'] = '</b></a></li>';
+        $config['prev_tag_open'] = '<li>';
+        $config['prev_tag_close'] = '</li>';
+        $config['next_tag_open'] = '<li>';
+        $config['next_tag_close'] = '</li>';	
+        $config['first_link'] = 'Primera';
+        $config['last_link'] = 'Última';
+        $config['first_tag_open'] = '<li>';
+        $config['first_tag_close'] = '</li>';
+        $config['last_tag_open'] = '<li>';
+        $config['last_tag_close'] = '</li>';
+        
+        $this->pagination->initialize($config); 	
+        $this->data['results'] = $this->fallas_model->get('fallas','*',' estado != 90 ',$config['per_page'],$this->uri->segment(3));       
+		
+        //$this->data['results_articulo'] = $this->articulo_model->list_articulo_generico();       
+        $this->data['results_articulo'] = array();
+>>>>>>> 78135b1e18f6bbb996b5ba058a1d6101a538c44b
 		$this->data['view'] = 'fallas/fallas';
        	$this->load->view('tema/header',$this->data);
 

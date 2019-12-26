@@ -65,7 +65,7 @@ if (isset($result)){
                           $estado = ' ';
                       }
                       echo '<div class="span4">
-                                <b>UID: </b>'.$result[0]->nro_egm.'<br>
+                                <b>UID: </b>'.$result[0]->nro_egm.' <br>
                                 <b>Fabricante: </b>'.$result[0]->fabricante.'<br>
                                 <b>Modelo: </b>'.$result[0]->modelo.'<br>
                                 <b>Denominacion: </b>'.$result[0]->denom.'<br>

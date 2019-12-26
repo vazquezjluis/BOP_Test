@@ -58,7 +58,15 @@
   <ul>
 
 
-    <li class="<?php if(isset($menuPainel)){echo 'active';};?>"><a href="<?php echo base_url()?>">
+    <li class="<?php if(isset($menuPainel)){echo 'active';};?>"><a href="<?php 
+     if(
+        $this->permission->checkPermission($this->session->userdata('permiso'),'vInicioEmpleado') 
+        ){
+           echo base_url().'index.php/pedido/pedidos';
+        } else {
+           echo base_url(); 
+        }
+    ?>">
         <i class="icon icon-home"></i> <span>Inicio</span></a></li>
 
     <!--RRHH-->
@@ -101,19 +109,31 @@
 
 
     <!--GASTRONOMIA-->
-    <?php // if($this->permission->checkPermission($this->session->userdata('permiso'),'vMenuPersonal')){ ?>
+    <?php  
+
+    if($this->permission->checkPermission($this->session->userdata('permiso'),'vMenu')){ ?>
         <li class="submenu <?php if(isset($menuClientes)){echo 'active open';};?>">
             <?php  if(
+<<<<<<< HEAD
                     //$this->permission->checkPermission($this->session->userdata('permiso'),'vMenu') ||
                         $this->permission->checkPermission($this->session->userdata('permiso'),'cPedido') ||
                         $this->permission->checkPermission($this->session->userdata('permiso'),'vPedido')
+=======
+                    $this->permission->checkPermission($this->session->userdata('permiso'),'vMenu') || 
+                        $this->permission->checkPermission($this->session->userdata('permiso'),'cPedido') || 
+                        $this->permission->checkPermission($this->session->userdata('permiso'),'vPedido') 
+>>>>>>> 78135b1e18f6bbb996b5ba058a1d6101a538c44b
                     ){ ?>
             <a href="#"><i class="icon  icon-glass"></i> <span>Gastronomia</span><span class="label"><i class="icon-chevron-down"></i></a>
             <?php } ?>
             <ul>
-              <?php  //if($this->permission->checkPermission($this->session->userdata('permiso'),'vMenu')){ ?>
+              <?php  if($this->permission->checkPermission($this->session->userdata('permiso'),'vMenu')){ ?>
                 <li><a href="<?php echo base_url()?>index.php/menuPersonal">ABM Menu</a></li>
+<<<<<<< HEAD
               <?php  //}
+=======
+              <?php  } 
+>>>>>>> 78135b1e18f6bbb996b5ba058a1d6101a538c44b
                     if($this->permission->checkPermission($this->session->userdata('permiso'),'vPedido')){ ?>
                 <li><a   href="<?php echo base_url().'index.php/pedido/monitor';?>">Monitor</a></li>
                 <?php }
@@ -122,9 +142,15 @@
                 <?php } ?>
           </ul>
         </li>
+<<<<<<< HEAD
     <?php // } ?>
 
 
+=======
+    <?php  } ?>  
+    
+    
+>>>>>>> 78135b1e18f6bbb996b5ba058a1d6101a538c44b
     <!--SALA DE REUNUNIONES-->
     <?php if($this->permission->checkPermission($this->session->userdata('permiso'),'vSala')){ ?>
         <li class=" <?php if(isset($menuClientes)){echo 'active open';};?>">

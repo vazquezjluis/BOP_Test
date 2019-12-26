@@ -14,6 +14,7 @@
 
 </style>
 <a href="<?php echo base_url()?>index.php/usuarios/agregar" class="btn btn-success"><i class="icon-plus icon-white"></i> Agregar nuevo Usuario</a>
+<!--<a href="<?php // echo base_url()?>index.php/usuarios/importacion_empleados" class="btn btn-danger"><i class="icon-plus icon-white"></i> Migrar empleados (solo para el administrador) </a>-->
 <?php
 if(!$results){?>
 <div class="widget-box">

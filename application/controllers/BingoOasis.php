@@ -65,7 +65,12 @@ class BingoOasis extends CI_Controller {
                     $this->reporte_ticket("abierto_cerrado");
                     //Maquinas fuera de servicio
                     $this->data['menuPanel'] = 'Panel';
-                    $this->data['view'] = 'bingoOasis/panel';
+                    if (  $this->permission->checkPermission($this->session->userdata('permiso'),'vInicioEmpleado')) {
+                        redirect(base_url() . 'index.php/pedido/pedidos');
+                    } else {
+                        $this->data['view'] = 'bingoOasis/panel';
+                    }
+                    
                     $this->load->view('tema/header',  $this->data);
                     //Obtiene total de usuarios
 
