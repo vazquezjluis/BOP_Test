@@ -2,16 +2,12 @@
 <div class="row-fluid" style="margin-top:0">
     <div class="span12">
         <div class="widget-box">
-            
-            
             <div class="widget-title">
                 <span class="icon">
                     <i class="icon-user"></i>
                 </span>
                 <h5>Datos del Menu</h5>
             </div>
-            
-            
             <div class="widget-content nopadding">
                 <?php if ($custom_error != '') {
                     echo '<div class="alert alert-danger">'.$custom_error.'</div>';

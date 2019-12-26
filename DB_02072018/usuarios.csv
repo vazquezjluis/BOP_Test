@@ -1,9 +1,0 @@
-idUsuarios;nombre;email;clave;celular;estado;permisos_id;fecha_registro
-1;Administrador;admin@admin.com;$2y$12$paDndsvXHGyIn6vN7EpmvuzoWbPUFAveroCBw2aTtFLoKvk5neiyG;1165762663;1;1;0000-00-00
-2;Elejandro Romero;Ale@hotmail.com;d404559f602eab6fd602ac7680dacbfaadd13630335e951f097af3900e9de176b6db28512f2e000b9d04fba5133e8b1c6e8df59db3a8ab9d60be4b97cc9e81db;123456789;1;8;22/01/2018
-3;Rodrigo Fernandez;rfernandez@bingopilar.com;d404559f602eab6fd602ac7680dacbfaadd13630335e951f097af3900e9de176b6db28512f2e000b9d04fba5133e8b1c6e8df59db3a8ab9d60be4b97cc9e81db;152993393;1;2;22/01/2018
-4;Cristian;cristina@gmail.com;d404559f602eab6fd602ac7680dacbfaadd13630335e951f097af3900e9de176b6db28512f2e000b9d04fba5133e8b1c6e8df59db3a8ab9d60be4b97cc9e81db;1522324425;1;10;22/01/2018
-5;Tecnico;tecnicos@bingopilar.com.ar;$2y$12$YKt1MfA325Ef.y3SJ0OQje.khbcyA0ZY3oyHri6RUq3nMv8BTCcpC;1234567889;1;14;19/03/2018
-6;Camilo Sesto;camilo@yahoo.com;$2y$12$WYueglvBBJRbLcJCpjeL/OpIsd9y7jGLq4kpoPj/lQjTyfAAfQC.i;112234435;1;3;27/03/2018
-7;Christian;christian.garcia@bingopilar.com.ar;$2y$12$nPio7bKY0toNhWsYKZFVC.V3ogRUdIkWFLt6Ga3388I0JCMroMGz6;;1;1;29/05/2018
-8;Facundo Espinola;facundo.espinola@bingopilar.com.ar;$2y$12$01LxrqiZKmyq52sCN4HpkejF4LZ3VuuYPCkvVYrYpF2njh/T7UWvm;;1;10;04/06/2018

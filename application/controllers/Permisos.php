@@ -263,6 +263,7 @@ class Permisos extends CI_Controller {
                   'eMenu' => $this->input->post('eMenu'),
                   'dMenu' => $this->input->post('dMenu'),
                   'cMenu' => $this->input->post('cMenu'),
+                  'vInicioEmpleado' => $this->input->post('vInicioEmpleado'),
                 
                   'vPedido' => $this->input->post('vPedido'),
                   'ePedido' => $this->input->post('ePedido'),

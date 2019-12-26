@@ -192,19 +192,30 @@ class CalendarioMenu extends CI_Controller {
     
     
     function pedir(){
-        $idMenu = $this->input->post('idMenu');
+        $idMenuBingo = '';
+        $idMenu = '';
+        if(isset($_POST['idMenu'])){
+            $idMenu = $this->input->post('idMenu');
+        }
+        if(isset($_POST['idMenuBingo'])){
+            $idMenuBingo = $this->input->post('idMenuBingo');
+        }
+        
+        
         $legajo = $this->input->post('legajo');
         $id     = $this->input->post('idCalendarioMenu');
         //Obtengo el valor actual del menu que el empleado esta pidiendo
         $valor_menu= $this->valormenu_model->get('valormenu','importe_interno,importe_externo','valormenu.estado!=0');
         $valor_menu_interno = $this->menuPersonal_model->getById($idMenu);
-        if($valor_menu_interno->valor ==null){
+        if(!isset($valor_menu_interno) ){
             $vmi = 0;
         }else{
             $vmi = $valor_menu_interno->valor;
         }
-        if(!isset($idMenu) or $idMenu==NULL){
+        if((!isset($idMenu) or $idMenu==NULL) and 
+                (!isset($idMenuBingo) or $idMenuBingo==NULL)){
             // si no retorna nada entonces existe un error
+            
         } else{
             //Verifica si exite un regitro en el calendario, porque puede dar el caso que el empleado pida directamente
             // sin haber echo una programacion el menu, tratandoce del dia actual
@@ -215,12 +226,12 @@ class CalendarioMenu extends CI_Controller {
                         " pedido.f_registro = '".date('Y-m-d')."' and pedido.legajo = ".$this->input->post("legajo"));
 
                 // Si no hay pedidos pendientes  y existe un menu
-                if (count($this->data['pendiente'])==0 and $idMenu!='' and $idMenu!=null){  
+                if (count($this->data['pendiente'])==0){  
                     
                     
                     // si existe el legajo y el id de menu entonces 
                     
-                    if(isset($idMenu) and isset($legajo) and count($valor_menu)){
+                    if( (isset($idMenu)or isset($idMenuBingo)) and isset($legajo) and count($valor_menu)){
                         
                         
                         $data = array(
@@ -228,8 +239,8 @@ class CalendarioMenu extends CI_Controller {
                             'persona'           => $this->input->post('idPersona'),
                             'persona_str'       => $this->input->post('persona_str'),
                             'descripcion'       => '',
-                            'idMenu'            => $this->input->post('idMenu'),
-                            'idMenuBingo'       => $this->input->post('idMenuBingo'),
+                            'idMenu'            => $idMenu,
+                            'idMenuBingo'       => $idMenuBingo,
                             'usuario'           => $this->session->userdata('id'),
                             'importe_externo'   => $valor_menu[0]->importe_externo,
                             'importe_interno'   => $vmi,
@@ -252,18 +263,33 @@ class CalendarioMenu extends CI_Controller {
             else{
                 
                 if(count($valor_menu)){
+                    $title = '';
+                    $Atitle = $this->menuPersonal_model->getMenuManual(" 1 = 1 AND "
+                            . " idMenuPersonal = ".$idMenu);
+                    $Btitle = $this->menuPersonal_model->getMenuManual(" 1 = 1 AND "
+                            . " idMenuPersonal = ".$idMenuBingo);
+                    echo "<pre>";
+                    var_dump($Atitle);
+                    var_dump($Btitle);
+                    echo "</pre>";
+                    if(isset($Atitle) and count($Atitle)){
+                        $title.=$Atitle[0]->descripcion;
+                    }
+                    if(isset($Btitle) and count($Btitle)){
+                        $title.=" ".$Btitle[0]->descripcion;
+                    }
                     //Primero y ante todo guardo el registro en el calendario, direcatemnte con el color rojo
                     $data = array(
                         'legajo'        => $legajo,
                         'persona_str'   => $this->input->post('persona_str'),
-                        'title'         => $this->input->post('title'),
+                        'title'         => $title,
                         'descripcion'   => $this->input->post('descripcion'),
                         'start'         => $this->input->post('start'),
                         'color'         => '#da4f49',
                         'textColor'     => $this->input->post('textColor'),
                         'end'           => $this->input->post('end'),
                         'idMenu'        => $idMenu,
-                        'idMenuBingo'        => $this->input->post('idMenuBingo'),
+                        'idMenuBingo'   => $idMenuBingo,
                         'estado'        => 1,
                         'f_registro'    => date('Y-m-d h:i:s')
                     );
@@ -277,7 +303,7 @@ class CalendarioMenu extends CI_Controller {
                                 'persona_str'       => $this->input->post('persona_str'),
                                 'descripcion'       => '',
                                 'idMenu'            => $idMenu,
-                                'idMenuBingo'       => $this->input->post('idMenuBingo'),
+                                'idMenuBingo'       => $idMenuBingo,
                                 'usuario'           => $this->session->userdata('id'),
                                 'estado'            => 1,
                                 'f_registro'        => date('Y-m-d h:i:s'),

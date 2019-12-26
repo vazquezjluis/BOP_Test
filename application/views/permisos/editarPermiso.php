@@ -569,6 +569,28 @@
                                                     </td>
 
                                                 </tr>
+                                                <tr>
+
+                                                    <td>
+                                                        <label>
+                                                            <label>
+                                                                <input <?php if(isset($permisos['vInicioEmpleado'])){ if($permisos['vInicioEmpleado'] == '1'){
+                                                                    echo 'checked';}}?> name="vInicioEmpleado" class="marcar" type="checkbox" value="1" />
+                                                                <span class="lbl"> Visualizar Inicio del empleado</span>
+                                                            </label>
+                                                        </label>
+                                                    </td>
+
+                                                    <td>
+                                                    </td>
+                                                    
+                                                    <td>
+                                                    </td>
+
+                                                    <td>
+                                                    </td>
+
+                                                </tr>
                                              </tbody>
                                        </table>
                                    </div>
