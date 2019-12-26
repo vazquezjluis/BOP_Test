@@ -1,14 +1,18 @@
-
+<!-- <link rel="stylesheet" href="<?php echo base_url();?>assets/js/jquery-ui/css/smoothness/jquery-ui-1.9.2.custom.css" /> -->
+<script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery-ui/js/jquery-ui-1.9.2.custom.js"></script>
+<script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery.validate.js"></script>
+<script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery.dataTables.min.js" ></script>
+<!-- <link href="<?php  echo base_url()?>assets/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/> -->
 <style>
     input[type=text],input[type=submit], input[type=date],select {
             width: 100%;
             height: 25px;
-            
+
             box-sizing: border-box;
-            
+
 }
-    
-</style>        
+
+</style>
 <form method="get" action="#">
 <!--            <div class="span2">
                 <a href="#" class="btn btn-success span12"><i class="icon-plus icon-white"></i> Crear Ticket</a>
@@ -16,11 +20,11 @@
 
         <div class="span12" >
             <div class="span12" >
-                <div class="span2">
+                <!-- <div class="span2">
                     <label>Descripcion</label>
                     <input type="text"  name="descripcion"  id="descripcion"  placeholder="Descripcion"  value="<?php echo $this->input->get('descripcion'); ?>" >
-                </div>
-                <div class="span2">
+                </div> -->
+                <!-- <div class="span2">
                     <label>Referencia</label>
                     <input type="text" name="referencia"  id="referencia"  placeholder="Referencia"  value="<?php echo $this->input->get('referencia'); ?>" >
                 </div>
@@ -30,15 +34,16 @@
                         <option value="">Selecione estado</option>
                         <option value="1" <?php if($this->input->get('estado')==1){ echo "selected";} ?>>Abierto</option>
                         <option value="2" <?php if($this->input->get('estado')==2){ echo "selected";} ?>>Resuelto</option>
+                        <option value="3" <?php if($this->input->get('estado')==3){ echo "selected";} ?>>Cerrado</option>
+                        <option value="4" <?php if($this->input->get('estado')==4){ echo "selected";} ?>>Cancelado</option>
 <!--                        <option value="3" <?php // if($this->input->get('estado')==3){ echo "selected";} ?>>Cerrado</option>
                         <option value="4" <?php // if($this->input->get('estado')==4){ echo "selected";} ?>>Cancelado</option>-->
-                    </select>
-                </div>            
-                <div class="span2">
+                    <!-- </select> -->
+                <!-- <div class="span2">
                     <label>emisor</label>
                     <select name="emisor" id="emisor" >
                         <option value="">Seleccione emisor</option>
-                        <?php 
+
                         foreach($results_usuario as $ru){
                             echo "<option value='".$ru->idUsuarios."' "   ;
                             if ($ru->idUsuarios == $this->input->get('emisor')){
@@ -46,10 +51,10 @@
                             }
                             echo ">".$ru->nombre."</option>";
                         }
-                        ?>
+
                     </select>
-                </div>
-                <div class="span2">
+                </div> -->
+                <!-- <div class="span2">
                     <label>Desde</label>
                     <input type="date" name="desde"  id="desde"  value="<?php echo $this->input->get('desde');?>">
                 </div>
@@ -57,23 +62,34 @@
                     <label>Hasta</label>
                     <input type="date" name="hasta"  id="hasta"  value="<?php echo $this->input->get('hasta');?>" >
                 </div>
-            </div>
-            
+            </div> -->
+
             <div class="span12" style="margin-left: 0px;">
-                <div class="span6">
+            <div class="span2">
+                <!-- <label>Prioridad</label> -->
+                <select name="prioridad" id="prioridad" >
+                    <option value="">Selecione prioridad</option>
+                    <option value="1" <?php if($this->input->get('prioridad')==1){ echo "selected";} ?>>Baja</option>
+                    <option value="2" <?php if($this->input->get('prioridad')==2){ echo "selected";} ?>>Alta</option>
+                    <option value="3" <?php if($this->input->get('prioridad')==3){ echo "selected";} ?>>Media</option>
+<!--                        <option value="3" <?php // if($this->input->get('estado')==3){ echo "selected";} ?>>Cerrado</option>
+                    <option value="4" <?php // if($this->input->get('estado')==4){ echo "selected";} ?>>Cancelado</option>-->
+                </select>
+            </div>
+                <div class="span2">
                     <a href="<?php echo base_url();?>index.php/reportes/excel_ticket" class="btn btn-success"><i class="icon-download icon-white"></i>&nbsp; Descargar Excel</a>
                 </div>
-                <div class="span6">
-                    <button class="btn pull-right"> <i class="icon-refresh"></i>&nbsp; Actualizar </button>
+                <div class="span2 mt-6">
+                    <button class="btn pull-left"> <i class="icon-refresh"></i>&nbsp; Actualizar </button>
                 </div>
-                
+
             </div>
-            <div class="span12"></div>
+            <!-- <div class="span6"></div> -->
         </div>
     </form>
 
 
-  
+
 <!--<a href="<?php // echo base_url();?>index.php/ticket/agregar" class="btn btn-success">-->
     <!--<i class="icon-plus icon-white"></i> Agregar nuevo Ticket</a>-->
 <?php
@@ -89,7 +105,7 @@ if(!$results){?>
         </div>
 
         <div class="widget-content nopadding">
-            <table class="table table-bordered">
+            <table id="registrostickets" class="table table-bordered">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -114,7 +130,7 @@ if(!$results){?>
     </div>
 
 <?php }else{
-	
+
 
 ?>
 <div class="widget-box">
@@ -128,9 +144,9 @@ if(!$results){?>
 
 <div class="widget-content nopadding">
 
-    
+
 <div style="overflow-x:auto;">
-<table class="table table-striped">
+<table id="registrostickets" class="table table-striped">
     <thead>
         <tr>
             <th>#</th>
@@ -144,8 +160,8 @@ if(!$results){?>
         </tr>
     </thead>
     <tbody>
-        
-        <?php 
+
+        <?php
             $estado = array(
                 1=>"Abierto",
                 2=>"Resuelto",
@@ -153,11 +169,11 @@ if(!$results){?>
                 4=>"Cancelado"
             );
             $prioridad = array(
-                0=>array("success","baja"),
-                1=>array("important","alta"),
-                2=>array("warning","media"),
-                3=>array("",""),
+                1=>array("success","baja"),
+                2=>array("important","alta"),
+                3=>array("warning","media"),
                 4=>array("",""),
+                5=>array("",""),
                 ''=>array("","")
             );
             foreach ($results as $r) {
@@ -172,20 +188,26 @@ if(!$results){?>
             echo '<td><span class="badge badge-'.$prioridad[$r->prioridad][0].'">'.$prioridad[$r->prioridad][1].'</span></td>';
             echo '<td>'.$r->asignado.'</td>';
             echo '<td>'.$estado[$r->estado].'</td>';
-            
+
             echo '</tr>';
         }?>
-        <tr>
-            
-        </tr>
     </tbody>
 </table>
 </div>
 </div>
 </div>
-<?php echo $this->pagination->create_links();}?>
+<?php //echo $this->pagination->create_links();
+}
+?>
+<script>
+$(document).ready(function(){
+//tbla de datos
+          $('#registrostickets').dataTable( {
+            "bInfo": false,
+            "bLengthChange": false,
+            "nTHead":false
+          } );
 
+});
 
-
- 
-
+</script>
