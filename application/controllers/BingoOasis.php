@@ -68,7 +68,7 @@ class BingoOasis extends CI_Controller {
                     $this->data['view'] = 'bingoOasis/panel';
                     $this->load->view('tema/header',  $this->data);
                     //Obtiene total de usuarios
-                    
+
 //                }
 
     }
@@ -123,7 +123,7 @@ class BingoOasis extends CI_Controller {
         header('Access-Control-Allow-Headers: Content-Type');
 
         $this->load->library('form_validation');
-//        $this->form_validation->set_rules('email','E-mail','valid_email|required|trim');
+       $this->form_validation->set_rules('email','E-mail','valid_email|required|trim');
         $this->form_validation->set_rules('clave','Clave','required|trim');
 
 
@@ -133,12 +133,12 @@ class BingoOasis extends CI_Controller {
         }
         else {
             $usuario = $this->input->post('usuario');
-            // $password = $this->input->post('clave');
+            $password = $this->input->post('clave');
             $this->load->model('BingoOasis_model');
             $user = $this->BingoOasis_model->check_credentials($usuario);
 
             if($user){
-                // if(password_verify($password, $user->clave)){
+                if(password_verify($password, $user->clave)){
                     $session_data = array(
                         'nombre' => $user->nombre,
                         'email' => $user->email,
@@ -149,11 +149,11 @@ class BingoOasis extends CI_Controller {
                     $this->session->set_userdata($session_data);
                     $json = array('result' => true);
                     echo json_encode($json);
-                // }
-                // else{
-                //     $json = array('result' => false, 'message' => 'Los datos de acceso son incorrectos.');
-                //     echo json_encode($json);
-                // }
+                }
+                else{
+                    $json = array('result' => false, 'message' => 'Los datos de acceso son incorrectos.');
+                    echo json_encode($json);
+                }
             }
             else{
                 $json = array('result' => false, 'message' => 'No encontramos su usuario, por favor verifique sus credenciales.');
