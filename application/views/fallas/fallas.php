@@ -1,3 +1,18 @@
+<!-- <link rel="stylesheet" href="<?php echo base_url();?>assets/js/jquery-ui/css/smoothness/jquery-ui-1.9.2.custom.css" /> -->
+<script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery-ui/js/jquery-ui-1.9.2.custom.js"></script>
+<script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery.validate.js"></script>
+<script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery.dataTables.min.js" ></script>
+<!-- <link href="<?php  echo base_url()?>assets/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/> -->
+<style>
+    input[type=text],input[type=submit], input[type=date],select {
+            width: 100%;
+            height: 25px;
+
+            box-sizing: border-box;
+
+}
+
+</style>
 <!--<a href="<?php // echo base_url();?>index.php/maquinas/agregar" class="btn btn-success">-->
             <?php if($this->permission->checkPermission($this->session->userdata('permiso'),'cFallas')){ ?>
               <a href="<?php echo base_url()?>index.php/fallas/agregar" class="btn btn-success">
@@ -38,7 +53,7 @@ if(!$results){?>
     </div>
 
 <?php }else{
-	
+
 
 ?>
 <div class="widget-box">
@@ -53,7 +68,7 @@ if(!$results){?>
 <div class="widget-content nopadding">
 
 <div style="overflow-x:auto;">
-<table class="table table-bordered">
+<table class="table table-bordered" id="registrofallas">
     <thead>
         <tr>
             <th>#</th>
@@ -73,7 +88,7 @@ if(!$results){?>
 //                $articulos [$ra->idArticulo]= $ra->nombre;
 //            }
 //        }
-        
+
         $gravedad = array(
             1=>array("important","Grave"),
             2=>array("warning","Media"),
@@ -98,28 +113,28 @@ if(!$results){?>
                     }
                 echo '</td>';
                 echo '<td> ';
-                if($this->permission->checkPermission($this->session->userdata('permiso'),'eFallas')){ 
+                if($this->permission->checkPermission($this->session->userdata('permiso'),'eFallas')){
                     echo '<a href="'.base_url().'index.php/fallas/editar/'.$r->idFallas.'" class="btn btn-info tip-top" title="Editar Falla"><i class="icon-pencil icon-white"></i></a>';
                 }
                 if($this->permission->checkPermission($this->session->userdata('permiso'),'dFallas')){
                     echo '<a href="#modal-excluir" class="btn btn-danger tip-top " role="button" data-toggle="modal" falla="'.$r->idFallas.'"  title="Eliminar Falla">
                                     <i class="icon-remove icon-white"></i></a>';
-                }             
+                }
                 echo'</td>';
             echo '</tr>';
-            
+
         }?>
     </tbody>
 </table>
 </div>
 </div>
 </div>
-<?php  echo $this->pagination->create_links();
+<?php // echo $this->pagination->create_links();
 }?>
 
 
 
- 
+
 <!-- Modal -->
 <div id="modal-excluir" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <form action="<?php echo base_url() ?>index.php/fallas/desactivar" method="post" >
@@ -140,7 +155,7 @@ if(!$results){?>
 <script type="text/javascript">
 $(document).ready(function(){
 
-   $(document).on('click', 'a', function(event) {       
+   $(document).on('click', 'a', function(event) {
         var falla = $(this).attr('falla');
         $('#idFalla').val(falla);
 
@@ -148,5 +163,14 @@ $(document).ready(function(){
 
 });
 
-</script>
+$(document).ready(function(){
+//tbla de datos
+          $('#registrofallas').dataTable( {
+            "bInfo": false,
+            "bLengthChange": false,
+            "nTHead":false
+          } );
 
+});
+
+</script>

@@ -1,4 +1,4 @@
-<?php //var_dump($persona); 
+<?php //var_dump($persona);
 //var_dump($calendario_menu);?>
 
 
@@ -30,7 +30,7 @@
         border-radius: 5px;
         text-align: center;
     }
-    
+
     .lblSelected{
         border: 1px solid brown;
         padding: 5px;
@@ -39,7 +39,7 @@
         margin: 5px;
         border-radius: 5px;
         text-align: center;
-        
+
     }
     .lblUnselectedBingo{
         border: 1px solid orangered;
@@ -61,7 +61,7 @@
         width: 25%;
         float: left;
     }
-    
+
 
 
 
@@ -85,9 +85,9 @@
         <div class="span10" style="">
             <input type="hidden" id="empleado" value="<?php echo $usuario->nombre; ?> ">
             <div id="calendarioWeb"></div>
-        </div>    
+        </div>
     </div>
-    
+
 </div>
 
 <?php
@@ -109,8 +109,8 @@ if (isset($parametroMenu)){
     if (in_array("vi", $dia))array_push ($diaCompleto, "Viernes");
     if (in_array("sa", $dia))array_push ($diaCompleto, "Sabados");
     if (in_array("do", $dia))array_push ($diaCompleto, "Domingos");
-            
-    // Dias en los que el empleado puede cargar su plato 
+
+    // Dias en los que el empleado puede cargar su plato
     $day = array();
     if (in_array("lu", $dia))array_push ($day, "Mon");
     if (in_array("ma", $dia))array_push ($day, "Tue");
@@ -121,7 +121,7 @@ if (isset($parametroMenu)){
     if (in_array("do", $dia))array_push ($day, "Sun");
 
     $cantidad   = $parametroMenu[0]->cantidad;
-    
+
     //Definir el limite
     $fecha = date('Y-m-j');
     $nuevafecha = strtotime ( '+'.$cantidad.' '.$type[$parametroMenu[0]->tiempo].'', strtotime ( $fecha ) ) ;
@@ -132,7 +132,7 @@ if (isset($parametroMenu)){
 
 <!--Modal para crear, modificar y eliminar-->
 <div id="modalEventos" data-backdrop="static" data-keyboard="false" class="modal hide fade" style="color: #00000;" tabindex="-1" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
-  
+
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
     <h4 style="color:#000000" id="tituloEvento"></h4>
@@ -142,8 +142,8 @@ if (isset($parametroMenu)){
         <div class="controls">
             <!--Color de etiqueta <input type="color" style="max-width: 50px;"name="txtColor" id="txtColor" value="#3688dc">-->
         </div>
-    </div> 
-      
+    </div>
+
     <div class="control-group">
         <div id="menus"></div>
     </div>
@@ -156,59 +156,59 @@ if (isset($parametroMenu)){
             <input class="confirmarEliminacion" type="radio" style="margin-top: 0px;margin-right: 10px;" name='descripcion' data-descripcion="Falta del empleado">Falta del empleado
         </label>
     </div>
-    
+
     <input type="hidden" name="fecha" id="fecha">
     <input type="hidden" name="txtID" id="txtID" value="">
   </div>
   <div class="modal-footer">
       <button type="button" class="btn btn-primary btn-large pull-left" style="display:none;" id="confirmarPedido" >Pedir ahora!</button>
       <div class="btn-group">
-        <button type="button" class="btn btn-large" data-dismiss="modal"  aria-hidden="true">Cancelar</button>      
+        <button type="button" class="btn btn-large" data-dismiss="modal"  aria-hidden="true">Cancelar</button>
         <button type="button" class="btn btn-large" id="btnAgregar">Guardar</button>
         <button type="button" class="btn btn-large" id="btnModificar">Modificar</button>
         <button type="button" class="btn btn-danger btn-large" id="btnEliminar">Borrar</button>
       </div>
-      
-      
+
+
   </div>
-  
+
 </div>
 
 <!--Modal Error-->
 <div id="modalError" data-backdrop="static" data-keyboard="false" class="modal hide fade" style="color: #00000;" tabindex="-1" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
-  
-  <div class="modal-body">    
+
+  <div class="modal-body">
     <div class="control-group">
         <div class="alert alert-danger"><h5>No es posible programar un menu en fechas pasadas.</h5></div>
     </div>
     <button class="btn btn-danger" style="float:right;" data-dismiss="modal"  aria-hidden="true">Entendido</button>
 
   </div>
-  
-  
+
+
 </div>
 
 <!--Modal modalFechaLimite-->
 <div id="modalFechaLimite" data-backdrop="static" data-keyboard="false" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 
-  <div class="modal-body">    
+  <div class="modal-body">
     <div class="control-group">
         <div class="alert alert-info"><h5 id="msj"></h5></div>
     </div>
-      <button class="btn btn-success float-right" style="float:right;" data-dismiss="modal"  aria-hidden="true">Entendido</button>  
+      <button class="btn btn-success float-right" style="float:right;" data-dismiss="modal"  aria-hidden="true">Entendido</button>
   </div>
 
-  
+
 </div>
 
 <!--pendiente-->
 <div id="pedidoRealizado" class="modal hide fade" style="color: #00000;" tabindex="-1" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
-  
-  <div class="modal-body">    
+
+  <div class="modal-body">
     <div class="control-group">
         <div class="alert alert-info">
             <h5>Tu <span id="menuPendiente"></span> se encuentra <span id="estadoMenu"></span></h5>
-            
+
         </div>
     </div>
       <button class="btn btn-success" style="float:right" data-dismiss="modal"  aria-hidden="true">Entendido</button>
@@ -219,20 +219,20 @@ if (isset($parametroMenu)){
 
 
 <script>
-    
+
  $(document).ready(function (){
      var parametroDia        =  [<?php echo '"'.implode('","', $day).'"'; ?>];
      var fechaActual = new Date();
-     
+
      var NuevoEvento;
-     
+
       $('.solo-numero').keyup(function (){
         this.value = (this.value + '').replace(/[^0-9]/g, '');
       });
-      
-       
-          
-      
+
+
+
+
       function EnviarInformacion(accion,objEvento){
           $.ajax({
               type:'POST',
@@ -270,9 +270,9 @@ if (isset($parametroMenu)){
                 //end
                 idMenu              : $("input:radio[name=menu]:checked").val(),
                 idMenuBingo         : $("input:radio[name=menuBingo]:checked").val(),
-            } 
+            }
       }
-      
+
       $("#calendarioWeb").fullCalendar({
                 height:resolucion,
                 header:{
@@ -282,15 +282,15 @@ if (isset($parametroMenu)){
                     right:'today,prev,next'
                 },
                 dayClick:function(date,jsEvent,view){
-                   
+
                     dayAction(date,<?php echo $calendario_menu;?>);
                 },
                 events:'<?php echo site_url() ?>/pedido/calendario_menu',
                 eventClick:function(calEvent,jsEvent,view){
-                    
+
                     dayAction(calEvent.start,<?php echo $calendario_menu;?>)
                 }
-        });  
+        });
 
       function limpiar(){
             $("#txtID").val('');
@@ -307,20 +307,20 @@ if (isset($parametroMenu)){
         return false;
     }
       function dayAction(date,data){
-         
+
         var check = moment(date).format('YYYY-MM-DD');//fecha del dia del calendario
         var today = moment(new Date()).format('YYYY-MM-DD');//fecha de hoy
         var limite =new Date("<?php echo (string)$limite; ?>");
         //Obtengo el srting del dia presionado
         var day_event = fechaActual.toString().slice(0,3); // Sun, Sat, Mon...etc
-        
-        
-        
+
+
+
         // Cuando la fecha limite es mayor a la fecha del dis no se permite realizar acciones
         if (check > moment(limite).format('YYYY-MM-DD') ){
-           $("#msj").text("Por el momento solo se pueden cargar platos hasta el dia <?php  echo date_format($fecha_, 'd/m/y');?>");  
-           $("#modalFechaLimite").modal(); 
-           
+           $("#msj").text("Por el momento solo se pueden cargar platos hasta el dia <?php  echo date_format($fecha_, 'd/m/y');?>");
+           $("#modalFechaLimite").modal();
+
         }else{
             //Si el evento corresponde al dia actual entonces busca un pedido pendiente
             if( check == today){
@@ -332,15 +332,15 @@ if (isset($parametroMenu)){
                           var html = JSON.parse(msg);
                           $("#estadoMenu").text(html.estadoStr);
                           $("#menuPendiente").text(html.descripcion);
-                          $("#pedidoRealizado").modal();   
-                          
+                          $("#pedidoRealizado").modal();
+
 
                       }else{
                           $("#estadoMenu").text('');
                           $("#menuPendiente").text('');
                           $("#confirmarPedido").show();
-                         
-                        
+
+
                         //Obtiene los menus
                         get_menus(date,data);
                         //obtiene los eventos
@@ -350,7 +350,7 @@ if (isset($parametroMenu)){
                             $("#btnModificar").replaceWith('');
                             $("#btnBorrar").replaceWith('');
                         }
-                        $("#modalEventos").modal(); 
+                        $("#modalEventos").modal();
                       }
                   },
                   error:function(){
@@ -362,18 +362,18 @@ if (isset($parametroMenu)){
                 // Si el dia es mayor o igual a hoy, solo busca los menus y eventos
                 if(check >= today){
                     if (!inArray(day_event,parametroDia)){
-                        $("#msj").text(" Por el momento solo se puede programar los dias  <?php echo implode(',',$diaCompleto);?> hasta el dia <?php  echo date_format($fecha_, 'd/m/y');?>");  
-                        $("#modalFechaLimite").modal(); 
-                            
+                        $("#msj").text(" Por el momento solo se puede programar los dias  <?php echo implode(',',$diaCompleto);?> hasta el dia <?php  echo date_format($fecha_, 'd/m/y');?>");
+                        $("#modalFechaLimite").modal();
+
                     } else {
                         //Obtiene los menus
                         get_menus(date,data);
                         //obtiene los eventos
                         get_eventos(date,data);
-                        $("#modalEventos").modal(); 
+                        $("#modalEventos").modal();
 
                     }
-                    
+
                 }else{
                     $("#modalError").modal();
                     //alert(" No es posible programar pedidos en fechas pasadas.")
@@ -382,10 +382,10 @@ if (isset($parametroMenu)){
             $("#tituloEvento").html(" Menu del "+moment(date).format('DD-MM-YYYY'));
             $("#fecha").val(date.format());
             $("#rtaEliminacion").hide();
-        
+
         }
       }
-      
+
       function selectMenu(element){
             $(".lbl-menu").each(function(){
                 $(this).removeClass("lblSelected")
@@ -394,7 +394,7 @@ if (isset($parametroMenu)){
             $(element).removeClass("lblUnselected");
             $(element).addClass("lblSelected");
       }
-        
+
       function selectMenuBingo(element){
             $(".lbl-menuBingo").each(function(){
                 $(this).removeClass("lblSelectedBingo")
@@ -403,7 +403,7 @@ if (isset($parametroMenu)){
             $(element).removeClass("lblUnselectedBingo");
             $(element).addClass("lblSelectedBingo");
         }
-      
+
       //Obtiene los menus del dia
       function get_menus(date,data){
           $.ajax({
@@ -411,7 +411,7 @@ if (isset($parametroMenu)){
             dataType: 'json',
             success: function(menus){
                 if(menus){
-                    
+
                     var list = '';
                     var list_interno = '';
                     $.each(menus, function(i, item){
@@ -420,14 +420,14 @@ if (isset($parametroMenu)){
                         }else{
                             list_interno+='<label class="lbl-menuBingo" id="lbl_'+menus[i].idMenuPersonal+'"  ><input  type="radio" style="width:1px; height:1px;" name="menuBingo" id="rad_'+menus[i].idMenuPersonal+'" value="'+menus[i].idMenuPersonal+'"  data-title="'+menus[i].descripcion+'">'+menus[i].descripcion+' $ '+menus[i].valor+'</label>';
                         }
-                        
-                        
+
+
                     });
                     $("#menus").replaceWith('<div id="menus"><b>Plato del dia valor $ <?php echo $importe_externo[0]->importe_externo; ?></b><br>'+list+'<hr><b>Bingo Oasis</b><br>'+list_interno+'</div>');
                     $(".lbl-menu").addClass("lblUnselected");
                     $(".lbl-menuBingo").addClass("lblUnselectedBingo");
-                    
-                    
+
+
                     //botones
                     $("#btnEliminar").show();
                     $("#btnAgregar").show();
@@ -445,7 +445,7 @@ if (isset($parametroMenu)){
                             </div>');
 
                 }
-                
+
                 $(".lbl-menu").click(function(){
                     selectMenu(this);
                 });
@@ -454,10 +454,10 @@ if (isset($parametroMenu)){
                 });
             }
         });
-        
-        
+
+
       }
-      
+
       var clics = 0;
       function inhibe_boton(boton){
         clics++;
@@ -466,14 +466,14 @@ if (isset($parametroMenu)){
             alert (" Un click es suficiente.\n\nEl el dato está siendo enviado.\n\n Gracias por esperar.");
         }
       }
-      
+
       //Obtiene los eventos del dia
       function get_eventos(date,data){
         var check = moment(date).format('YYYY-MM-DD');
         var today = moment(new Date()).format('YYYY-MM-DD');
-        
+
           $.ajax({
-              
+
             url: "<?php echo base_url();?>index.php/calendarioMenu/buscarEvento?legajo="+data[0].legajo+"&fecha="+date.format(),
             dataType: 'json',
             success: function(existe){
@@ -487,7 +487,8 @@ if (isset($parametroMenu)){
                     $("#lbl_"+existe[0].idMenuBingo).addClass('lblSelectedBingo');
                     $("#fecha").val(existe[0].start);
                     $("#txtColor").val(existe[0].color);
-                    
+                    alert(existe);
+
                     //botones
                     $("#btnAgregar").hide();
                     $("#btnEliminar").show();
@@ -497,7 +498,7 @@ if (isset($parametroMenu)){
                     }else{
                         $("#confirmarPedido").hide()
                     }
-                    
+
 
                 }else{
                     limpiar();
@@ -510,37 +511,37 @@ if (isset($parametroMenu)){
                     }else{
                         $("#confirmarPedido").hide()
                     }
-                    
-                    
+
+
                 }
             }
         });
       }
-      
-      
-      $("#btnAgregar").click(function(){          
+
+
+      $("#btnAgregar").click(function(){
           RecolectarDatosGUI();
-          EnviarInformacion('agregar',NuevoEvento);          
+          EnviarInformacion('agregar',NuevoEvento);
       });
-      $("#btnModificar").click(function(){          
+      $("#btnModificar").click(function(){
           RecolectarDatosGUI();
-          EnviarInformacion('modificar',NuevoEvento);          
+          EnviarInformacion('modificar',NuevoEvento);
       });
-      
-      $("#btnEliminar").click(function(){          
-          $("#rtaEliminacion").show();          
+
+      $("#btnEliminar").click(function(){
+          $("#rtaEliminacion").show();
       });
-      
+
       $(".confirmarEliminacion").click(function(){
           RecolectarDatosGUI();
           EnviarInformacion('eliminar',NuevoEvento);
       });
-      
+
       $("#confirmarPedido").click(function(){
           RecolectarDatosGUI();
           EnviarInformacion('pedir',NuevoEvento);
       });
-      
+
       $("#borrar").click(function(){
             $("#legajo").val('');
             $("#persona").val('');
@@ -549,9 +550,8 @@ if (isset($parametroMenu)){
             $("#empleado").text('');
             $("#calendarioWeb").replaceWith('<div id="calendarioWeb"></div>');
       });
-      
- });/* Fin del document ready*/
-    
- 
-</script>
 
+ });/* Fin del document ready*/
+
+
+</script>

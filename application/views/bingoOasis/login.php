@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 <html lang="pt-br">
-    
+
 <head>
         <title>Bingo Oasis</title><meta charset="UTF-8" />
 <link rel="icon" href="<?php echo base_url();?>assets/img/icono.ico" type="image/ico" sizes="16x16">
@@ -14,14 +14,14 @@
         <link rel="shortcut icon" href="<?php echo base_url(); ?>assets/img/fav.png">
     </head>
     <body>
-        <div id="loginbox">            
+        <div id="loginbox">
             <form  class="form-vertical" id="formLogin" method="post" action="<?php echo base_url()?>index.php/bingoOasis/verificarLogin">
-                  <?php if($this->session->flashdata('error') != null){?>
-                        <div class="alert alert-danger">
-                          <button type="button" class="close" data-dismiss="alert">&times;</button>
-                          <?php echo $this->session->flashdata('error');?>
-                       </div>
-                  <?php }?>
+
+                    <div class="alert alert-danger">
+                      <button type="button" class="close" data-dismiss="alert">&times;</button>
+
+                   </div>
+
                 <div class="control-group normal_text"> <h3><img src="<?php echo base_url()?>assets/img/logo.png" alt="Logo" /></h3></div>
                 <div class="control-group">
                     <div class="controls">
@@ -42,11 +42,11 @@
                     <button id="btn-acessar" class="btn btn-success btn-large"/> Ingresar</button>
                 </div>
             </form>
-       
+
         </div>
-        
-        
-        
+
+
+
         <script src="<?php echo base_url()?>assets/js/bootstrap.min.js"></script>
         <script src="<?php echo base_url()?>assets/js/validate.js"></script>
 
@@ -60,17 +60,17 @@
                 $("#formLogin").validate({
                      rules :{
                           usuario: { required: true},
-                          clave: { required: true}
+                          clave: { required: false}
                     },
                     messages:{
                           usuario: { required: 'Campo Requerido.'},
                           clave: {required: 'Campo Requerido.'}
                     },
-                   submitHandler: function( form ){       
+                   submitHandler: function( form ){
                          var dados = $( form ).serialize();
                          $('#btn-acessar').addClass('disabled');
                          $('#progress-acessar').removeClass('hide');
-                    
+
                         $.ajax({
                           type: "POST",
                           url: "<?php echo base_url();?>index.php/bingoOasis/verificarLogin?ajax=true",
@@ -86,7 +86,7 @@
 
                                 $('#btn-acessar').removeClass('disabled');
                                 $('#progress-acessar').addClass('hide');
-                                
+
                                 $('#call-modal').trigger('click');
                             }
                           }
@@ -132,12 +132,3 @@
     </body>
 
 </html>
-
-
-
-
-
-
-
-
-

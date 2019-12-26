@@ -1,14 +1,14 @@
 <?php
 
 class ValorMenu extends CI_Controller {
-    
+
 
     /**
-     * author: Jose Luis Vazquez 
+     * author: Jose Luis Vazquez
      * email: vazquezjluis@yahoo.com
      * celular : (54) 1165792663
      */
-    
+
     function __construct() {
         parent::__construct();
         if( (!session_id()) || (!$this->session->userdata('conectado'))){
@@ -20,23 +20,23 @@ class ValorMenu extends CI_Controller {
 //          redirect(base_url());
 //        }
 
-        
+
 //        $this->load->model('menuPersonal_model', '', TRUE);
         $this->load->model('consola_model', '', TRUE);
         $this->load->model('valormenu_model', '', TRUE);
-        
+
     }
-	
+
     function index(){
         //$this->gestionar();
     }
-    
-    
-    
-    
-    
+
+
+
+
+
     function gestionar(){
-        
+
         $this->load->library('pagination');
 
         $config['base_url'] = base_url().'index.php/estudio/gestionar/';
@@ -61,15 +61,15 @@ class ValorMenu extends CI_Controller {
         $config['last_tag_open'] = '<li>';
         $config['last_tag_close'] = '</li>';
 
-        $this->pagination->initialize($config); 	
+        $this->pagination->initialize($config);
 
         $this->data['results'] = $this->estudio_model->get('estudio','estudio.*, institucion_str(estudio.institucion) as institucion',' estudio.estado = 1',$config['per_page'],$this->uri->segment(3));
-       
+
 	$this->data['view'] = 'rrhh/estudio/estudio';
        	$this->load->view('tema/header',$this->data);
-	
+
     }
-    
+
     public function visualizar(){
 
 //        if(!$this->uri->segment(3) || !is_numeric($this->uri->segment(3))){
@@ -83,28 +83,27 @@ class ValorMenu extends CI_Controller {
 //        }
 
         $this->data['custom_error'] = '';
-        
+
         //Obtiene los datos del ticket
         $this->data['result'] = $this->seleccion_personal_model->get('seleccion_personal','*',
                 'seleccion_personal.idSeleccion_personal= '.$this->uri->segment(3));
-        
+
         //documentos
         $this->data['cv'] = $this->archivos_model->get('documentos','url',' funcionalidad = "seleccion_personal" AND sector = 2 AND documento="CV" AND estado = "1" AND referencia = '.$this->data['result'][0]->idSeleccion_personal);
-       
+
         $this->data['psicotecnico'] = $this->archivos_model->get('documentos','url',' funcionalidad = "seleccion_personal" AND sector = 2 AND estado = "1" AND documento="psicotecnico" AND referencia = '.$this->data['result'][0]->idSeleccion_personal);
         $this->data['ambiental'] = $this->archivos_model->get('documentos','url',' funcionalidad = "seleccion_personal" AND sector = 2 AND estado = "1" AND documento="ambiental" AND referencia = '.$this->data['result'][0]->idSeleccion_personal);
         $this->data['policial'] = $this->archivos_model->get('documentos','url',' funcionalidad = "seleccion_personal" AND sector = 2 AND estado = "1" AND documento="policial" AND referencia = '.$this->data['result'][0]->idSeleccion_personal);
-        
+
         $this->data['view'] = 'rrhh/seleccion_personal/candidato';
         $this->load->view('tema/header', $this->data);
 
-        
     }
-	
+
     function agregar(){
         //Previo a agregar un nuevo valor modificamos el estado de todos los valores a cero
         $this->valormenu_model->edit('valormenu',array ('estado'=>0),' 1 ',' 1 ');
-        
+
             $data = array(
                     'importe_externo'   => $this->input->post('importe_externo'),
                     'importe_interno'   => $this->input->post('importe_interno'),
@@ -113,11 +112,12 @@ class ValorMenu extends CI_Controller {
                     'estado' => 1
             );
             if ($this->valormenu_model->add('valormenu',$data) == TRUE)
-            {   
+            {
                 $acciones = array(
                     'usuario' => $this->session->userdata('id'),
                     'accion_id' => 1,
                     'accion' => 'El importe: '.$this->db->insert_id().' Val Ext '.$this->input->post('importe_externo').' Val Int '.$this->input->post('importe_interno'),
+                    'accion' => 'El importe: '.$this->db->insert_id().' Val Int '.$this->input->post('importe_interno').' Val Int '.$this->input->post('importe_interno'),
                     'modulo' => 1,
                     'fecha_registro' => date('Y-m-d')
                 );
@@ -127,26 +127,26 @@ class ValorMenu extends CI_Controller {
                     redirect(base_url().'index.php/menuPersonal');
                 }
             }
-            
-        
-        
+
+
+
 	$this->data['view'] = 'gastronomia/menuPersonal/menuPersonal';
         $this->load->view('tema/header',$this->data);
-   
-       
-    }	
-    
+
+
+    }
+
 
     function editar() {
 
-        
+
         $this->load->library('form_validation');
         $this->data['custom_error'] = '';
         if ($this->form_validation->run('estudio') == false) {
             $this->data['custom_error'] = (validation_errors() ? '<div class="form_error">' . validation_errors() . '</div>' : false);
         } else {
-            
-            $data = array(                    
+
+            $data = array(
                 'titulo' => $this->input->post('titulo'),
                 'tipo' => $this->input->post('tipo'),
                 'institucion' => $this->input->post('institucion'),
@@ -173,17 +173,17 @@ class ValorMenu extends CI_Controller {
 
         $this->data['institucion'] = $this->institucion_model->getActive('institucion','*');
         $this->data['result'] = $this->estudio_model->getById($this->uri->segment(3));
-        
+
         $this->data['view'] = 'rrhh/estudio/editarEstudio';
         $this->load->view('tema/header', $this->data);
 
     }
-	
+
     function eliminar(){
-        
+
         $id =  $this->input->post('idCalendarioMenu');
         if ($id == null){
-            
+
         }else{
             $data = array(
                 'estado'        => 0,
@@ -194,7 +194,7 @@ class ValorMenu extends CI_Controller {
             }
         }
     }
-    
+
     function pedir(){
         $idMenu = $this->input->post('idMenu');
         $legajo = $this->input->post('legajo');
@@ -205,14 +205,14 @@ class ValorMenu extends CI_Controller {
             //Verifica si exite un regitro en el calendario, porque puede dar el caso que el empleado pida directamente
             // sin haber echo una programacion el menu, tratandoce del dia actual
             if (isset($id) and $id !=null){
-                //Verifico si existen menus pendientes en estado 1 con fecha actual y el legajos del empleado 
+                //Verifico si existen menus pendientes en estado 1 con fecha actual y el legajos del empleado
                 $this->data["pendiente"] = $this->pedido_model->get("pedido",
                         "pedido.*,persona_str(pedido.persona) as persona, menu_str(pedido.idMenu) as menu",
                         " pedido.f_registro = '".date('Y-m-d')."' and pedido.legajo = ".$this->input->post("legajo"));
 
                 // Si no hay pedidos pendientes  y existe un menu
-                if (count($this->data['pendiente'])==0 and $idMenu!='' and $idMenu!=null){  
-                    // si existe el legajo y el id de menu entonces 
+                if (count($this->data['pendiente'])==0 and $idMenu!='' and $idMenu!=null){
+                    // si existe el legajo y el id de menu entonces
                     if(isset($idMenu) and isset($legajo)){
                         $data = array(
                             'legajo'            => $this->input->post('legajo'),
@@ -255,7 +255,7 @@ class ValorMenu extends CI_Controller {
             if ($this->calendarioMenu_model->add('calendarioMenu', $data) == TRUE) {
                 $id = $this->db->insert_id(); // Este es el ID del CalendarioMenu
                 //Luego se crea el pedido en estado 1 pendiente
-                
+
                 $data_pedido = array(
                         'legajo'            => $legajo,
                         'persona'           => $this->input->post('idPersona'),
@@ -270,22 +270,22 @@ class ValorMenu extends CI_Controller {
                 if ($this->pedido_model->add('pedido', $data_pedido) == TRUE) {
                         // retorna la data del calendario , No la del pedido
                         echo json_encode($data);
-                        
+
                     }
-                
-            } 
-            
+
+            }
+
         }
-    
+
         }
     }//fin de la funcion
-    
+
     function modificar(){
-        
+
         $idMenu = $this->input->post('idMenu');
-        $legajo = $this->input->post('legajo');        
+        $legajo = $this->input->post('legajo');
         $id =  $this->input->post('idCalendarioMenu');
-        
+
         if ($id != null and isset($id) and isset($idMenu) and isset($legajo)){
             $data = array(
                 'legajo'        => $legajo,
@@ -304,26 +304,26 @@ class ValorMenu extends CI_Controller {
             }
         }
     }
-    
+
     function buscarEvento(){
         /* Obtengo el calendario de menu de la persona con su legajo */
         $calendarioMenu = $this->calendarioMenu_model->get_calendario (" legajo = ".$this->input->get('legajo')." AND estado = 1  AND start = '".$this->input->get('fecha')." 00:00:00'");
-        
+
         if(count($calendarioMenu)){
             echo json_encode($calendarioMenu);
         }else{ echo '0';}
-        
+
     }
-    
+
      function buscaPedidoRealizado(){
-        
+
         /* Obtengo el calendario de menu de la persona con su legajo */
         $calendarioMenu = $this->calendarioMenu_model->get_calendario (" legajo = ".$this->input->get('legajo')."   AND start = '".$this->input->get('fecha')." 00:00:00'");
         //var_dump($calendarioMenu);
         if(count($calendarioMenu)){
             /* Obtengo el calendario de menu de la persona con su legajo */
             $pendiente  = $this->pedido_model->get('pedido','pedido.*, menu_str(pedido.idMenu) as menu',' idCalendarioMenu = '.$calendarioMenu[0]->idCalendarioMenu.' AND legajo = '.$this->input->get('legajo'));
-            
+
             if(count($pendiente)){
                 $data = array(
                     'descripcion'   => $pendiente[0]->menu,
@@ -334,20 +334,20 @@ class ValorMenu extends CI_Controller {
             }
         }
     }
-    
+
     function vincular(){
-        
+
         //
-        
-        
-        $this->load->library('form_validation');    
-		$this->data['custom_error'] = '';	
+
+
+        $this->load->library('form_validation');
+		$this->data['custom_error'] = '';
         if ($this->form_validation->run('vincular_estudio') == false)
         {
              $this->data['custom_error'] = (validation_errors() ? '<div class="alert alert-danger">'.validation_errors().'</div>' : false);
-        } 
+        }
         else
-        {    
+        {
             //datos
             $data_estudio_persona = array(
                 'idEstudio' => $this->input->post('estudio'),
@@ -356,9 +356,9 @@ class ValorMenu extends CI_Controller {
                 'fecha_registro' => date('Y-m-d'),
                 'usuario' => $this->session->userdata('id')
             );
-            
+
             if ($this->estudio_model->add('estudio_persona',$data_estudio_persona) == TRUE)
-                {   
+                {
                     $id_estudio_persona = $this->db->insert_id();
                     $acciones = array(
                         'usuario' => $this->session->userdata('id'),
@@ -367,36 +367,36 @@ class ValorMenu extends CI_Controller {
                         'modulo' => 2,
                         'fecha_registro' => date('Y-m-d')
                     );
-                    if ($this->consola_model->add('consola',$acciones) == TRUE){        
+                    if ($this->consola_model->add('consola',$acciones) == TRUE){
                         $this->session->set_flashdata('success','estudio vinculado con éxito!');
                         //redirect(base_url().'index.php/licencia/vincular');
                     }
                     if ($this->input->post('desde_persona')!==NULL){
                         redirect(base_url().'index.php/persona/visualizar?buscar='.$this->input->post('persona_id'));
                     }
-                        
+
                 }
             else
             {
                 $this->data['custom_error'] = '<div class="form_error"><p>Ocurrio un error al guardar la consola del vinculo de la licencia.</p></div>';
             }
-            
+
         }
-        
-        
+
+
         $this->data['estudio'] = $this->estudio_model->get("estudio","*","estado = 1");
         $this->data['view'] = 'rrhh/estudio/vincularEstudio';
         $this->load->view('tema/header',$this->data);
-   
-       
-    }	
-    
+
+
+    }
+
     function nuevoDocumento(){
         //si existen archivos
         if (isset($_FILES)){
-            
+
           $doc_anterior =   $this->archivos_model->get('documentos','*',' funcionalidad = "seleccion_personal" AND sector = 2 AND documento="'.$this->input->post('documento').'" AND referencia = '.$this->input->post('id'));
-          
+
           if (count($doc_anterior)){
               $data = array(
                   'estado' =>0
@@ -416,7 +416,7 @@ class ValorMenu extends CI_Controller {
 //        $this->uri->segment(3)=$this->input->post('id');
         redirect(base_url() . 'index.php/seleccion_personal/visualizar/'.$this->input->post('id'));
     }
-    
+
     function adjuntar_archivo($referencia,$funcionalidad,$documento =''){
         $date = date('d-m-Y');
         $config['upload_path'] = './assets/archivos/'.$date;
@@ -425,11 +425,11 @@ class ValorMenu extends CI_Controller {
         $config['max_width']  = '10000';
         $config['max_height']  = '10000';
         $config['encrypt_name'] = true;
-        
+
         if (!is_dir('./assets/archivos/'.$date)) {//si el directorio no exise lo crea
             mkdir('./assets/archivos/' . $date, 0777, TRUE);
         }
-        
+
         $data = array();
         if( !empty($_FILES['userFiles']['name'])){
             $filesCount = count($_FILES['userFiles']['name']);
@@ -472,36 +472,36 @@ class ValorMenu extends CI_Controller {
             //            $error = $archivo["error"];//retorna un string con el error del archivo
                         $this->data['custom_error'] = '<div class="form_error"><p></p></div>';//retorna un string con el error del archivo
                         return false;
-                    } 
+                    }
                 }
-                
+
             }//fin foreach
-            
+
         }// end if
         return true;
     }//end function
-    
+
     public function eliminarEstudioPersona(){
         $id =  $this->input->post('id');
         $idPersona =  $this->input->post('idPersona');
         if ($id == null){
-            $this->session->set_flashdata('error','Ocurrio un error al intentar eliminar el estudio.');            
+            $this->session->set_flashdata('error','Ocurrio un error al intentar eliminar el estudio.');
             redirect(base_url().'index.php/estudio/estudio/');
         }
         $data = array(
           'estado' => 0
         );
-        
+
          if($this->estudio_model->edit('estudio_persona',$data,'idEstudio_persona',$id)){
-          $this->session->set_flashdata('success','Estudio eliminado!');  
+          $this->session->set_flashdata('success','Estudio eliminado!');
         }
         else{
-          $this->session->set_flashdata('error','Error al eliminar el estudio!');  
-        }  
-//            $this->capacitacion_model->delete('capacitacion','idCapacitacion',$id);             
+          $this->session->set_flashdata('error','Error al eliminar el estudio!');
+        }
+//            $this->capacitacion_model->delete('capacitacion','idCapacitacion',$id);
             redirect(base_url().'index.php/persona/visualizar?buscar='.$idPersona);
     }
-    
+
     public  function pedido_listo(){
         $id_pedido = $_GET['val'];
         $data = array(
@@ -509,15 +509,15 @@ class ValorMenu extends CI_Controller {
           'f_listo' =>  date('Y-m-d h:i:s')
         );
         if($this->pedido_model->edit('pedido',$data,'idPedido',$id_pedido)){
-            $data = $this->pedido_model->get('pedido','pedido.*,usuario_str(pedido.usuario) as usr, menu_str(pedido.idMenu) as menu',' pedido.idPedido = '.$id_pedido); 
-            
+            $data = $this->pedido_model->get('pedido','pedido.*,usuario_str(pedido.usuario) as usr, menu_str(pedido.idMenu) as menu',' pedido.idPedido = '.$id_pedido);
+
             echo $data[0]->persona_str.' '.$data[0]->menu.' '.date('d/m/Y H:m:s',  strtotime($data[0]->f_listo));
-            //$this->session->set_flashdata('success','Estudio eliminado!');  
+            //$this->session->set_flashdata('success','Estudio eliminado!');
         }else{
             echo "Error ##RRE44565 consulte con el administrador.";
         }
     }
-    
+
     public  function pedido_entregado(){
         $id_pedido = $_GET['val'];
         $data = array(
@@ -525,15 +525,15 @@ class ValorMenu extends CI_Controller {
           'f_listo' =>  date('Y-m-d h:i:s')
         );
         if($this->pedido_model->edit('pedido',$data,'idPedido',$id_pedido)){
-            $data = $this->pedido_model->get('pedido','pedido.*,usuario_str(pedido.usuario) as usr, menu_str(pedido.idMenu) as menu',' pedido.idPedido = '.$id_pedido); 
-            
+            $data = $this->pedido_model->get('pedido','pedido.*,usuario_str(pedido.usuario) as usr, menu_str(pedido.idMenu) as menu',' pedido.idPedido = '.$id_pedido);
+
             echo $data[0]->persona_str.' '.$data[0]->menu.' '.date('d/m/Y H:m:s',  strtotime($data[0]->f_listo));
-            //$this->session->set_flashdata('success','Estudio eliminado!');  
+            //$this->session->set_flashdata('success','Estudio eliminado!');
         }else{
             echo "Error ##RRE44565 consulte con el administrador.";
         }
     }
-    
+
     public  function pedido_devuelto(){
         $id_pedido = $_GET['val'];
         $descripcion = $_GET['desc'];
@@ -543,15 +543,15 @@ class ValorMenu extends CI_Controller {
           'f_listo' =>  date('Y-m-d h:i:s')
         );
         if($this->pedido_model->edit('pedido',$data,'idPedido',$id_pedido)){
-            $data = $this->pedido_model->get('pedido','pedido.*,usuario_str(pedido.usuario) as usr, menu_str(pedido.idMenu) as menu',' pedido.idPedido = '.$id_pedido); 
-            
+            $data = $this->pedido_model->get('pedido','pedido.*,usuario_str(pedido.usuario) as usr, menu_str(pedido.idMenu) as menu',' pedido.idPedido = '.$id_pedido);
+
             echo $data[0]->persona_str.' '.$data[0]->menu.' '.date('d/m/Y H:m:s',  strtotime($data[0]->f_listo));
-            //$this->session->set_flashdata('success','Estudio eliminado!');  
+            //$this->session->set_flashdata('success','Estudio eliminado!');
         }else{
             echo "Error ##RRE44565 consulte con el administrador.";
         }
     }
-    
+
 }
 
 

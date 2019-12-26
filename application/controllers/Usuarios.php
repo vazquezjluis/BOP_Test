@@ -1,14 +1,14 @@
 <?php
 
 class Usuarios extends CI_Controller {
-    
+
 
     /**
-     * author: Jose Luis Vazquez 
+     * author: Jose Luis Vazquez
      * email: vazquezjluis@yahoo.com
      * celular : (54) 1165792663
      */
-    
+
     function __construct() {
 
         parent::__construct();
@@ -32,66 +32,66 @@ class Usuarios extends CI_Controller {
     }
 
     function gestionar(){
-        
-        $this->load->library('pagination');
-    
-        $config['base_url'] = base_url().'index.php/usuarios/gestionar/';
-        $config['total_rows'] = $this->usuarios_model->count('usuarios');
-        $config['per_page'] = 10;
-        $config['next_link'] = 'Próxima';
-        $config['prev_link'] = 'Anterior';
-        $config['full_tag_open'] = '<div class="pagination alternate"><ul>';
-        $config['full_tag_close'] = '</ul></div>';
-        $config['num_tag_open'] = '<li>';
-        $config['num_tag_close'] = '</li>';
-        $config['cur_tag_open'] = '<li><a style="color: #2D335B"><b>';
-        $config['cur_tag_close'] = '</b></a></li>';
-        $config['prev_tag_open'] = '<li>';
-        $config['prev_tag_close'] = '</li>';
-        $config['next_tag_open'] = '<li>';
-        $config['next_tag_close'] = '</li>';	
-        $config['first_link'] = 'Primera';
-        $config['last_link'] = 'Última';
-        $config['first_tag_open'] = '<li>';
-        $config['first_tag_close'] = '</li>';
-        $config['last_tag_open'] = '<li>';
-        $config['last_tag_close'] = '</li>';
-        
-        $this->pagination->initialize($config); 	
 
-        $this->data['results'] = $this->usuarios_model->get($config['per_page'],$this->uri->segment(3));
-       
+        // $this->load->library('pagination');
+        //
+        // $config['base_url'] = base_url().'index.php/usuarios/gestionar/';
+        // $config['total_rows'] = $this->usuarios_model->count('usuarios');
+        // $config['per_page'] = 10;
+        // $config['next_link'] = 'Próxima';
+        // $config['prev_link'] = 'Anterior';
+        // $config['full_tag_open'] = '<div class="pagination alternate"><ul>';
+        // $config['full_tag_close'] = '</ul></div>';
+        // $config['num_tag_open'] = '<li>';
+        // $config['num_tag_close'] = '</li>';
+        // $config['cur_tag_open'] = '<li><a style="color: #2D335B"><b>';
+        // $config['cur_tag_close'] = '</b></a></li>';
+        // $config['prev_tag_open'] = '<li>';
+        // $config['prev_tag_close'] = '</li>';
+        // $config['next_tag_open'] = '<li>';
+        // $config['next_tag_close'] = '</li>';
+        // $config['first_link'] = 'Primera';
+        // $config['last_link'] = 'Última';
+        // $config['first_tag_open'] = '<li>';
+        // $config['first_tag_close'] = '</li>';
+        // $config['last_tag_open'] = '<li>';
+        // $config['last_tag_close'] = '</li>';
+        //
+        // $this->pagination->initialize($config);
+
+        $this->data['results'] = $this->usuarios_model->get($this->uri->segment(3));
+
         $this->data['view'] = 'usuarios/usuarios';
        	$this->load->view('tema/header',$this->data);
 
-       
-		
+
+
     }
-	
-    function agregar(){  
-          
-        $this->load->library('form_validation');    
+
+    function agregar(){
+
+        $this->load->library('form_validation');
 		$this->data['custom_error'] = '';
-		
+
         if ($this->form_validation->run('usuarios') == false)
         {
              $this->data['custom_error'] = (validation_errors() ? '<div class="alert alert-danger">'.validation_errors().'</div>' : false);
         } else
-        {     
+        {
             $data = array(
                     'legajo' => set_value('legajo'),
                     'nombre' => set_value('nombre'),
                     'estado' => set_value('estado'),
                     'usr' => set_value('usr'),
                     'email' => set_value('email'),
-                    'clave' => password_hash($this->input->post('clave'),PASSWORD_DEFAULT,array('cost'=>12)),
+                    'clave' => $this->input->post('clave'),
                     'celular' => set_value('celular'),
                     'permisos_id' => $this->input->post('permisos_id'),
                     'fecha_registro' => date('Y-m-d')
             );
-           
+
                     if ($this->usuarios_model->add('usuarios',$data) == TRUE)
-                    {   
+                    {
                             $acciones = array(
                                 'usuario' => $this->session->userdata('id'),
                                 'accion_id' => 1,
@@ -100,7 +100,7 @@ class Usuarios extends CI_Controller {
                                 'fecha_registro' => date('Y-m-d')
                             );
                             if ($this->consola_model->add('consola',$acciones) == TRUE){
-                                
+
                                 $this->session->set_flashdata('success','Usuario registrado con éxito!');
                                 redirect(base_url().'index.php/usuarios/agregar/');
                             }
@@ -111,23 +111,23 @@ class Usuarios extends CI_Controller {
 
                     }
             }
-        
+
         $this->load->model('permisos_model');
-        $this->data['permisos'] = $this->permisos_model->getActive('permisos','permisos.idPermiso,permisos.nombre');   
+        $this->data['permisos'] = $this->permisos_model->getActive('permisos','permisos.idPermiso,permisos.nombre');
 		$this->data['view'] = 'usuarios/agregarUsuario';
         $this->load->view('tema/header',$this->data);
-   
-       
-    }	
-    
-    function editar(){  
-        
+
+
+    }
+
+    function editar(){
+
         if(!$this->uri->segment(3) || !is_numeric($this->uri->segment(3))){
             $this->session->set_flashdata('error','El registro no puede ser encontrado, el parámetro no fue pasado correctamente.');
             redirect('bingoOasis');
         }
 
-        $this->load->library('form_validation');    
+        $this->load->library('form_validation');
         $this->data['custom_error'] = '';
 //        $this->form_validation->set_rules('legajo', 'Legajo', 'trim|required');
         $this->form_validation->set_rules('nombre', 'Nombre', 'trim|required');
@@ -141,7 +141,7 @@ class Usuarios extends CI_Controller {
              $this->data['custom_error'] = (validation_errors() ? '<div class="form_error">'.validation_errors().'</div>' : false);
 
         } else
-        { 
+        {
 
             if ($this->input->post('idUsuarios') == 1 && $this->input->post('estado') == 0)
             {
@@ -149,7 +149,7 @@ class Usuarios extends CI_Controller {
                 redirect(base_url().'index.php/usuarios/editar/'.$this->input->post('idUsuarios'));
             }
 
-            $clave = $this->input->post('clave'); 
+            $clave = $this->input->post('clave');
             if($clave != null){
 
                 $data = array(
@@ -158,11 +158,11 @@ class Usuarios extends CI_Controller {
                         'usr' => $this->input->post('usr'),
                         'estado' => $this->input->post('estado'),
                         'email' => $this->input->post('email'),
-                        'clave' => password_hash($clave,PASSWORD_DEFAULT,array('cost'=>12)),                        
+                        // 'clave' => $clave,PASSWORD_DEFAULT,array('cost'=>12)),
                         'celular' => $this->input->post('celular'),
                         'permisos_id' => $this->input->post('permisos_id')
                 );
-            }  
+            }
 
             else{
 
@@ -175,9 +175,9 @@ class Usuarios extends CI_Controller {
                         'permisos_id' => $this->input->post('permisos_id')
                 );
 
-            }  
+            }
 
-           
+
 			if ($this->usuarios_model->edit('usuarios',$data,'idUsuarios',$this->input->post('idUsuarios')) == TRUE)
 			{
                             $acciones = array(
@@ -201,19 +201,18 @@ class Usuarios extends CI_Controller {
 
 		$this->data['result'] = $this->usuarios_model->getById($this->uri->segment(3));
         $this->load->model('permisos_model');
-        $this->data['permisos'] = $this->permisos_model->getActive('permisos','permisos.idPermiso,permisos.nombre'); 
+        $this->data['permisos'] = $this->permisos_model->getActive('permisos','permisos.idPermiso,permisos.nombre');
 
 		$this->data['view'] = 'usuarios/editarUsuario';
         $this->load->view('tema/header',$this->data);
-			
-      
+
+
     }
-	
+
     public function excluir(){
 
             $ID =  $this->uri->segment(3);
-            $this->usuarios_model->delete('usuarios','idUsuarios',$ID);             
+            $this->usuarios_model->delete('usuarios','idUsuarios',$ID);
             redirect(base_url().'index.php/usuarios/gestionar/');
     }
 }
-

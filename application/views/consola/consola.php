@@ -1,4 +1,18 @@
+<!-- <link rel="stylesheet" href="<?php echo base_url();?>assets/js/jquery-ui/css/smoothness/jquery-ui-1.9.2.custom.css" /> -->
+<script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery-ui/js/jquery-ui-1.9.2.custom.js"></script>
+<script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery.validate.js"></script>
+<script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery.dataTables.min.js" ></script>
+<!-- <link href="<?php  echo base_url()?>assets/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/> -->
+<style>
+    input[type=text],input[type=submit], input[type=date],select {
+            width: 100%;
+            height: 25px;
 
+            box-sizing: border-box;
+
+}
+
+</style>
 <?php
 if(!$results){?>
 
@@ -33,7 +47,7 @@ if(!$results){?>
     </div>
 
 <?php }else{
-	
+
 
 ?>
 <div class="widget-box">
@@ -48,7 +62,7 @@ if(!$results){?>
 <div class="widget-content nopadding">
 
 
-<table class="table table-bordered ">
+<table class="table table-bordered " id="registrosconsola">
     <thead>
         <tr>
             <th>#</th>
@@ -84,18 +98,16 @@ if(!$results){?>
             echo '<td>'.$r->accion.'</td>';
             echo '</tr>';
         }?>
-        <tr>
-            
-        </tr>
     </tbody>
 </table>
 </div>
 </div>
-<?php echo $this->pagination->create_links();}?>
+<?php //echo $this->pagination->create_links();
+}?>
 
 
 
- 
+
 <!-- Modal -->
 <div id="modal-excluir" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <form action="<?php echo base_url() ?>index.php/permisos/desactivar" method="post" >
@@ -117,12 +129,12 @@ if(!$results){?>
 
 <script type="text/javascript">
 $(document).ready(function(){
-
-   $(document).on('click', 'a', function(event) {       
-        var permiso = $(this).attr('permiso');
-        $('#idPermiso').val(permiso);
-
-    });
+//tbla de datos
+          $('#registrosconsola').dataTable( {
+            "bInfo": false,
+            "bLengthChange": false,
+            "nTHead":false
+          } );
 
 });
 

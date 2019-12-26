@@ -1,14 +1,14 @@
 <?php
 
 class Maquinas extends CI_Controller {
-    
+
 
     /**
-     * author: Jose Luis Vazquez 
+     * author: Jose Luis Vazquez
      * email: vazquezjluis@yahoo.com
      * celular : (54) 1165792663
      */
-    
+
     function __construct() {
         parent::__construct();
         if( (!session_id()) || (!$this->session->userdata('conectado'))){
@@ -30,18 +30,18 @@ class Maquinas extends CI_Controller {
         $this->load->model('articulo_model', '', TRUE);
         $this->data['menuConfiguraciones'] = 'Maquinas';
     }
-	
+
     function index(){
 //        $this->gestionar();
         $this->visualizar();
     }
 //
 //    function gestionar(){
-//        
+//
 //        $buscar = $this->input->get('buscar');
 //        $this->load->library('pagination');
 //        if ($buscar == null){
-//            
+//
 //            $config['base_url'] = base_url().'index.php/maquinas/gestionar/';
 //            $config['total_rows'] = $this->maquinas_model->count('maquinas');
 //            $config['per_page'] = 10;
@@ -64,9 +64,9 @@ class Maquinas extends CI_Controller {
 //            $config['last_tag_open'] = '<li>';
 //            $config['last_tag_close'] = '</li>';
 //
-//            $this->pagination->initialize($config); 	
+//            $this->pagination->initialize($config);
 //            $this->data['results']=0;
-//                    
+//
 ////            //obtiene los datos de las maquinas
 ////            $this->data['results'] = $this->maquinas_model->getMaquinas_fallas($config['per_page'],$this->uri->segment(3));
 ////            //obtengo los datos de las fallas para mostrarlos en el popup de los tickets
@@ -76,23 +76,25 @@ class Maquinas extends CI_Controller {
 //            $this->data['results'] = $this->maquinas_model->searchMaquiinas_fallas($buscar);
 //            $this->data['results_fallas'] = $this->fallas_model->get('fallas','*', ' estado=1');
 //        }
-//        
+//
 //	$this->data['view'] = 'maquinas/maquinas';
 //            $this->load->view('tema/header',$this->data);
 //    }
-	
+
+  
+
     function agregar() {
 
-        $this->load->library('form_validation');    
+        $this->load->library('form_validation');
         $this->data['custom_error'] = '';
-                
-                
+
+
         if ($this->form_validation->run('maquinas') == false)
         {
              $this->data['custom_error'] = (validation_errors() ? '<div class="alert alert-danger">'.validation_errors().'</div>' : false);
-             
+
         } else
-        {     
+        {
             $data = array(
                     'nro_egm' => set_value('nro_egm'),
                     'fabricante' => set_value('fabricante'),
@@ -104,11 +106,11 @@ class Maquinas extends CI_Controller {
                     'programa' => set_value('programa'),
                     'credito' => set_value('credito'),
                     'estado' => 1
-                    
+
             );
-           
+
                     if ($this->maquinas_model->add('maquinas',$data) == TRUE)
-                    {   
+                    {
                             $acciones = array(
                                 'usuario' => $this->session->userdata('id'),
                                 'accion_id' => 1,
@@ -117,7 +119,7 @@ class Maquinas extends CI_Controller {
                                 'fecha_registro' => date('Y-m-d')
                             );
                             if ($this->consola_model->add('consola',$acciones) == TRUE){
-                                
+
                                 $this->session->set_flashdata('success','Maquina registrada con éxito!');
                                 redirect(base_url().'index.php/maquinas/agregar/');
                             }
@@ -128,14 +130,14 @@ class Maquinas extends CI_Controller {
 
                     }
             }
-        
+
         $this->load->model('maquinas_model');
-//        $this->data['maquinas'] = $this->maquinas_model->getActive('maquinas','maquinas.idmaquina,maquinas.nombre');   
+//        $this->data['maquinas'] = $this->maquinas_model->getActive('maquinas','maquinas.idmaquina,maquinas.nombre');
         $this->data['view'] = 'maquinas/agregarMaquina';
         $this->load->view('tema/header',$this->data);
-   
+
     }
-    
+
     function agregarFalla() {
         $data = array(
             'maquina'=>$_GET['maquina'],
@@ -144,7 +146,7 @@ class Maquinas extends CI_Controller {
             'estado'=>1,
             'usuario'=>$this->session->userdata('id')
         );
-        
+
         if ($this->maquinas_model->add('fallas_maquinas', $data) == TRUE) {
             $acciones = array(
                 'usuario' => $this->session->userdata('id'),
@@ -159,26 +161,26 @@ class Maquinas extends CI_Controller {
             }
         } else {
             return false;
-            
+
         }
-        
+
 
     }
 
     function editar() {
 
-        
+
         $this->load->library('form_validation');
         $this->data['custom_error'] = '';
 
 //        $this->form_validation->set_rules('nombre', 'nombre', 'trim|required');
-        
-        
+
+
         if ($this->form_validation->run('maquinas') == false) {
             $this->data['custom_error'] = (validation_errors() ? '<div class="form_error">' . validation_errors() . '</div>' : false);
         } else {
-            
-            
+
+
             $nro_egm = $this->input->post('nro_egm');
             $fabricante = $this->input->post('fabricante');
 //            $modelo = $this->input->post('modelo');
@@ -189,7 +191,7 @@ class Maquinas extends CI_Controller {
 //            $programa= $this->input->post('programa');
 //            $credito= $this->input->post('credito');
 //            $estado = $this->input->post('estado');
-            
+
             $ap_minima = $this->input->post('ap_minima');
             $ap_maxima = $this->input->post('ap_maxima');
             $cant_lineas = $this->input->post('cant_lineas');
@@ -233,41 +235,41 @@ class Maquinas extends CI_Controller {
         $this->load->view('tema/header', $this->data);
 
     }
-	
+
     function eliminar(){
-        
+
         $id =  $this->input->post('id');
-        
+
         if ($id == null){
-            $this->session->set_flashdata('error','Ocurrio un error al intentar eliminar la máquina.');            
+            $this->session->set_flashdata('error','Ocurrio un error al intentar eliminar la máquina.');
             redirect(base_url().'index.php/maquinas/gestionar/');
         }
         $data = array(
           'estado' => '90'
         );
         if($this->maquinas_model->edit('maquinas',$data,'idMaquina',$id)){
-          $this->session->set_flashdata('success','Maquina eliminada con exito!');  
+          $this->session->set_flashdata('success','Maquina eliminada con exito!');
         }
         else{
-          $this->session->set_flashdata('error','Error al desactivar el permiso!');  
-        }         
+          $this->session->set_flashdata('error','Error al desactivar el permiso!');
+        }
         redirect(base_url().'index.php/maquinas/gestionar/');
     }
-    
+
     function quitarFalla(){
-        
+
         $falla =  $_GET['falla'];
         $maquina =  $_GET['maquina'];
         $data = array(
           'estado' => 0
         );
         if($this->maquinas_model->edit('fallas_maquinas',$data,'falla ='.$falla.' AND maquina ='.$maquina)){
-            //          $this->session->set_flashdata('success','Falla quitada con exito!');  
+            //          $this->session->set_flashdata('success','Falla quitada con exito!');
         }
         else{
-          $this->session->set_flashdata('error','Error al quitar la falla!');  
-        }         
-        
+          $this->session->set_flashdata('error','Error al quitar la falla!');
+        }
+
         //        redirect(base_url().'index.php/permisos/gestionar/');
     }
     function habilitar(){
@@ -277,30 +279,30 @@ class Maquinas extends CI_Controller {
           'estado' => $estado
         );
         if($this->maquinas_model->edit('maquinas',$data,'idMaquina ='.$maquina)){
-        //          $this->session->set_flashdata('success','Falla quitada con exito!');  
+        //          $this->session->set_flashdata('success','Falla quitada con exito!');
         }
         else{
-          $this->session->set_flashdata('error','Error al quitar la falla!');  
-        }         
-        
+          $this->session->set_flashdata('error','Error al quitar la falla!');
+        }
+
     }
-    
+
     function visualizar(){
         //Para detectar el dispositivo y la version
         $this->load->library('user_agent');
-        
-        
+
+
         if($this->agent->is_mobile()){
             $this->data['movil'] =true;
         }else{
             $this->data['movil'] =false;
         }
-        
+
         if(!$this->input->get('buscar') || !is_numeric($this->input->get('buscar'))){
-            
+
         }else{
-            
-        
+
+
 
 //        if(!$this->permission->checkPermission($this->session->userdata('permissao'),'vCliente')){
 //           $this->session->set_flashdata('error','Você não tem permissão para visualizar clientes.');
@@ -308,9 +310,9 @@ class Maquinas extends CI_Controller {
 //        }
 
             $this->data['custom_error'] = '';
-            
+
             $this->data['result'] = $this->maquinas_model->getMaquinas_fallas(0,0,false,'array','  nro_egm = 240'.$this->input->get('buscar'));
-            
+
             if (count($this->data['result'])){
                 //obtiene la imagen de la maquina
                 $this->data['url_img'] = $this->archivos_model->get('documentos','url',' funcionalidad = "maquina" AND sector = 1 AND referencia = '.$this->data['result'][0]->idMaquina);
@@ -320,11 +322,11 @@ class Maquinas extends CI_Controller {
                 $this->data['historial_fallas'] = $this->fallas_maquinas_model->get('fallas_maquinas','idFallas_maquinas,ticket,fallas_str(falla) as descripcion, usuario_str(usuario) as usuario,fecha_registro',' estado = 0 AND  maquina = '.$this->data['result'][0]->nro_egm);
                 $this->data['articulos_maquinas'] = $this->articulos_maquinas_model->get('articulos_maquinas','articulos_maquinas.*',' estado = 0 AND maquina = '.$this->data['result'][0]->nro_egm);
                 $this->data['historial_partes'] = $this->articulos_maquinas_model->get('articulos_maquinas','articulos_maquinas.*,  usuario_str(usuario_salida) as usuario_salida',' estado = 1 AND maquina = '.$this->data['result'][0]->nro_egm);
-                
+
                 //Si la referencia es hacia una maquina entonces
                 //Obtengo los articulos asociados al modelo de la maquina
                 $this->data['articulos'] = $this->articulo_model->list_articulo_generico(' having tipo_modelo LIKE "%'.$this->data['result'][0]->modelo.'%" AND stock >0 ');
-                
+
                 //$this->data['articulos'] = array();
 				//Obtiene el articulo que se encuantra en la maquina
 //                $this->data['articulos_maquinas'] = $this->articulos_maquinas_model->get("articulos_maquinas","articulos_maquinas.*,articulo_str(articulos_maquinas.articulo) as articulo_str"," maquina=".$this->data['result'][0]->nro_egm." AND cantidad > 0");
@@ -333,20 +335,20 @@ class Maquinas extends CI_Controller {
                 $this->data['custom_error'] = 'El UID <strong>240'.$this->input->get('buscar').' </strong>no existe en la base de datos.';
                 $this->data['result'] = null;
             }
-            
 
-            
-            
+
+
+
         }
-        
+
         //obtengo los datos de las fallas para mostrarlos en el popup de los tickets
         $this->data['results_fallas'] = $this->fallas_model->get('fallas','*', ' estado=1');
-        
+
         $this->data['view'] = 'maquinas/visualizar';
         $this->load->view('tema/header', $this->data);
     }
-    
-    
+
+
 }
 
 

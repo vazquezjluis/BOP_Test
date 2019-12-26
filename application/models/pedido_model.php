@@ -3,32 +3,32 @@ class Pedido_model extends CI_Model {
 
 
     /**
-     * author: Jose Luis Vazquez 
+     * author: Jose Luis Vazquez
      * email: vazquezjluis@yahoo.com
      * celular : (54) 1165792663
      */
-    
+
     function __construct() {
         parent::__construct();
     }
 
-    
+
     function get($table,$fields,$where='',$perpage=0,$start=0,$one=false,$array='array'){
-        
+
         $this->db->select($fields);
         $this->db->from($table);$this->db->order_by('f_registro','desc');
         $this->db->limit($perpage,$start);
         if($where){
             $this->db->where($where);
         }
-        
+
         $query = $this->db->get();
-        
+
         $result =  !$one  ? $query->result() : $query->row();
         return $result;
     }
     function get_reporte($table,$where='',$perpage=0,$start=0,$one=false,$array='array'){
-        
+
         $order = ' ORDER BY pedido.f_registro ';
         if($start == 0 and $perpage == 0){
             $limit = ' ';
@@ -38,7 +38,8 @@ class Pedido_model extends CI_Model {
         else{
             $limit = ' limit '.$start.','.$perpage.' ';
         }
-        
+
+
         $SQL = '  SELECT
                             pedido.legajo,
                             pedido.persona_str AS persona,
@@ -68,15 +69,13 @@ class Pedido_model extends CI_Model {
                     FROM
                             pedido
                     INNER JOIN menu_personal ON menu_personal.idMenuPersonal  = pedido.idMenu '.$where.$order.$limit;
-       
+
         $query = $this->db->query($SQL);
         return $query->result();
-        
-        
-        
+
         return $result;
     }
-    
+
     public function estado_str($estado){
         $estado_str = '';
         switch ($estado){
@@ -96,12 +95,12 @@ class Pedido_model extends CI_Model {
                 $estado_str = 'error:estado no encontrado';
                 break;
         }
-        
+
         return $estado_str;
     }
-    
+
     function getEstudioPersona($where=''){
-        
+
         $this->db->select(' estudio.*,idEstudio_persona,fecha_registro,institucion_str(estudio_persona.idEstudio) as institucion');
         $this->db->from("estudio_persona");
         $this->db->join('estudio', 'estudio.idEstudio = estudio_persona.idEstudio', 'inner');
@@ -110,12 +109,12 @@ class Pedido_model extends CI_Model {
             $this->db->where($where);
         }
         $query = $this->db->get();
-        
+
         return $query->result();
     }
 
     function getActive($table,$fields){
-        
+
         $this->db->select($fields);
         $this->db->from($table);
         $this->db->where('estado',1);
@@ -128,17 +127,17 @@ class Pedido_model extends CI_Model {
         $this->db->limit(1);
         return $this->db->get('pedido')->row();
     }
-    
+
     function add($table,$data){
-        $this->db->insert($table, $data);         
+        $this->db->insert($table, $data);
         if ($this->db->affected_rows() == '1')
 		{
 			return TRUE;
 		}
-		
-		return FALSE;       
+
+		return FALSE;
     }
-    
+
     function edit($table,$data,$fieldID,$ID){
         $this->db->where($fieldID,$ID);
         $this->db->update($table, $data);
@@ -147,10 +146,10 @@ class Pedido_model extends CI_Model {
 		{
 			return TRUE;
 		}
-		
-		return FALSE;       
+
+		return FALSE;
     }
-    
+
     function delete($table,$fieldID,$ID){
         $this->db->where($fieldID,$ID);
         $this->db->delete($table);
@@ -158,10 +157,10 @@ class Pedido_model extends CI_Model {
 		{
 			return TRUE;
 		}
-		
-		return FALSE;        
-    }   
-	
+
+		return FALSE;
+    }
+
 	function count($table){
 		return $this->db->count_all($table);
 	}
