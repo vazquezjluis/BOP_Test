@@ -58,7 +58,15 @@
   <ul>
 
 
-    <li class="<?php if(isset($menuPainel)){echo 'active';};?>"><a href="<?php echo base_url()?>">
+    <li class="<?php if(isset($menuPainel)){echo 'active';};?>"><a href="<?php 
+     if(
+        $this->permission->checkPermission($this->session->userdata('permiso'),'vInicioEmpleado') 
+        ){
+           echo base_url().'index.php/pedido/pedidos';
+        } else {
+           echo base_url(); 
+        }
+    ?>">
         <i class="icon icon-home"></i> <span>Inicio</span></a></li>
     
     <!--RRHH-->
@@ -101,19 +109,21 @@
     
     
     <!--GASTRONOMIA-->
-    <?php // if($this->permission->checkPermission($this->session->userdata('permiso'),'vMenuPersonal')){ ?>
+    <?php  
+
+    if($this->permission->checkPermission($this->session->userdata('permiso'),'vMenu')){ ?>
         <li class="submenu <?php if(isset($menuClientes)){echo 'active open';};?>">
             <?php  if(
-                    //$this->permission->checkPermission($this->session->userdata('permiso'),'vMenu') || 
+                    $this->permission->checkPermission($this->session->userdata('permiso'),'vMenu') || 
                         $this->permission->checkPermission($this->session->userdata('permiso'),'cPedido') || 
                         $this->permission->checkPermission($this->session->userdata('permiso'),'vPedido') 
                     ){ ?>
             <a href="#"><i class="icon  icon-glass"></i> <span>Gastronomia</span><span class="label"><i class="icon-chevron-down"></i></a>
             <?php } ?>
             <ul>
-              <?php  //if($this->permission->checkPermission($this->session->userdata('permiso'),'vMenu')){ ?>
+              <?php  if($this->permission->checkPermission($this->session->userdata('permiso'),'vMenu')){ ?>
                 <li><a href="<?php echo base_url()?>index.php/menuPersonal">ABM Menu</a></li>
-              <?php  //} 
+              <?php  } 
                     if($this->permission->checkPermission($this->session->userdata('permiso'),'vPedido')){ ?>
                 <li><a   href="<?php echo base_url().'index.php/pedido/monitor';?>">Monitor</a></li>
                 <?php }
@@ -122,7 +132,7 @@
                 <?php } ?>
           </ul>    
         </li>
-    <?php // } ?>  
+    <?php  } ?>  
     
     
     <!--SALA DE REUNUNIONES-->

@@ -144,7 +144,7 @@ class Persona_model extends CI_Model {
     }
   
     
-    function get_uniforme($where=''){
+   function get_uniforme($where=''){
         $this->db->from('uniforme_has_persona');
         $this->db->select('uniforme_has_persona.*,usuario_str(uniforme_has_persona.usuario) as usuario');
         if ($where !=''){
@@ -167,8 +167,7 @@ class Persona_model extends CI_Model {
         $persona_dato = $this->get_persona(' WHERE id= '.$persona);
         
     }
-    
-    function get_imagen($id){
+            function get_imagen($id){
         $bd_lenox =  $this->load->database('lenox',TRUE);
         /* Execute the query. */  
         $stmt = $bd_lenox->query('SELECT imagen FROM CLIENTES WHERE id = '.$id);  
@@ -196,6 +195,8 @@ class Persona_model extends CI_Model {
         return $result;
     }
 
+   
+    
     function getSector($table,$fields){
         
         $this->db->select($fields);

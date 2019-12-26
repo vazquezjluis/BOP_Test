@@ -31,6 +31,18 @@ class Usuarios_model extends CI_Model {
         return $result;
     }
     
+    function get_empleados($where) {
+        $this->db->from('empleados');
+        $this->db->select('*');
+  
+        if($where!=''){
+            $this->db->where($where);
+        }
+        
+        $query = $this->db->get();
+        
+        return $query->result();
+    }
     function getAvisos($perpage=0,$start=0,$one=false,$where = ''){
         
         $this->db->from('usuarios');

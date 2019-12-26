@@ -120,6 +120,48 @@ class Usuarios extends CI_Controller {
        
     }	
     
+    function importacion_empleados() {
+        $this->data['custom_error'] = '';
+	//Obtengo los datos de la tabla empleados
+        //
+        if (function_exists("set_time_limit") == TRUE AND @ini_get("safe_mode") == 0)
+        {
+            @set_time_limit(1000);// change according to your requirement
+        }
+        $empleados_a_migrar = $this->usuarios_model->get_empleados(" 
+            em_estado = 1 
+            AND em_pass_activo = 1
+            AND em_pass !='' AND LENGTH(em_pass) > 1
+            AND em_legajo NOT IN (
+                    SELECT legajo FROM usuarios WHERE legajo!=''
+            )");
+        
+        if (count($empleados_a_migrar))
+        {
+            foreach ($empleados_a_migrar as $r) {
+                
+                $data = array(
+                    'legajo' => $r->em_legajo,
+                    'nombre' => $r->em_nombre." ".$r->em_apellido,
+                    'estado' => 1,
+                    'usr' => $r->em_legajo,
+                    'email' => '',
+                    'clave' => password_hash($r->em_pass,PASSWORD_DEFAULT,array('cost'=>12)),
+                    'celular' => 0,
+                    'permisos_id' => 47,//OJO ver el ID que toma en produccon
+                    'fecha_registro' => date('Y-m-d')
+                );
+                $this->usuarios_model->add('usuarios',$data);
+                 
+            }
+        }
+         else
+        {     
+            $this->data['custom_error'] = (validation_errors() ? '<div class="alert alert-danger">No existen empleados en la tabla</div>' : false);
+        }
+        $this->data['view'] = 'usuarios/importacion_empleado';
+        $this->load->view('tema/header',$this->data);
+    }
     function editar(){  
         
         if(!$this->uri->segment(3) || !is_numeric($this->uri->segment(3))){

@@ -92,10 +92,6 @@ class Seleccion_personal extends CI_Controller {
         $this->data['result'] = $this->seleccion_personal_model->get('seleccion_personal','*',
                 'seleccion_personal.idSeleccion_personal= '.$this->uri->segment(3));
         
-//        echo "<pre>";
-//        var_dump($this->data['result']);
-//        echo "</pre>";
-        
         //documentos
         $this->data['cv'] = $this->archivos_model->get('documentos','url',' funcionalidad = "seleccion_personal" AND sector = 2 AND documento="CV" AND estado = "1" AND referencia = '.$this->data['result'][0]->idSeleccion_personal);
        

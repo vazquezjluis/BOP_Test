@@ -67,7 +67,7 @@ class Pedido_model extends CI_Model {
                     END AS valor
                     FROM
                             pedido
-                    INNER JOIN menu_personal ON menu_personal.idMenuPersonal  = pedido.idMenu '.$where.$order.$limit;
+                    INNER JOIN menu_personal ON menu_personal.idMenuPersonal = pedido.idMenu '.$where.$order.$limit;
        
         $query = $this->db->query($SQL);
         return $query->result();
