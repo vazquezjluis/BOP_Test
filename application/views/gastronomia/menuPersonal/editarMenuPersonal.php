@@ -1,8 +1,8 @@
 
-    
+
 <div class="row-fluid" style="margin-top:0">
     <div class="span12" >
-        
+
         <div class="widget-box">
             <div class="widget-title">
                 <span class="icon">
@@ -10,14 +10,14 @@
                 </span>
                 <h5>Editar Menu</h5>
             </div>
-            
+
             <div class="widget-content nopadding">
-            
+
                   <?php if ($custom_error != '') {
                     echo '<div class="alert alert-danger">'.$custom_error.'</div>';
                 } ?>
                 <form action="<?php echo base_url();?>index.php/menuPersonal/editar" id="formMenuPersonal"  class="form-horizontal" method="post">
-                   
+
                     <div class="control-group">
                         <label for="descripcion" class="control-label">Plato</label>
                         <div class="controls">
@@ -25,14 +25,14 @@
                             <input type="hidden" name="idMenuPersonal" value="<?php echo $result->idMenuPersonal; ?>">
                         </div>
                     </div>
-                
+
                     <div class="control-group">
                         <label for="fecha_menu" class="control-label">Fecha del menu</label>
                         <div class="controls">
                             <input name="fecha_menu" type="text" id="fecha_menu"  value="<?php echo $result->fecha_menu; ?>" />
-                        </div>    
-                    </div>    
-                
+                        </div>
+                    </div>
+
                      <div class="control-group">
                         <label  class="control-label">Tipo de Menu<span class="required">*</span></label>
                         <div class="controls">
@@ -50,10 +50,10 @@
                         <label for="valor" class="control-label">Valor </label>
                         <div class="controls ">
                             <div class="alert alert-info span9">Este es un menu externo por lo tanto su valor solo puede ser modificado desde el panel.</div>
-                        </div> 
-                    </div> 
-                    
-                    
+                        </div>
+                    </div>
+
+
                     <?php
                     }else{
                     ?>
@@ -61,8 +61,8 @@
                         <label for="valor" class="control-label">Valor $</label>
                         <div class="controls">
                             <input name="valor" type="number" id="valor"     value="<?php echo $result->valor; ?>" />
-                        </div> 
-                    </div> 
+                        </div>
+                    </div>
                     <?php }?>
                     <div class="form-actions">
                         <div class="span12">
@@ -73,12 +73,12 @@
                         </div>
                     </div>
                 </form>
-                
-                
+
+
             </div>
         </div>
 
-                   
+
     </div>
 
 
@@ -89,9 +89,9 @@
 <script type="text/javascript" src="<?php echo base_url()?>assets/js/validate.js"></script>
 <script type="text/javascript">
     $(document).ready(function(){
- 
 
- 
+
+
     $("#formMenuPersonal").validate({
         rules :{
             descripcion: {required: true}
@@ -109,9 +109,9 @@
             $(element).parents('.control-group').removeClass('error');
             $(element).parents('.control-group').addClass('success');
         }
-    });     
+    });
 
-        
+
 
     });
 </script>
