@@ -6,90 +6,109 @@ class Reportes extends CI_Controller{
 
 
     /**
-     * author: 
-     * 
+     * author:
+     *
      */
-    
+
     public function __construct() {
         parent::__construct();
         if( (!session_id()) || (!$this->session->userdata('conectado'))){
           redirect('bingoOasis/login');
         }
-        
+
         $this->load->model('maquinas_model', '', TRUE);
         $this->load->model('fallas_model', '', TRUE);
         $this->load->model('ticket_model', '', TRUE);
         $this->load->model('usuarios_model', '', TRUE);
         $this->load->model('pedido_model', '', TRUE);
         $this->load->model('calendariomenu_model', '', TRUE);
+        $this->load->model('seleccion_personal_model', '', TRUE);
+        
+
 
     }
+  // -----------------------------------------------------------------------------------------------------------------
+  // -------------------------------------- REPORTES MAQUINAS ------------------------------------------------
+  // -----------------------------------------------------------------------------------------------------------------
 
-    public function maquinas(){
+     public function maquinas(){
         $where = " 1=1 ";
             if($this->input->get('uid')!=''){
-                $where .= " AND maquinas.nro_egm  LIKE '%".$this->input->get('uid')."%' ";
+                $where .= " AND maquinas.nro_egm  LIKE '%".$this->input->get('uid')."%' OR maquinas.modelo LIKE '%".$this->input->get('uid')."%' OR maquinas.fabricante LIKE '%".$this->input->get('uid')."%' ";
             }
-            if($this->input->get('modelo')!=''){
-                $where .= " AND maquinas.modelo  LIKE '%".$this->input->get('modelo')."%' ";                
-            }
-            if($this->input->get('fabricante')!=''){
-                $where .= " AND maquinas.fabricante LIKE '%".$this->input->get('fabricante')."%' ";
-            }
-            if($this->input->get('estado')!=''){
-                $where .= " AND maquinas.estado = ".$this->input->get('estado');
-            }
-        
-        
-        $this->load->library('pagination');
-        
-            $config['base_url'] = base_url().'index.php/reportes/maquinas/';
-            $config['total_rows'] = count($this->maquinas_model->count_Maquinas_fallas($where));
-            $config['per_page'] = 25;
-            $config['next_link'] = 'Próxima';
-            $config['prev_link'] = 'Anterior';
-            $config['full_tag_open'] = '<div class="pagination alternate"><ul>';
-            $config['full_tag_close'] = '</ul></div>';
-            $config['num_tag_open'] = '<li>';
-            $config['num_tag_close'] = '</li>';
-            $config['cur_tag_open'] = '<li><a style="color: #2D335B"><b>';
-            $config['cur_tag_close'] = '</b></a></li>';
-            $config['prev_tag_open'] = '<li>';
-            $config['prev_tag_close'] = '</li>';
-            $config['next_tag_open'] = '<li>';
-            $config['next_tag_close'] = '</li>';
-            $config['first_link'] = 'Primera';
-            $config['last_link'] = 'Última';
-            $config['first_tag_open'] = '<li>';
-            $config['first_tag_close'] = '</li>';
-            $config['last_tag_open'] = '<li>';
-            $config['last_tag_close'] = '</li>';
-            $config['page_query_string'] = TRUE;
+                if ($this->input->get('ap_minima')!='') {
+                  if ($this->input->get('ap_maxima')!='') {
+                    $where.=" AND maquinas.ap_minima >= ".$this->input->get('ap_minima')." AND maquinas.ap_maxima <= ".$this->input->get('ap_maxima')." ";
+                  }else {
+                    $where.= " AND maquinas.ap_minima >= ".$this->input->get('ap_minima')." ";
+                  }
+                }
+                
+        // $this->load->library('pagination');
+        //
+        //
+        //       $get = $_GET;
+        //       unset($get['offset']);
+        //     $config['base_url'] = base_url().'index.php/reportes/maquinas/';
+        //
+        //     $config['total_rows'] = count($this->maquinas_model->count_Maquinas_fallas($where));
+        //
+        //     $config['per_page'] = 10;
+        //     $config['next_link'] = 'Próxima';
+        //     $config['prev_link'] = 'Anterior';
+        //     $config['full_tag_open'] = '<div class="pagination alternate"><ul>';
+        //     $config['full_tag_close'] = '</ul></div>';
+        //     $config['num_tag_open'] = '<li>';
+        //     $config['num_tag_close'] = '</li>';
+        //     $config['cur_tag_open'] = '<li><a style="color: #2D335B"><b>';
+        //     $config['cur_tag_close'] = '</b></a></li>';
+        //     $config['prev_tag_open'] = '<li>';
+        //     $config['prev_tag_close'] = '</li>';
+        //     $config['next_tag_open'] = '<li>';
+        //     $config['next_tag_close'] = '</li>';
+        //     $config['first_link'] = 'Primera';
+        //     $config['last_link'] = 'Última';
+        //     $config['first_tag_open'] = '<li>';
+        //     $config['first_tag_close'] = '</li>';
+        //     $config['last_tag_open'] = '<li>';
+        //     $config['last_tag_close'] = '</li>';
+        //     // $config['page_query_string'] = TRUE;
+        //     // $config['use_page_numbers'] = TRUE;
+        //     // $config['query_string_segment'] = 'page';
+        //     // $config['reuse_query_string'] = false;
+        //
+        //
+        //      // if (!http_build_query($get)) {
+        //      //  $config['suffix'] = '&' . http_build_query($get);
+        //     // }
+        //     if (count($_GET) > 0) $config['suffix'] = '?' . http_build_query($_GET, '', "&");
 
-            $this->pagination->initialize($config); 	
-            $this->data['results']=0;
-            
-            
+            // $this->input->get("per_page");
             //obtiene los datos de las maquinas
-            //                                     function getMaquinas_fallas($perpage=0         ,$start=0              ,,$where='')
-            $this->data['results'] = $this->maquinas_model->repMaquinas_fallas($config['per_page'],$this->input->get('per_page'),$where);
+            //function getMaquinas_fallas($perpage=0         ,$start=0              ,,$where='')
+            $this->data['results'] = $this->maquinas_model->repMaquinas_fallas($where,$this->maquinas_model->uri->segment(3));
             $this->data['maquinas'] = $this->maquinas_model->get('maquinas','*',$where=' maquinas.estado !=90 ');
             $this->data['fabricantes'] = $this->maquinas_model->getFabricantes();
             $this->data['modelos'] = $this->maquinas_model->getModelos();
             $this->data['total'] = count($this->maquinas_model->count_Maquinas_fallas($where));
-            //obtengo los datos de las fallas en las maquinas
-            //$this->data['results_fallas'] = $this->fallas_model->get('fallas','*', ' estado=1');
-            //$this->data['fallas'] = $this->fallas_model->get('fallas','*', ' estado=1');
+            // obtengo los datos de las fallas en las maquinas
+            $this->data['results_fallas'] = $this->fallas_model->get('fallas','*', ' estado=1');
+            $this->data['fallas'] = $this->fallas_model->get('fallas','*', ' estado=1');
 
-        
+
+            // $this->pagination->initialize($config);
+            // $this->data['results']=0;
             $this->data['view'] = 'reportes/rep_maquinas';
             $this->load->view('tema/header',$this->data);
     }
-    
+
+
+    // -----------------------------------------------------------------------------------------------------------------
+//------------------------------------------ REPORTES TICKETS -----------------------------------------------------------------
     public function tickets(){
         //filtros de busqueda
         $where = ' 1 = 1';
-        
+
         if ($this->input->get('descripcion')!=''){//descripcion
              $where.= ' AND ticket.descripcion LIKE "%'.$this->input->get('descripcion').'%" ';
         }
@@ -101,6 +120,9 @@ class Reportes extends CI_Controller{
         }else{
             //
             //$where.= ' AND ticket.estado = 1';//por defecto se trae los tickets abiertos
+        }
+        if ($this->input->get('prioridad')!=''){//estado
+             $where.= ' AND ticket.prioridad = '.$this->input->get('prioridad');
         }
         if ($this->input->get('emisor')!=''){//solicita
              $where.= ' AND ticket.solicita = '.$this->input->get('emisor');
@@ -115,45 +137,53 @@ class Reportes extends CI_Controller{
                  $where.= ' AND date(ticket.f_solicitud) <= "'.$this->input->get('hasta').'" ';
             }
         }
-        
-        
-        $this->load->library('pagination');
-        
-            $config['base_url'] = base_url().'index.php/reportes/tickets/';
-            $config['total_rows'] = count($this->ticket_model->get(
-                'ticket',
-                  'ticket.idTicket,'
-                . 'ticket.f_solicitud,'
-                . 'ticket.descripcion,'
-                . 'usuario_str(ticket.solicita) as solicita,'
-                . 'ticket.prioridad,'
-                . 'ticket.sector,'
-                . 'usuario_str(ticket.idAsignado) as asignado ,'
-                . 'referencia_str(ticket.sector,ticket.referencia) as referencia ,'
-                . 'ticket.estado',$where));
-            $config['per_page'] = 10;
-            $config['next_link'] = 'Próxima';
-            $config['prev_link'] = 'Anterior';
-            $config['full_tag_open'] = '<div class="pagination alternate"><ul>';
-            $config['full_tag_close'] = '</ul></div>';
-            $config['num_tag_open'] = '<li>';
-            $config['num_tag_close'] = '</li>';
-            $config['cur_tag_open'] = '<li><a style="color: #2D335B"><b>';
-            $config['cur_tag_close'] = '</b></a></li>';
-            $config['prev_tag_open'] = '<li>';
-            $config['prev_tag_close'] = '</li>';
-            $config['next_tag_open'] = '<li>';
-            $config['next_tag_close'] = '</li>';
-            $config['first_link'] = 'Primera';
-            $config['last_link'] = 'Última';
-            $config['first_tag_open'] = '<li>';
-            $config['first_tag_close'] = '</li>';
-            $config['last_tag_open'] = '<li>';
-            $config['last_tag_close'] = '</li>';
-//            $config['page_query_string'] = TRUE;
 
-            	
-            
+        // $this->load->library('pagination');
+        //
+        // $get = $_GET;
+        // unset($get['offset']);
+        //
+        //     $config['base_url'] = base_url().'index.php/reportes/tickets/';
+        //     $config['total_rows'] = count($this->ticket_model->get(
+        //         'ticket',
+        //           'ticket.idTicket,'
+        //         . 'ticket.f_solicitud,'
+        //         . 'ticket.descripcion,'
+        //         . 'usuario_str(ticket.solicita) as solicita,'
+        //         . 'ticket.prioridad,'
+        //         . 'ticket.sector,'
+        //         . 'usuario_str(ticket.idAsignado) as asignado ,'
+        //         . 'referencia_str(ticket.sector,ticket.referencia) as referencia ,'
+        //         . 'ticket.estado',$where));
+        //     $config['per_page'] = 10;
+        //     $config['next_link'] = 'Próxima';
+        //     $config['prev_link'] = 'Anterior';
+        //     $config['full_tag_open'] = '<div class="pagination alternate"><ul>';
+        //     $config['full_tag_close'] = '</ul></div>';
+        //     $config['num_tag_open'] = '<li>';
+        //     $config['num_tag_close'] = '</li>';
+        //     $config['cur_tag_open'] = '<li><a style="color: #2D335B"><b>';
+        //     $config['cur_tag_close'] = '</b></a></li>';
+        //     $config['prev_tag_open'] = '<li>';
+        //     $config['prev_tag_close'] = '</li>';
+        //     $config['next_tag_open'] = '<li>';
+        //     $config['next_tag_close'] = '</li>';
+        //     $config['first_link'] = 'Primera';
+        //     $config['last_link'] = 'Última';
+        //     $config['first_tag_open'] = '<li>';
+        //     $config['first_tag_close'] = '</li>';
+        //     $config['last_tag_open'] = '<li>';
+        //     $config['last_tag_close'] = '</li>';
+           // $config['page_query_string'] = TRUE;
+
+            // if (!http_build_query($get)) {
+            //   $config['suffix'] = '&' . http_build_query($get);
+            // }
+            //------------Mantiene la consulta a lo largo de las distintas paginas.
+            // if (count($_GET) > 0) $config['suffix'] = '?' . http_build_query($_GET, '', "&");
+            //
+            // $this->input->get("per_page");
+
             //Obtiene los tickets
             $this->data['results'] = $this->ticket_model->get(
                 'ticket',
@@ -165,8 +195,8 @@ class Reportes extends CI_Controller{
                 . 'ticket.sector,'
                 . 'usuario_str(ticket.idAsignado) as asignado ,'
                 . 'referencia_str(ticket.sector,ticket.referencia) as referencia ,'
-                . 'ticket.estado',$where,$config['per_page'],$this->uri->segment(3));
-            
+                . 'ticket.estado',$where,$this->uri->segment(3));
+
             $_SESSION['excel_ticket'] = $this->ticket_model->get(
                 'ticket',
                   'ticket.idTicket,'
@@ -178,104 +208,125 @@ class Reportes extends CI_Controller{
                 . 'usuario_str(ticket.idAsignado) as asignado ,'
                 . 'referencia_str(ticket.sector,ticket.referencia) as referencia ,'
                 . 'ticket.estado',$where);
-            
+
             //Obtiene el listado de usuarios
             $this->data['results_usuario'] = $this->usuarios_model->get(
-                'usuarios','usuarios.idUsuario,usuario.nombre','',$config['per_page'],$this->uri->segment(3));
-        
+                'usuarios','usuarios.idUsuario,usuario.nombre','',$this->uri->segment(3));
+
             $this->data['total'] = count($this->data['results']);
-            
-            
-            
-            $this->pagination->initialize($config); 
-        
+
+
+
+            // $this->pagination->initialize($config);
+
             $this->data['view'] = 'reportes/rep_tickets';
             $this->load->view('tema/header',$this->data);
     }
     public function excel_ticket (){
         $this->load->view('reportes/excel/ticket');
     }
+//--------------------------------------------------------------------------------------------------------------
+//---------------------------------------------- REPORTES PEDIDOS ----------------------------------------------
+//--------------------------------------------------------------------------------------------------------------
+
     public function pedidos(){
         //filtros de busqueda
         $where = ' WHERE 1 = 1';
-        
-        if ($this->input->get('legajo')!=''){//legajo
-             $where.= ' AND pedido.legajo = "'.trim($this->input->get('legajo')).'" ';
-        }
-        if ($this->input->get('persona')!=''){//persona
-             $where.= ' AND pedido.persona_str LIKE "%'.trim($this->input->get('persona')).'%" ';
-        }
-        if ($this->input->get('estado')!=''){//estado
-             $where.= ' AND pedido.estado = '.$this->input->get('estado');
-        }else{
-            //
-            //$where.= ' AND ticket.estado = 1';//por defecto se trae los tickets abiertos
-        }
-        if ($this->input->get('nota')!=''){//nota
-             $where.= ' AND pedido.descripcion LIKE "%'.trim($this->input->get('nota')).'%" ';
-        }
-        
-        if ($this->input->get('desde')!='' and $this->input->get('hasta')!=''){
-            $where.=' AND date(pedido.f_registro) BETWEEN "'.$this->input->get('desde').'" AND "'.$this->input->get('hasta').'"';
-        }else{
-            if ($this->input->get('desde')!=''){//solicita
-             $where.= ' AND date(pedido.f_registro) >= "'.$this->input->get('desde').'" ';
-            }
-            if ($this->input->get('hasta')!=''){//solicita
-                 $where.= ' AND date(pedido.f_registro) <= "'.$this->input->get('hasta').'" ';
-            }
-        }
-        
-        $this->load->library('pagination');
-        
-            $config['base_url'] = base_url().'index.php/reportes/pedidos/';
-            $config['total_rows'] = count($this->pedido_model->get_reporte('pedido',$where));
-            
-            
-            $config['per_page'] = 10;
-            $config['next_link'] = 'Próxima';
-            $config['prev_link'] = 'Anterior';
-            $config['full_tag_open'] = '<div class="pagination alternate"><ul>';
-            $config['full_tag_close'] = '</ul></div>';
-            $config['num_tag_open'] = '<li>';
-            $config['num_tag_close'] = '</li>';
-            $config['cur_tag_open'] = '<li><a style="color: #2D335B"><b>';
-            $config['cur_tag_close'] = '</b></a></li>';
-            $config['prev_tag_open'] = '<li>';
-            $config['prev_tag_close'] = '</li>';
-            $config['next_tag_open'] = '<li>';
-            $config['next_tag_close'] = '</li>';
-            $config['first_link'] = 'Primera';
-            $config['last_link'] = 'Última';
-            $config['first_tag_open'] = '<li>';
-            $config['first_tag_close'] = '</li>';
-            $config['last_tag_open'] = '<li>';
-            $config['last_tag_close'] = '</li>';
-//            $config['page_query_string'] = TRUE;
 
-            	
-            
+        if ($this->input->get('persona')!=''){//legajo
+            $where .= " AND pedido.legajo  LIKE '%".$this->input->get('persona')."%' OR pedido.persona_str LIKE '%".$this->input->get('persona')."%' OR pedido.descripcion LIKE '%".$this->input->get('persona')."%' OR pedido.estado LIKE '%".$this->input->get('persona')."%'  ";
+        }
+        // var_dump($where);
+        // exit;
+
+
+        // if ($this->input->get('persona')!=''){//persona
+        //      $where.= ' AND pedido.persona_str LIKE "%'.trim($this->input->get('persona')).'%" ';
+        // }
+        // if ($this->input->get('estado')!=''){//estado
+        //      $where.= ' AND pedido.estado = '.$this->input->get('estado');
+        // }else{
+        //     //
+        //     //$where.= ' AND ticket.estado = 1';//por defecto se trae los tickets abiertos
+        // }
+        // if ($this->input->get('nota')!=''){//nota
+        //      $where.= ' AND pedido.descripcion LIKE "%'.trim($this->input->get('nota')).'%" ';
+        // }
+        //
+        // if ($this->input->get('desde')!='' and $this->input->get('hasta')!=''){
+        //     $where.=' AND date(pedido.f_registro) BETWEEN "'.$this->input->get('desde').'" AND "'.$this->input->get('hasta').'"';
+        // }else{
+        //     if ($this->input->get('desde')!=''){//solicita
+        //      $where.= ' AND date(pedido.f_registro) >= "'.$this->input->get('desde').'" ';
+        //     }
+        //     if ($this->input->get('hasta')!=''){//solicita
+        //          $where.= ' AND date(pedido.f_registro) <= "'.$this->input->get('hasta').'" ';
+        //     }
+        // }
+
+        // $this->load->library('pagination');
+        //     //-------recibe los datos del formulario
+        //     $get = $_GET;
+        //     unset($get['offset']);
+        //     //Crea la base url
+        //     $config['base_url'] = base_url().'index.php/Reportes/pedidos/';
+        //     $config['total_rows'] = count($this->pedido_model->get_reporte('pedido',$where));
+        //
+        //     //per_page. cantidad de muestras que da por pagina. Configuracion de la paginacion
+        //     $config['per_page'] = 10;
+        //     $config['next_link'] = 'Próxima';
+        //     $config['prev_link'] = 'Anterior';
+        //     $config['full_tag_open'] = '<div class="pagination alternate"><ul>';
+        //     $config['full_tag_close'] = '</ul></div>';
+        //     $config['num_tag_open'] = '<li>';
+        //     $config['num_tag_close'] = '</li>';
+        //     $config['cur_tag_open'] = '<li><a style="color: #2D335B"><b>';
+        //     $config['cur_tag_close'] = '</b></a></li>';
+        //     $config['prev_tag_open'] = '<li>';
+        //     $config['prev_tag_close'] = '</li>';
+        //     $config['next_tag_open'] = '<li>';
+        //     $config['next_tag_close'] = '</li>';
+        //     $config['first_link'] = 'Primera';
+        //     $config['last_link'] = 'Última';
+        //     $config['first_tag_open'] = '<li>';
+        //     $config['first_tag_close'] = '</li>';
+        //     $config['last_tag_open'] = '<li>';
+        //     $config['last_tag_close'] = '</li>';
+        //     // $config['page_query_string'] = TRUE;
+        //     // $config['reuse_query_string'] = true;
+        //
+        //     // if (!http_build_query($get)) {
+        //     //   $config['suffix'] = '&' . http_build_query($get);
+        //     // }
+        //     //------------Mantiene la consulta a lo largo de las distintas paginas.
+        //     if (count($_GET) > 0) $config['suffix'] = '?' . http_build_query($_GET, '', "&");
+        //
+        //     $this->input->get("per_page");
+
             //Obtiene los pedidos
             $this->data['results'] = $this->pedido_model->get_reporte(
-                'pedido',$where,$config['per_page'],$this->uri->segment(3));
-            
+                'pedido',$where,$this->uri->segment(3));
+
             $_SESSION['excel_pedido'] = $this->pedido_model->get_reporte('pedido',$where);
-            
-            
-            $this->data['total'] = count($this->data['results']);
-            
-            
-            
-            $this->pagination->initialize($config); 
-        
+
+
+            // $this->data['total'] = count($this->data['results']);
+
+
+
+            // $this->pagination->initialize($config);
+
             $this->data['view'] = 'reportes/rep_pedido';
             $this->load->view('tema/header',$this->data);
     }
-    
+
+
+  // -------------------------------------- REPORTES CALENDARIO MENU ---------------------------------------------------------
+
     public function calendariomenu(){
         //filtros de busqueda
         $where = ' WHERE 1 = 1';
-        
+
         if ($this->input->get('legajo')!=''){//legajo
              $where.= ' AND calendariomenu.legajo = "'.trim($this->input->get('legajo')).'" ';
         }
@@ -291,7 +342,7 @@ class Reportes extends CI_Controller{
 //        if ($this->input->get('nota')!=''){//nota
 //             $where.= ' AND pedido.descripcion LIKE "%'.trim($this->input->get('nota')).'%" ';
 //        }
-        
+
         if ($this->input->get('desde')!='' and $this->input->get('hasta')!=''){
             $where.=' AND date(calendariomenu.start) BETWEEN "'.$this->input->get('desde').'" AND "'.$this->input->get('hasta').'"';
         }else{
@@ -302,13 +353,13 @@ class Reportes extends CI_Controller{
                  $where.= ' AND date(calendariomenu.start) <= "'.$this->input->get('hasta').'" ';
             }
         }
-        
+
         //$this->load->library('pagination');
-        
+
 //            $config['base_url'] = base_url().'index.php/reportes/calendariomenu/';
 //            $config['total_rows'] = count($this->calendariomenu_model->get_reporte('calendariomenu',$where));
-//            
-//            
+//
+//
 //            $config['per_page'] = 10;
 //            $config['next_link'] = 'Próxima';
 //            $config['prev_link'] = 'Anterior';
@@ -330,26 +381,26 @@ class Reportes extends CI_Controller{
 //            $config['last_tag_close'] = '</li>';
 //            $config['page_query_string'] = TRUE;
 
-            	
-            
+
+
             //Obtiene los pedidos programados
             $this->data['results'] = $this->calendariomenu_model->get_reporte(
                 'calendariomenu',$where);
-            
-            
+
+
             $_SESSION['excel_calendariomenu'] = $this->calendariomenu_model->get_reporte('aclendariomenu',$where);
-            
-            
+
+
             $this->data['total'] = count($this->data['results']);
-            
-            
-            
-            //$this->pagination->initialize($config); 
-        
+
+
+
+            //$this->pagination->initialize($config);
+
             $this->data['view'] = 'reportes/rep_menu_programados';
             $this->load->view('tema/header',$this->data);
     }
-    
+
     public function excel_pedido (){
         $this->load->view('reportes/excel/pedido');
     }
@@ -363,7 +414,7 @@ class Reportes extends CI_Controller{
 //                $where .= " AND maquinas.nro_egm  LIKE '%".$this->input->get('uid')."%' ";
 //            }
 //            if($this->input->get('modelo')!=''){
-//                $where .= " AND maquinas.modelo  LIKE '%".$this->input->get('modelo')."%' ";                
+//                $where .= " AND maquinas.modelo  LIKE '%".$this->input->get('modelo')."%' ";
 //            }
 //            if($this->input->get('fabricante')!=''){
 //                $where .= " AND maquinas.fabricante LIKE '%".$this->input->get('fabricante')."%' ";
@@ -371,10 +422,10 @@ class Reportes extends CI_Controller{
 //            if($this->input->get('estado')!=''){
 //                $where .= " AND maquinas.estado = ".$this->input->get('estado');
 //            }
-        
-        
+
+
         $this->load->library('pagination');
-        
+
             $config['base_url'] = base_url().'index.php/reportes/persona/';
             $config['total_rows'] = count($this->persona_model->count_persona($where));
             $config['per_page'] = 25;
@@ -398,19 +449,52 @@ class Reportes extends CI_Controller{
             $config['last_tag_close'] = '</li>';
             $config['page_query_string'] = TRUE;
 
-            $this->pagination->initialize($config); 	
+            $this->pagination->initialize($config);
             $this->data['results']=0;
-            
-            
+
+
             //obtiene los datos de las personas
             //                                     function getMaquinas_fallas($perpage=0         ,$start=0              ,,$where='')
             $this->data['results'] = $this->persona_model->repPersona($config['per_page'],$this->input->get('per_page'),$where);
-            
-        
+
+
             $this->data['view'] = 'reportes/rep_personas';
             $this->load->view('tema/header',$this->data);
     }
-    
+
+/////////////////////////////////////// REPORTES SELECCION PERSONAL /////////////////////////////////////////////////////////
+    public function seleccionPersonal(){
+        //filtros de busqueda
+        $where = ' WHERE 1 = 1';
+
+        if ($this->input->get('persona')!=''){//legajo
+            $where .= " AND pedido.legajo  LIKE '%".$this->input->get('persona')."%' OR pedido.persona_str LIKE '%".$this->input->get('persona')."%' OR pedido.descripcion LIKE '%".$this->input->get('persona')."%' OR pedido.estado LIKE '%".$this->input->get('persona')."%'  ";
+        }
+        // var_dump($where);
+        // exit;
+
+
+            //Obtiene los pedidos
+            $this->data['results'] = $this->seleccion_personal_model->get_reporte(
+                'seleccion',$where,$this->uri->segment(3));
+
+            $_SESSION['excel_pedido'] = $this->seleccion_personal_model->get_reporte('seleccion',$where);
+
+
+            // $this->data['total'] = count($this->data['results']);
+
+
+
+            // $this->pagination->initialize($config);
+
+            $this->data['view'] = 'reportes/rep_seleccionPersonal';
+            $this->load->view('tema/header',$this->data);
+    }
+    // -----------------------------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------------------------------
+
     public function produtos(){
         if(!$this->permission->checkPermission($this->session->userdata('permissao'),'rProduto')){
            $this->session->set_flashdata('error','Você não tem permissão para gerar relatórios de produtos.');
@@ -436,7 +520,7 @@ class Reportes extends CI_Controller{
         //$this->load->view('relatorios/imprimir/imprimirClientes', $data);
         $html = $this->load->view('reportes/imprimir/imprimirMaquinas', $data, true);
         pdf_create($html, 'reporte_maquinas' . date('d/m/y'), TRUE);
-    
+
     }
 
     public function clientesRapid(){
@@ -478,7 +562,7 @@ class Reportes extends CI_Controller{
         $this->load->helper('mpdf');
         $html = $this->load->view('relatorios/imprimir/imprimirProdutos', $data, true);
         pdf_create($html, 'relatorio_produtos' . date('d/m/y'), TRUE);
-        
+
     }
 
     public function produtosCustom(){
@@ -568,7 +652,7 @@ class Reportes extends CI_Controller{
            $this->session->set_flashdata('error','Você não tem permissão para gerar relatórios de OS.');
            redirect(base_url());
         }
-        
+
         $dataInicial = $this->input->get('dataInicial');
         $dataFinal = $this->input->get('dataFinal');
         $cliente = $this->input->get('cliente');
@@ -591,7 +675,7 @@ class Reportes extends CI_Controller{
 
         $this->data['view'] = 'relatorios/rel_financeiro';
         $this->load->view('tema/topo',$this->data);
-    
+
     }
 
 
@@ -669,6 +753,6 @@ class Reportes extends CI_Controller{
         $html = $this->load->view('relatorios/imprimir/imprimirVendas', $data, true);
         pdf_create($html, 'relatorio_vendas' . date('d/m/y'), TRUE);
     }
-    
-    
+
+
 }
